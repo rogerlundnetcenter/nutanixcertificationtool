@@ -32,16 +32,29 @@ A WinForms-based exam preparation tool for Nutanix certifications featuring 1,28
 
 ## 🚀 Quick Start
 
-### Prerequisites
+### Option 1: Download Pre-Built Binary (No SDK Required)
 
-- [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) (Windows)
+1. Download `CertStudy-v0.1.0-alpha-win-x64.zip` from the [Releases](https://github.com/rogerlundnetcenter/nutanixcertificationtool/releases) page or from the repo root (tracked via Git LFS)
+2. Extract the zip
+3. Run `CertStudy.exe`
 
-### Build & Run
+> **Note:** This is a self-contained Windows x64 build — no .NET runtime installation needed.
+
+### Option 2: Build From Source
+
+**Prerequisites:** [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) (Windows)
 
 ```bash
 cd CertStudy
 dotnet build
 dotnet run
+```
+
+To create a self-contained publish:
+
+```bash
+cd CertStudy
+dotnet publish -c Release -r win-x64 --self-contained
 ```
 
 The app will launch with all 4 exam tabs. Select an exam, answer questions, and use the explain panel to study.
@@ -75,6 +88,8 @@ The app will launch with all 4 exam tabs. Select an exam, answer questions, and 
 │
 ├── validate_answers.py           # CLI tool for batch answer validation
 ├── generate_questions.py         # Question generation script
+├── CertStudy-v0.1.0-alpha-win-x64.zip  # Pre-built binary (Git LFS)
+├── .gitattributes                # Git LFS tracking rules
 ├── LICENSE                       # BSD 3-Clause
 └── README.md
 ```
@@ -136,6 +151,15 @@ This tool is for **study purposes only**. Questions are generated based on publi
 ## 📄 License
 
 BSD 3-Clause License — see [LICENSE](LICENSE) for details.
+
+## 📦 Git LFS
+
+This repository uses [Git LFS](https://git-lfs.github.com/) to track large binary files (`.zip`, `.exe`, `.dll`). Make sure Git LFS is installed before cloning:
+
+```bash
+git lfs install
+git clone https://github.com/rogerlundnetcenter/nutanixcertificationtool.git
+```
 
 ## 🤝 Contributing
 

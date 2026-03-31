@@ -25,3 +25,6 @@ questions_analysis.json
 question_analysis.csv
 questions-export.csv
 orphan-questions.csv
+
+# Build output (published binaries tracked via LFS as zip)
+publish/
