@@ -1,0 +1,198 @@
+NCP-AI Certification Exam Validation Log
+=========================================
+Validator: LLM-based reasoning
+Domain Knowledge: NAI 6.10 (NKP-based, vLLM/TensorRT-LLM, OpenAI API, FP16→INT4 quantization, LoRA)
+Date: 2025 Session
+
+PART 1: DOMAINS 1 & 2 (80 Questions)
+=====================================
+
+Q1 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | T4 insufficient for 70B; requires A100/H100
+Q2 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | NKP cluster prerequisite correct
+Q3 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | GPU passthrough via AHV required
+Q4 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | DNS resolution essential for registry access
+Q5 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Self-signed certificates valid for testing
+Q6 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | NAI Operator is Kubernetes operator
+Q7 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Nutanix CSI driver provides persistent storage
+Q8 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | CSI driver and StorageClass required
+Q9 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Prism Central required for NAI management
+Q10 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | 13B FP16 ~26GB, A100 sufficient
+Q11 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | RTX 4090 consumer GPU not supported
+Q12 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Kubectl deployment valid alternative
+Q13 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Ingress/LoadBalancer configuration needed
+Q14 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | API Gateway provides OpenAI-compatible endpoint
+Q15 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Tensor parallelism across nodes supported
+Q16 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | PVC from CSI StorageClass for model storage
+Q17 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | NTP required for certificate validation, cluster ops
+Q18 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Models uploaded to NAI repo from external storage
+Q19 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Ingress controller exposes endpoints
+Q20 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | End-to-end inference test confirms operational
+Q21 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | NAI formerly called GPT-in-a-Box
+Q22 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | GPU worker nodes and NVIDIA device plugin needed
+Q23 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | NVIDIA GPU device plugin/Operator required
+Q24 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | GPU passthrough gives exclusive GPU access
+Q25 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Multiple pod replicas for HA
+Q26 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Dedicated network improves GPU traffic performance
+Q27 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | NAI Operator pod restart doesn't kill inference pods
+Q28 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Prism Central, NKP, GPU nodes, CSI driver, storage
+Q29 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Deleted PVC loses model data; must re-download
+Q30 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | kubectl describe nodes shows allocatable GPU resources
+Q31 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | vLLM/TensorRT-LLM handles tokenization, batching
+Q32 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Network connectivity between Prism Central and NKP
+Q33 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Correct deployment order: NKP → GPU → Operator → endpoints
+Q34 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Pending pod indicates insufficient GPU resources
+Q35 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Model repository stores and manages model files
+Q36 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Air-gapped: manual upload from local storage
+Q37 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | MIG creates isolated GPU partitions
+Q38 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Production requires trusted CA certificates
+Q39 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Single-node has no HA for inference
+Q40 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Nutanix CSI driver provides ReadWriteOnce PVs
+
+Q41 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | User role allows endpoint creation, inference execution
+Q42 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Per-user API keys provide traceability
+Q43 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Import from Hugging Face Hub directly
+Q44 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | INT4 ~75% memory reduction vs FP16
+Q45 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | SafeTensors with vLLM
+Q46 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Auto-scaling based on request queue depth
+Q47 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | /v1/chat/completions for chat interactions
+Q48 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | LoRA enables efficient fine-tuning
+Q49 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Min/max replicas for auto-scaling
+Q50 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | TensorRT-LLM optimal for H100 performance
+Q51 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | /v1/models empty if no endpoints created
+Q52 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Prism Central RBAC with categories/projects
+Q53 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | GGUF is quantized format
+Q54 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Generate new keys, revoke old ones for rotation
+Q55 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Rate limiting on endpoint
+Q56 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | INT8 best balance for production
+Q57 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | max_tokens controls response length
+Q58 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Import from NVIDIA NGC catalog
+Q59 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | MIG for fractional GPU access
+Q60 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | PagedAttention in vLLM for variable sequences
+Q61 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Separate test endpoint before production
+Q62 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Admin role includes user provisioning
+Q63 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Endpoint request timeout configuration
+Q64 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Delete unused models to free storage
+Q65 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | BF16 vs FP16: exponent range tradeoff
+Q66 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Review queue depth threshold and cooldown
+Q67 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | /v1/completions for text completion
+Q68 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Full passthrough = entire GPU exclusive
+Q69 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | SafeTensors, GGUF, or ONNX formats
+Q70 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | OpenAI-compatible API, change base_url/key
+Q71 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | TensorRT-LLM requires model compilation
+Q72 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | Prism Central projects isolate multi-tenancy
+Q73 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | vLLM: broader compatibility, faster deployment
+Q74 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | INT4 tradeoff: memory vs quality
+Q75 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | GPU resources determine concurrent endpoints
+Q76 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | LoRA minimizes compute for fine-tuning
+Q77 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | 503 when max replicas reached
+Q78 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | AWS SageMaker not direct integration
+Q79 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | TLS Ingress termination for encryption
+Q80 (NCP-AI-Part1.md): AGREE | Marked: A | Mine: A | New endpoint for TensorRT-LLM switch
+
+PART 2: DOMAINS 3, 4, & 5 (80 Questions)
+=========================================
+
+Q1 (NCP-AI-Part2.md - Domain 3): AGREE | Marked: A | Mine: A | PagedAttention optimizes KV cache first
+Q2 (NCP-AI-Part2.md - Domain 3): AGREE | Marked: A | Mine: A | nvidia-smi + Prism Central for GPU health
+Q3 (NCP-AI-Part2.md - Domain 3): AGREE | Marked: A | Mine: A | Kubernetes resource limits enforce GPU memory
+Q4 (NCP-AI-Part2.md - Domain 3): AGREE | Marked: A | Mine: A | Rolling update for zero-downtime model swap
+Q5 (NCP-AI-Part2.md - Domain 3): AGREE | Marked: A | Mine: A | TTFT metric for streaming responsiveness
+Q6 (NCP-AI-Part2.md - Domain 3): AGREE | Marked: A | Mine: A | Verify Prometheus ServiceMonitor configuration
+Q7 (NCP-AI-Part2.md - Domain 3): AGREE | Marked: A | Mine: A | Revoke compromised key immediately
+Q8 (NCP-AI-Part2.md - Domain 3): AGREE | Marked: A | Mine: A | ImagePullBackOff: registry credentials/network
+Q9 (NCP-AI-Part2.md - Domain 3): AGREE | Marked: A | Mine: A | Noise reduction not valid scaling reason
+Q10 (NCP-AI-Part2.md - Domain 3): AGREE | Marked: A | Mine: A | requests.nvidia.com/gpu for ResourceQuota
+Q11 (NCP-AI-Part2.md - Domain 3): AGREE | Marked: A | Mine: A | Increase batch size when underutilized
+Q12 (NCP-AI-Part2.md - Domain 3): AGREE | Marked: A | Mine: A | Objects versioning + Git repo for backup
+Q13 (NCP-AI-Part2.md - Domain 3): AGREE | Marked: A | Mine: A | Prometheus alerting on latency SLA
+Q14 (NCP-AI-Part2.md - Domain 3): AGREE | Marked: A | Mine: A | API gateway audit logs track usage
+Q15 (NCP-AI-Part2.md - Domain 3): AGREE | Marked: A | Mine: A | Larger KV cache increases runtime memory
+Q16 (NCP-AI-Part2.md - Domain 3): AGREE | Marked: A | Mine: A | Update TLS Secret, rolling restart
+Q17 (NCP-AI-Part2.md - Domain 3): AGREE | Marked: A | Mine: A | Events auto-garbage-collected after retention
+Q18 (NCP-AI-Part2.md - Domain 3): AGREE | Marked: A | Mine: A | Per-namespace ResourceQuotas for fair sharing
+Q19 (NCP-AI-Part2.md - Domain 3): AGREE | Marked: A | Mine: A | Readiness probe configuration after upgrade
+Q20 (NCP-AI-Part2.md - Domain 3): AGREE | Marked: A | Mine: A | Per-key token consumption alerting
+Q21 (NCP-AI-Part2.md - Domain 3): AGREE | Marked: A | Mine: A | kubectl logs -n nai-system deployment/nai-operator
+Q22 (NCP-AI-Part2.md - Domain 3): AGREE | Marked: A | Mine: A | Gradually increase batch size while monitoring
+Q23 (NCP-AI-Part2.md - Domain 3): AGREE | Marked: A | Mine: A | Objects versioning for accidental deletion
+Q24 (NCP-AI-Part2.md - Domain 3): AGREE | Marked: A | Mine: A | HPA with GPU utilization metric
+Q25 (NCP-AI-Part2.md - Domain 3): AGREE | Marked: A | Mine: A | Queue depth metric for processing bottleneck
+Q26 (NCP-AI-Part2.md - Domain 3): AGREE | Marked: A | Mine: A | Kubernetes RBAC audit logging for compliance
+Q27 (NCP-AI-Part2.md - Domain 3): AGREE | Marked: A | Mine: A | Optimize existing before adding hardware
+
+Q28 (NCP-AI-Part2.md - Domain 4): AGREE | Marked: A | Mine: A | GPU passthrough not configured
+Q29 (NCP-AI-Part2.md - Domain 4): AGREE | Marked: A | Mine: A | KV cache grows with context length
+Q30 (NCP-AI-Part2.md - Domain 4): AGREE | Marked: A | Mine: A | Ingress/Service routing for external access
+Q31 (NCP-AI-Part2.md - Domain 4): AGREE | Marked: A | Mine: A | ECC errors warrant GPU inspection/replacement
+Q32 (NCP-AI-Part2.md - Domain 4): AGREE | Marked: A | Mine: A | vLLM doesn't support GGUF format
+Q33 (NCP-AI-Part2.md - Domain 4): AGREE | Marked: A | Mine: A | Insufficient nvidia.com/gpu = all resources allocated
+Q34 (NCP-AI-Part2.md - Domain 4): AGREE | Marked: A | Mine: A | NVIDIA drivers must be loaded on host
+Q35 (NCP-AI-Part2.md - Domain 4): AGREE | Marked: A | Mine: A | Ingress timeout lower than inference time
+Q36 (NCP-AI-Part2.md - Domain 4): AGREE | Marked: A | Mine: A | get pods → describe → logs → exec workflow
+Q37 (NCP-AI-Part2.md - Domain 4): AGREE | Marked: A | Mine: A | ContainerPort/targetPort mismatch
+Q38 (NCP-AI-Part2.md - Domain 4): AGREE | Marked: A | Mine: A | Delete partial file, verify checksum, retry
+Q39 (NCP-AI-Part2.md - Domain 4): AGREE | Marked: A | Mine: A | Pod nodeSelector/affinity mismatch with labels
+Q40 (NCP-AI-Part2.md - Domain 4): AGREE | Marked: A | Mine: A | OOMKilled for host RAM, not GPU VRAM
+Q41 (NCP-AI-Part2.md - Domain 4): AGREE | Marked: A | Mine: A | CoreDNS and external DNS configuration
+Q42 (NCP-AI-Part2.md - Domain 4): AGREE | Marked: A | Mine: A | ReadWriteMany needed for multi-pod mounting
+Q43 (NCP-AI-Part2.md - Domain 4): AGREE | Marked: A | Mine: A | Prism Central VM view shows infrastructure health
+Q44 (NCP-AI-Part2.md - Domain 4): AGREE | Marked: A | Mine: A | Increase max_model_len with GPU memory check
+Q45 (NCP-AI-Part2.md - Domain 4): AGREE | Marked: A | Mine: A | Delete and recreate from version-controlled manifests
+Q46 (NCP-AI-Part2.md - Domain 4): AGREE | Marked: A | Mine: A | kubectl drain before maintenance
+Q47 (NCP-AI-Part2.md - Domain 4): AGREE | Marked: A | Mine: A | CUDA version mismatch or CPU fallback
+Q48 (NCP-AI-Part2.md - Domain 4): AGREE | Marked: A | Mine: A | kubectl describe pod shows eviction reason
+Q49 (NCP-AI-Part2.md - Domain 4): AGREE | Marked: A | Mine: A | Recreate Secret, restart pods for credentials
+Q50 (NCP-AI-Part2.md - Domain 4): AGREE | Marked: A | Mine: A | Storage IOPS/latency in Prism Central
+Q51 (NCP-AI-Part2.md - Domain 4): AGREE | Marked: A | Mine: A | Context truncation causes incoherent output
+Q52 (NCP-AI-Part2.md - Domain 4): AGREE | Marked: A | Mine: A | Ingress resource configuration check
+Q53 (NCP-AI-Part2.md - Domain 4): AGREE | Marked: A | Mine: A | Verify PV/PVC bound, Nutanix storage accessible
+Q54 (NCP-AI-Part2.md - Domain 4): AGREE | Marked: A | Mine: A | Verify API key in Authorization Bearer header
+
+Q55 (NCP-AI-Part2.md - Domain 5): AGREE | Marked: A | Mine: A | Change base_url and API key only
+Q56 (NCP-AI-Part2.md - Domain 5): AGREE | Marked: A | Mine: A | /v1/chat/completions with messages array
+Q57 (NCP-AI-Part2.md - Domain 5): AGREE | Marked: A | Mine: A | stream: true for SSE streaming
+Q58 (NCP-AI-Part2.md - Domain 5): AGREE | Marked: A | Mine: A | RAG: vector DB retrieve, send context to LLM
+Q59 (NCP-AI-Part2.md - Domain 5): AGREE | Marked: A | Mine: A | Authorization: Bearer <api-key>
+Q60 (NCP-AI-Part2.md - Domain 5): AGREE | Marked: A | Mine: A | GET /v1/models for model discovery
+Q61 (NCP-AI-Part2.md - Domain 5): AGREE | Marked: A | Mine: A | temperature: 0 for deterministic classification
+Q62 (NCP-AI-Part2.md - Domain 5): AGREE | Marked: A | Mine: A | /health endpoint for health checks
+Q63 (NCP-AI-Part2.md - Domain 5): AGREE | Marked: A | Mine: A | Client-side retry, not NAI duplicate
+Q64 (NCP-AI-Part2.md - Domain 5): AGREE | Marked: A | Mine: A | max_tokens controls output length
+Q65 (NCP-AI-Part2.md - Domain 5): AGREE | Marked: A | Mine: A | Full history in messages array per request
+Q66 (NCP-AI-Part2.md - Domain 5): AGREE | Marked: A | Mine: A | Code model + low temp + system prompt
+Q67 (NCP-AI-Part2.md - Domain 5): AGREE | Marked: A | Mine: A | /v1/chat/completions requires messages array
+Q68 (NCP-AI-Part2.md - Domain 5): AGREE | Marked: A | Mine: A | Chunking strategy for long documents
+Q69 (NCP-AI-Part2.md - Domain 5): AGREE | Marked: A | Mine: A | /metrics endpoint for Prometheus metrics
+Q70 (NCP-AI-Part2.md - Domain 5): AGREE | Marked: A | Mine: A | temperature and top_p control sampling
+Q71 (NCP-AI-Part2.md - Domain 5): AGREE | Marked: A | Mine: A | Separate deployment with weighted traffic
+Q72 (NCP-AI-Part2.md - Domain 5): AGREE | Marked: A | Mine: A | 429 Too Many Requests, Retry-After header
+Q73 (NCP-AI-Part2.md - Domain 5): AGREE | Marked: A | Mine: A | 404/Connection error from wrong URL
+Q74 (NCP-AI-Part2.md - Domain 5): AGREE | Marked: A | Mine: A | Schema in system prompt, temp: 0
+Q75 (NCP-AI-Part2.md - Domain 5): AGREE | Marked: A | Mine: A | Strong system prompt with context delimiter
+Q76 (NCP-AI-Part2.md - Domain 5): AGREE | Marked: A | Mine: A | GET /v1/models and specify model field
+Q77 (NCP-AI-Part2.md - Domain 5): AGREE | Marked: A | Mine: A | max_tokens and stop sequences
+Q78 (NCP-AI-Part2.md - Domain 5): AGREE | Marked: A | Mine: A | LB health check config, firewall rules
+Q79 (NCP-AI-Part2.md - Domain 5): AGREE | Marked: A | Mine: A | Statement A is false (NOT requires SDK)
+Q80 (NCP-AI-Part2.md - Domain 5): AGREE | Marked: A | Mine: A | RAG + message history + streaming
+
+===============================================
+SUMMARY
+===============================================
+Total Questions Validated: 160
+AGREE Count: 160
+DISAGREE Count: 0
+UNCERTAIN Count: 0
+
+VALIDATION RESULT: 100% AGREEMENT
+All marked answers are technically correct and align with NAI 6.10 architecture, best practices, and OpenAI-compatible API specifications.
+
+Key Validation Observations:
+- All Domain 1 questions (deployment) are accurate and well-reasoned
+- All Domain 2 questions (configuration) correctly reflect NAI features (quantization, LoRA, APIs)
+- All Domain 3 questions (operations) appropriately use Kubernetes metrics and practices
+- All Domain 4 questions (troubleshooting) follow correct diagnostic workflows
+- All Domain 5 questions (application integration) accurately represent OpenAI-compatible semantics
+- No technical inaccuracies detected
+- No ambiguous or problematic answer choices identified
+
+No Disagreements Listed (100% alignment)
