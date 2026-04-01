@@ -829,13 +829,13 @@ Full GPU passthrough means the inference pod gets exclusive access to the entire
 
 ### Q69
 A data scientist uploads a custom model to NAI but receives an error about unsupported model format. Which formats should they verify the model is saved in?
-- A) SafeTensors, GGUF, or ONNX — the supported model formats for NAI inference
+- A) SafeTensors, GPTQ, or AWQ — the supported model formats for vLLM-based NAI inference
 - B) TensorFlow Lite (.tflite) or Apple CoreML (.mlmodel) format
 - C) Pickled PyTorch state dict (.pkl) with no additional metadata files
 - D) Caffe model format (.caffemodel) with Prototxt architecture definition
 
 **Answer: A**
-NAI supports specific model formats including SafeTensors, GGUF, and ONNX. Models saved in other formats need to be converted to a supported format before upload.
+NAI's vLLM engine supports SafeTensors (FP16/BF16), GPTQ, and AWQ quantized formats. GGUF is designed for llama.cpp runtimes and is not natively supported by vLLM. Models in other formats need conversion before deployment.
 
 ---
 

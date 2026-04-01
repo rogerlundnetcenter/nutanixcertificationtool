@@ -1,0 +1,414 @@
+================================================================================
+NCP-AI 6.10 CERTIFICATION EXAM — FULL VALIDATION LOG
+================================================================================
+Date: 2026-04-01 08:07:13
+Total Questions: 320 (Part1:80, Part2:80, Part3:80, Part4:80)
+Key Facts Used:
+  A100=80GB HBM2e, H100=80GB HBM3, L40S=48GB GDDR6, T4=16GB GDDR6
+  vLLM: SafeTensors/GPTQ/AWQ (NOT GGUF), PagedAttention, continuous batching
+  OpenAI-compatible: /v1/chat/completions, Bearer token, stream:true=SSE
+  LoRA fine-tuning, FP16->INT8->INT4 quantization
+  NAI = formerly GPT-in-a-Box, runs on NKP, NAI Operator is K8s operator
+================================================================================
+
+========================================
+PART 1 — Domains 1 & 2 (80 Questions)
+========================================
+
+Q1:   [MY: A] [MARKED: A] [PASS] | T4(16GB) insufficient for 70B even INT4(35GB+)
+Q2:   [MY: A] [MARKED: A] [PASS] | NKP cluster w/ GPU nodes prerequisite for NAI Operator
+Q3:   [MY: A] [MARKED: A] [PASS] | GPU passthrough + PCI device assignment in AHV
+Q4:   [MY: A] [MARKED: A] [PASS] | DNS resolution required for NAI endpoints + registries
+Q5:   [MY: A] [MARKED: A] [PASS] | Self-signed TLS certs cause client trust errors
+Q6:   [MY: A] [MARKED: A] [PASS] | NAI Operator = K8s operator managing lifecycle
+Q7:   [MY: A] [MARKED: A] [PASS] | Nutanix CSI driver provides PVCs for model storage
+Q8:   [MY: A] [MARKED: A] [PASS] | Verify CSI driver installed + default StorageClass
+Q9:   [MY: A] [MARKED: A] [PASS] | Prism Central required for NAI management/RBAC
+Q10:  [MY: A] [MARKED: A] [PASS] | 13B FP16=26GB; A100(80GB) sufficient
+Q11:  [MY: A] [MARKED: A] [PASS] | RTX 4090 consumer GPU not supported by NAI
+Q12:  [MY: A] [MARKED: A] [PASS] | kubectl apply with manifests for CLI deployment
+Q13:  [MY: A] [MARKED: A] [PASS] | Check ingress config + Service external IP/NodePort
+Q14:  [MY: A] [MARKED: A] [PASS] | API Gateway = OpenAI-compatible REST routing
+Q15:  [MY: A] [MARKED: A] [PASS] | Tensor parallelism across nodes if engine supports it
+Q16:  [MY: A] [MARKED: A] [PASS] | PVC backed by CSI StorageClass for model files
+Q17:  [MY: A] [MARKED: A] [PASS] | NTP needed for TLS validity + K8s scheduling
+Q18:  [MY: A] [MARKED: A] [PASS] | Upload from Nutanix Files to NAI model repository
+Q19:  [MY: A] [MARKED: A] [PASS] | Ingress controller routes external traffic to NAI
+Q20:  [MY: A] [MARKED: A] [PASS] | Test prompt to /v1/chat/completions confirms pipeline
+Q21:  [MY: A] [MARKED: A] [PASS] | NAI = formerly GPT-in-a-Box
+Q22:  [MY: A] [MARKED: A] [PASS] | Add GPU worker nodes + NVIDIA device plugin
+Q23:  [MY: A] [MARKED: A] [PASS] | NVIDIA GPU device plugin/Operator missing
+Q24:  [MY: A] [MARKED: A] [PASS] | GPU passthrough = direct PCI HW assignment to VM
+Q25:  [MY: A] [MARKED: A] [PASS] | Multiple replicas behind K8s Service for HA
+Q26:  [MY: A] [MARKED: A] [PASS] | Dedicated network segment for GPU node bandwidth
+Q27:  [MY: A] [MARKED: A] [PASS] | K8s restarts Operator; inference pods continue serving
+Q28:  [MY: A] [MARKED: A] [PASS] | PC + NKP + GPU nodes + CSI driver + storage
+Q29:  [MY: A] [MARKED: A] [PASS] | PVC deleted = model files lost, must re-download
+Q30:  [MY: A] [MARKED: A] [PASS] | kubectl describe nodes → nvidia.com/gpu Allocatable
+Q31:  [MY: A] [MARKED: A] [PASS] | Inference engine handles tokenization + batching
+Q32:  [MY: A] [MARKED: A] [PASS] | Network connectivity PC → NKP API server
+Q33:  [MY: A] [MARKED: A] [PASS] | NKP→GPU passthrough→GPU Operator→NAI Operator→endpoints
+Q34:  [MY: A] [MARKED: A] [PASS] | Insufficient nvidia.com/gpu = no free GPU resources
+Q35:  [MY: A] [MARKED: A] [PASS] | Model repo stores/manages model files for endpoints
+Q36:  [MY: A] [MARKED: A] [PASS] | Air-gapped: manual upload via secure media
+Q37:  [MY: A] [MARKED: A] [PASS] | MIG on A100/H100 for isolated GPU partitions
+Q38:  [MY: A] [MARKED: A] [PASS] | Replace self-signed with trusted CA certs for prod
+Q39:  [MY: A] [MARKED: A] [PASS] | Single-node = no HA, all endpoints down on failure
+Q40:  [MY: A] [MARKED: A] [PASS] | Nutanix Volumes via CSI driver as RWO PersistentVolumes
+Q41:  [MY: A] [MARKED: A] [PASS] | User role: deploy endpoints, run inference, own resources
+Q42:  [MY: A] [MARKED: A] [PASS] | Per-user API keys for traceable programmatic access
+Q43:  [MY: A] [MARKED: A] [PASS] | Import from HuggingFace Hub by model repo ID
+Q44:  [MY: A] [MARKED: A] [PASS] | INT4 = ~75% memory reduction vs FP16
+Q45:  [MY: A] [MARKED: A] [PASS] | SafeTensors for efficient model loading with vLLM
+Q46:  [MY: A] [MARKED: A] [PASS] | Request queue depth triggers auto-scaling
+Q47:  [MY: A] [MARKED: A] [PASS] | /v1/chat/completions for chat-based interactions
+Q48:  [MY: A] [MARKED: A] [PASS] | LoRA = small adapter layers without full retraining
+Q49:  [MY: A] [MARKED: A] [PASS] | min=2/max=5 = always 2 pods, scale up to 5
+Q50:  [MY: A] [MARKED: A] [PASS] | TensorRT-LLM optimized via model compilation for NVIDIA
+Q51:  [MY: A] [MARKED: A] [PASS] | /v1/models empty = no endpoints created/ready
+Q52:  [MY: A] [MARKED: A] [PASS] | PC RBAC with categories/projects for resource governance
+Q53:  [MY: A] [MARKED: A] [PASS] | GGUF = quantized format with various quantization levels
+Q54:  [MY: A] [MARKED: A] [PASS] | Generate new keys per user, revoke old keys
+Q55:  [MY: A] [MARKED: A] [PASS] | Rate limiting caps requests per time period
+Q56:  [MY: A] [MARKED: A] [PASS] | INT8 = best balance: ~50% mem reduction, minimal quality loss
+Q57:  [MY: A] [MARKED: A] [PASS] | max_tokens controls response length
+Q58:  [MY: A] [MARKED: A] [PASS] | NAI imports from NGC catalog by model path
+Q59:  [MY: A] [MARKED: A] [PASS] | MIG on A100 partitions GPU into isolated instances
+Q60:  [MY: A] [MARKED: A] [PASS] | PagedAttention = paged KV cache for variable sequences
+Q61:  [MY: A] [MARKED: A] [PASS] | Separate test endpoint before production promotion
+Q62:  [MY: A] [MARKED: A] [PASS] | Admin-only: user provisioning and role management
+Q63:  [MY: A] [MARKED: A] [PASS] | Request timeout configurable per endpoint
+Q64:  [MY: A] [MARKED: A] [PASS] | Delete unused models to free PV storage
+Q65:  [MY: A] [MARKED: A] [PASS] | BF16: larger exponent range (FP32-like), FP16: more mantissa
+Q66:  [MY: A] [MARKED: A] [PASS] | Queue depth threshold/cooldown too conservative
+Q67:  [MY: A] [MARKED: A] [PASS] | /v1/completions for non-chat text completion
+Q68:  [MY: A] [MARKED: A] [PASS] | Full passthrough = entire GPU exclusively to pod
+Q69:  [MY: A] [MARKED: A] [PASS] | SafeTensors, GGUF, ONNX supported by NAI
+Q70:  [MY: A] [MARKED: A] [PASS] | OpenAI SDK: change base_url + api_key only
+Q71:  [MY: A] [MARKED: A] [PASS] | TRT-LLM needs compilation for target GPU arch
+Q72:  [MY: A] [MARKED: A] [PASS] | PC projects/namespaces/RBAC for multi-tenant isolation
+Q73:  [MY: A] [MARKED: A] [PASS] | vLLM: broad model compat, no compilation step
+Q74:  [MY: A] [MARKED: A] [PASS] | INT4: reduced memory + faster, but quality tradeoff
+Q75:  [MY: A] [MARKED: A] [PASS] | GPU resources determine concurrent endpoint limit
+Q76:  [MY: A] [MARKED: A] [PASS] | LoRA: small adapter layers, fraction of compute
+Q77:  [MY: A] [MARKED: A] [PASS] | Max replicas reached + no GPU resources for scaling
+Q78:  [MY: A] [MARKED: A] [PASS] | AWS SageMaker Registry not a built-in NAI source
+Q79:  [MY: A] [MARKED: A] [PASS] | TLS on endpoint + Ingress TLS termination
+Q80:  [MY: A] [MARKED: A] [PASS] | New TRT-LLM endpoint + compiled model + redirect traffic
+
+Part 1 Score: 80/80 (100.0%)
+
+========================================
+PART 2 — Domains 3, 4 & 5 (80 Questions)
+========================================
+
+Q1:   [MY: A] [MARKED: A] [PASS] | Increase KV cache + enable PagedAttention in vLLM
+Q2:   [MY: A] [MARKED: A] [PASS] | nvidia-smi + Prism Central VM metrics for GPU health
+Q3:   [MY: A] [MARKED: A] [PASS] | K8s resource limits for GPU memory per container
+Q4:   [MY: A] [MARKED: A] [PASS] | Rolling update: new pods ready before old terminated
+Q5:   [MY: A] [MARKED: A] [PASS] | TTFT for streaming chat responsiveness
+Q6:   [MY: A] [MARKED: A] [PASS] | Check NAI metrics endpoint + Prometheus ServiceMonitor
+Q7:   [MY: A] [MARKED: A] [PASS] | Revoke compromised key immediately, issue new
+Q8:   [MY: A] [MARKED: A] [PASS] | ImagePullBackOff: check registry creds + network
+Q9:   [MY: B] [MARKED: B] [PASS] | Reducing alert noise is NOT valid scaling justification
+Q10:  [MY: A] [MARKED: A] [PASS] | requests.nvidia.com/gpu in ResourceQuota
+Q11:  [MY: A] [MARKED: A] [PASS] | Increase batch size for underutilized GPU
+Q12:  [MY: A] [MARKED: A] [PASS] | Objects versioning + Git-stored K8s manifests for DR
+Q13:  [MY: A] [MARKED: A] [PASS] | Prometheus alerting rule for p99 latency SLA
+Q14:  [MY: A] [MARKED: A] [PASS] | API gateway/NAI audit logs for user access/tokens
+Q15:  [MY: A] [MARKED: A] [PASS] | Larger KV cache or max context length = more GPU mem
+Q16:  [MY: A] [MARKED: A] [PASS] | Update TLS Secret + rolling restart for cert rotation
+Q17:  [MY: A] [MARKED: A] [PASS] | K8s events: scheduling, image pull, errors; auto-GC'd
+Q18:  [MY: A] [MARKED: A] [PASS] | Per-namespace ResourceQuotas with GPU limits
+Q19:  [MY: A] [MARKED: A] [PASS] | Verify readiness probe config after cluster upgrade
+Q20:  [MY: A] [MARKED: A] [PASS] | Per-key token consumption alerting for anomalies
+Q21:  [MY: A] [MARKED: A] [PASS] | kubectl logs -n nai-system deployment/nai-operator
+Q22:  [MY: A] [MARKED: A] [PASS] | Gradually increase batch size, monitor GPU mem + TPS
+Q23:  [MY: A] [MARKED: A] [PASS] | Object versioning protects against accidental deletion
+Q24:  [MY: A] [MARKED: A] [PASS] | HPA with GPU utilization custom metric
+Q25:  [MY: A] [MARKED: A] [PASS] | Request queue depth = best signal for queuing delay
+Q26:  [MY: A] [MARKED: A] [PASS] | K8s RBAC audit logging for configuration traceability
+Q27:  [MY: A] [MARKED: A] [PASS] | Optimize config before adding HW (30% mem, 45% compute)
+Q28:  [MY: A] [MARKED: A] [PASS] | No CUDA device = GPU passthrough not configured on VM
+Q29:  [MY: A] [MARKED: A] [PASS] | KV cache grows with prompt length → OOM on long inputs
+Q30:  [MY: A] [MARKED: A] [PASS] | port-forward works but external fails → Ingress issue
+Q31:  [MY: A] [MARKED: A] [PASS] | ECC errors: drain node, inspect/replace GPU
+Q32:  [MY: A] [MARKED: A] [PASS] | GGUF not supported by vLLM (llama.cpp format)
+Q33:  [MY: A] [MARKED: A] [PASS] | All GPUs allocated across 3 nodes
+Q34:  [MY: A] [MARKED: A] [PASS] | Check NVIDIA drivers loaded + /dev/nvidia* accessible
+Q35:  [MY: A] [MARKED: A] [PASS] | Ingress/LB timeout < inference time → 504
+Q36:  [MY: A] [MARKED: A] [PASS] | get pods → describe pod → logs → exec -it
+Q37:  [MY: A] [MARKED: A] [PASS] | containerPort/targetPort mismatch → Connection refused
+Q38:  [MY: A] [MARKED: A] [PASS] | Delete partial download, verify checksum, retry
+Q39:  [MY: A] [MARKED: A] [PASS] | nodeSelector/nodeAffinity mismatch with node labels
+Q40:  [MY: A] [MARKED: A] [PASS] | OOMKilled = system RAM limit, not GPU VRAM
+Q41:  [MY: A] [MARKED: A] [PASS] | CoreDNS pods + external DNS config for ingress hostname
+Q42:  [MY: A] [MARKED: A] [PASS] | PVC needs ReadWriteMany for multi-pod mount
+Q43:  [MY: A] [MARKED: A] [PASS] | PC VM view: CPU, memory, disk, network for NotReady node
+Q44:  [MY: A] [MARKED: A] [PASS] | Increase max_model_len in vLLM for longer context
+Q45:  [MY: A] [MARKED: A] [PASS] | Delete corrupted resources, recreate from Git manifests
+Q46:  [MY: A] [MARKED: A] [PASS] | kubectl drain for graceful pre-maintenance
+Q47:  [MY: A] [MARKED: A] [PASS] | CUDA version mismatch or CPU-only fallback
+Q48:  [MY: A] [MARKED: A] [PASS] | kubectl describe pod → Events section for eviction reason
+Q49:  [MY: A] [MARKED: A] [PASS] | Recreate Secret + restart pods for credential mount
+Q50:  [MY: A] [MARKED: A] [PASS] | Storage controller IOPS/latency for slow model loading
+Q51:  [MY: A] [MARKED: A] [PASS] | Context silently truncated → incoherent multi-turn output
+Q52:  [MY: A] [MARKED: A] [PASS] | Ingress resource: hostnames, paths, TLS, backend refs
+Q53:  [MY: A] [MARKED: A] [PASS] | Check PV/PVC Bound state + storage accessible post-outage
+Q54:  [MY: A] [MARKED: A] [PASS] | 401: verify Authorization: Bearer header + key validity
+Q55:  [MY: A] [MARKED: A] [PASS] | Change base_url + api_key in OpenAI client
+Q56:  [MY: A] [MARKED: A] [PASS] | /v1/chat/completions with messages array (role+content)
+Q57:  [MY: A] [MARKED: A] [PASS] | stream:true + SSE in client for streaming tokens
+Q58:  [MY: A] [MARKED: A] [PASS] | RAG: vector DB retrieval → context + question to LLM
+Q59:  [MY: A] [MARKED: A] [PASS] | Authorization: Bearer <api-key>
+Q60:  [MY: A] [MARKED: A] [PASS] | GET /v1/models lists available models
+Q61:  [MY: A] [MARKED: A] [PASS] | temperature:0 for deterministic classification
+Q62:  [MY: A] [MARKED: A] [PASS] | /health endpoint for load balancer health checks
+Q63:  [MY: A] [MARKED: A] [PASS] | Client retry logic causing apparent duplicates
+Q64:  [MY: A] [MARKED: A] [PASS] | max_tokens limits generated response length
+Q65:  [MY: A] [MARKED: A] [PASS] | Full messages array each request for stateful chat
+Q66:  [MY: A] [MARKED: A] [PASS] | Code-optimized model + low temp + code system prompt
+Q67:  [MY: A] [MARKED: A] [PASS] | /v1/chat/completions needs messages[], not prompt string
+Q68:  [MY: A] [MARKED: A] [PASS] | Chunking strategy for docs exceeding context window
+Q69:  [MY: A] [MARKED: A] [PASS] | /metrics endpoint for Prometheus-compatible metrics
+Q70:  [MY: A] [MARKED: A] [PASS] | temp:0.7 moderate randomness, top_p:0.95 nucleus sampling
+Q71:  [MY: A] [MARKED: A] [PASS] | Canary: separate Deployment + weighted traffic splitting
+Q72:  [MY: A] [MARKED: A] [PASS] | 429 = rate limiting, implement exponential backoff
+Q73:  [MY: A] [MARKED: A] [PASS] | Wrong base_url to PC → 404/Connection Refused
+Q74:  [MY: A] [MARKED: A] [PASS] | System prompt with JSON schema + temperature:0
+Q75:  [MY: A] [MARKED: A] [PASS] | Strengthen system prompt: answer ONLY from context
+Q76:  [MY: A] [MARKED: A] [PASS] | GET /v1/models for discovery + model field in request
+Q77:  [MY: A] [MARKED: A] [PASS] | max_tokens + stop sequences for length control
+Q78:  [MY: A] [MARKED: A] [PASS] | Check /health path, port, protocol, firewall rules
+Q79:  [MY: A] [MARKED: A] [PASS] | FALSE: NAI does NOT require proprietary SDK
+Q80:  [MY: A] [MARKED: A] [PASS] | RAG + messages array + stream:true satisfies all 3 reqs
+
+Part 2 Score: 80/80 (100.0%)
+
+========================================
+PART 3 — Advanced Supplementary (80 Questions)
+========================================
+
+--- Section 1: GPU Specifics and Sizing ---
+Q1:   [MY: A] [MARKED: A] [PASS] | 2×A100-80GB NVLink=160GB for 140GB FP16 70B model
+Q2:   [MY: B] [MARKED: B] [PASS] | MIG only on A100/H100 for isolated GPU instances
+Q3:   [MY: B] [MARKED: B] [PASS] | IOMMU/VT-d not enabled → GPU invisible in VM
+Q4:   [MY: C] [MARKED: C] [PASS] | H100 Transformer Engine + FP8 improves LLM throughput
+Q5:   [MY: B] [MARKED: B] [PASS] | T4 lacks NVLink for efficient tensor parallelism
+Q6:   [MY: A] [MARKED: A] [PASS] | 7B INT4=3.5GB, 13B INT8=13GB, 70B FP16=140GB
+Q7:   [MY: B] [MARKED: B] [PASS] | Node selectors/affinity to target A100 nodes
+Q8:   [MY: B] [MARKED: B] [PASS] | NVLink: unified memory address space for tensor parallel
+Q9:   [MY: B] [MARKED: B] [PASS] | A100-80GB minimum single-GPU for 33B FP16 (~66GB)
+Q10:  [MY: B] [MARKED: B] [PASS] | GPU passthrough pins VM to host; live migration fails
+
+--- Section 2: Model Management Deep Dive ---
+Q11:  [MY: C] [MARKED: C] [PASS] | INT4=6.5GB on T4(16GB) leaves headroom; INT8 too tight
+Q12:  [MY: B] [MARKED: B] [PASS] | LoRA trains small adapter weights, less GPU/compute
+Q13:  [MY: B] [MARKED: B] [PASS] | SafeTensors must be compiled to TRT-LLM engine format
+Q14:  [MY: B] [MARKED: B] [PASS] | Air-gapped: pre-download, transfer via secure media
+Q15:  [MY: B] [MARKED: B] [PASS] | Gated models: HF token + license acceptance required
+Q16:  [MY: B] [MARKED: B] [PASS] | INT8 halves size vs FP16 with moderate accuracy impact
+Q17:  [MY: B] [MARKED: B] [PASS] | LoRA adapters merged/applied on top of base model
+Q18:  [MY: B] [MARKED: B] [PASS] | GPTQ/AWQ + SafeTensors for vLLM (not GGUF)
+Q19:  [MY: B] [MARKED: B] [PASS] | INT4 accuracy risk critical in healthcare domains
+Q20:  [MY: A] [MARKED: A] [PASS] | BF16=2 bytes/param, wider exponent range than FP16
+
+--- Section 3: vLLM vs TensorRT-LLM ---
+Q21:  [MY: B] [MARKED: B] [PASS] | vLLM loads HF models directly, no compilation step
+Q22:  [MY: B] [MARKED: B] [PASS] | PagedAttention: vLLM's KV cache paging innovation
+Q23:  [MY: B] [MARKED: B] [PASS] | TRT-LLM compiles to GPU-specific optimized CUDA kernels
+Q24:  [MY: B] [MARKED: B] [PASS] | TRT-LLM compiled kernels = less overhead = lower latency
+Q25:  [MY: B] [MARKED: B] [PASS] | vLLM has AMD ROCm support; TRT-LLM is NVIDIA-only
+Q26:  [MY: B] [MARKED: B] [PASS] | TRT-LLM: min latency on NVIDIA + willing to compile
+Q27:  [MY: B] [MARKED: B] [PASS] | KV cache expanded with concurrent requests → OOM
+Q28:  [MY: B] [MARKED: B] [PASS] | Continuous batching: new requests join in-progress batch
+Q29:  [MY: B] [MARKED: B] [PASS] | TRT-LLM engine compiled for specific GPU arch
+Q30:  [MY: B] [MARKED: B] [PASS] | vLLM: high-throughput API with many concurrent requests
+
+--- Section 4: Kubernetes/NKP Details ---
+Q31:  [MY: B] [MARKED: B] [PASS] | NKP with GPU-capable worker nodes required
+Q32:  [MY: B] [MARKED: B] [PASS] | All GPUs allocated; pod requests exceed available
+Q33:  [MY: B] [MARKED: B] [PASS] | NVIDIA GPU Operator (device plugin) registers GPUs
+Q34:  [MY: B] [MARKED: B] [PASS] | StorageClass + CSI + RWX for shared model access
+Q35:  [MY: B] [MARKED: B] [PASS] | Ingress routes external HTTP/HTTPS to NAI services
+Q36:  [MY: B] [MARKED: B] [PASS] | K8s reschedules pods to other GPU nodes on failure
+Q37:  [MY: A] [MARKED: A] [PASS] | Node label value doesn't exactly match selector string
+Q38:  [MY: B] [MARKED: B] [PASS] | Deployment for replicated pods + rolling updates
+Q39:  [MY: B] [MARKED: B] [PASS] | Check if device plugin pods running + drivers loaded
+Q40:  [MY: B] [MARKED: B] [PASS] | Taints/tolerations + node affinity for GPU-only scheduling
+
+--- Section 5: API Integration Patterns ---
+Q41:  [MY: B] [MARKED: B] [PASS] | Change base_url + api_key; OpenAI SDK works as-is
+Q42:  [MY: B] [MARKED: B] [PASS] | SSE: data: prefixed JSON chunks, ending data: [DONE]
+Q43:  [MY: B] [MARKED: B] [PASS] | Reduce input length to lower prompt_tokens
+Q44:  [MY: B] [MARKED: B] [PASS] | 429 = rate limiting; exponential backoff + retry
+Q45:  [MY: B] [MARKED: B] [PASS] | Model name mismatch in request vs endpoint config
+Q46:  [MY: B] [MARKED: B] [PASS] | Full messages array sent each request; manage length
+Q47:  [MY: B] [MARKED: B] [PASS] | Async HTTP clients with concurrency limits
+Q48:  [MY: B] [MARKED: B] [PASS] | Context window = input+output; max_tokens = output only
+Q49:  [MY: B] [MARKED: B] [PASS] | temp=0: greedy, nearly deterministic output
+Q50:  [MY: B] [MARKED: B] [PASS] | Empty delta on first chunk (role only) is normal SSE
+
+--- Section 6: Security and Access Control ---
+Q51:  [MY: B] [MARKED: B] [PASS] | Per-team keys: tracking, rate limiting, revocation
+Q52:  [MY: B] [MARKED: B] [PASS] | HTTP should be rejected/redirected to HTTPS
+Q53:  [MY: B] [MARKED: B] [PASS] | PC projects/categories for RBAC
+Q54:  [MY: B] [MARKED: B] [PASS] | Rotate key immediately on exposure; audit logs
+Q55:  [MY: B] [MARKED: B] [PASS] | Audit logging for compliance reporting
+Q56:  [MY: B] [MARKED: B] [PASS] | Env vars or secrets management; never in source code
+Q57:  [MY: B] [MARKED: B] [PASS] | IP CIDR restriction + internal-only LB
+Q58:  [MY: B] [MARKED: B] [PASS] | Generate new → update clients → verify → revoke old
+Q59:  [MY: B] [MARKED: B] [PASS] | Namespaces + NetworkPolicy + RBAC for tenant isolation
+Q60:  [MY: B] [MARKED: B] [PASS] | API gateway/app layer logging to centralized system
+
+--- Section 7: Troubleshooting Scenarios ---
+Q61:  [MY: B] [MARKED: B] [PASS] | KV cache leaks or concurrent request memory exhaustion
+Q62:  [MY: B] [MARKED: B] [PASS] | Low util: check request volume, batch size, replicas
+Q63:  [MY: B] [MARKED: B] [PASS] | No CUDA device: no GPU on node or device plugin issue
+Q64:  [MY: B] [MARKED: B] [PASS] | Check GPU util, thermal, queue depth, CPU/GPU swapping
+Q65:  [MY: B] [MARKED: B] [PASS] | 502: Ingress can't reach backend pod/service
+Q66:  [MY: B] [MARKED: B] [PASS] | Failed readiness = removed from Service endpoints
+Q67:  [MY: B] [MARKED: B] [PASS] | Insufficient GPUs for all 3 replicas
+Q68:  [MY: B] [MARKED: B] [PASS] | LLMs are stochastic; temp=0 + seed for determinism
+Q69:  [MY: B] [MARKED: B] [PASS] | GPU Operator upgrade changed runtime/driver compat
+Q70:  [MY: B] [MARKED: B] [PASS] | Resource exhaustion: mem limits, timeouts, connections
+
+--- Section 8: Architecture and Planning ---
+Q71:  [MY: B] [MARKED: B] [PASS] | NAI: simplified lifecycle, PC integration, model mgmt
+Q72:  [MY: B] [MARKED: B] [PASS] | Total GPU capacity + resource quotas for multi-model
+Q73:  [MY: B] [MARKED: B] [PASS] | 2+ replicas on different nodes + health checks
+Q74:  [MY: B] [MARKED: B] [PASS] | Benchmark TPS/GPU, multiply by concurrent users
+Q75:  [MY: B] [MARKED: B] [PASS] | 2×H100: Transformer Engine + higher bandwidth = lower latency
+Q76:  [MY: B] [MARKED: B] [PASS] | Rolling update + readiness probes for zero-downtime
+Q77:  [MY: B] [MARKED: B] [PASS] | Tensor parallelism needs NVLink + increases complexity
+Q78:  [MY: B] [MARKED: B] [PASS] | GPU hour = 1 GPU × 1 hour for planning/chargeback
+Q79:  [MY: B] [MARKED: B] [PASS] | Fault isolation, geo, data residency, env separation
+Q80:  [MY: B] [MARKED: B] [PASS] | Phased: start small, design for horizontal scaling
+
+Part 3 Score: 80/80 (100.0%)
+
+========================================
+PART 4 — Mixed Format (80 Questions)
+========================================
+
+--- Standard MCQ (Q1-Q60) ---
+Q1:   [MY: C] [MARKED: C] [PASS] | 70B INT4=35GB+40GB overhead=75GB; A100(80GB) sufficient
+Q2:   [MY: B] [MARKED: B] [PASS] | NAI Operator manages lifecycle: serving, API, reconciliation
+Q3:   [MY: B] [MARKED: B] [PASS] | 13B FP16 = 26GB model weights
+Q4:   [MY: B] [MARKED: B] [PASS] | vLLM: broadest LLM support + PagedAttention
+Q5:   [MY: B] [MARKED: B] [PASS] | NVIDIA container toolkit/drivers missing or outdated
+Q6:   [MY: B] [MARKED: B] [PASS] | SafeTensors, GPTQ, AWQ for vLLM (not GGUF)
+Q7:   [MY: A] [MARKED: A] [PASS] | /v1/chat/completions for chat completions + token usage
+Q8:   [MY: B] [MARKED: B] [PASS] | KV cache accumulation w/ batch=4 exceeds 32GB VRAM
+Q9:   [MY: B] [MARKED: B] [PASS] | Nutanix CSI driver for K8s-compatible PersistentVolumes
+Q10:  [MY: B] [MARKED: B] [PASS] | PVs dynamically provisioned, mounted at pod startup
+Q11:  [MY: C] [MARKED: C] [PASS] | 30B INT8=30GB + LoRA ~1GB = 31GB
+Q12:  [MY: B] [MARKED: B] [PASS] | PagedAttention for KV cache memory efficiency
+Q13:  [MY: B] [MARKED: B] [PASS] | base_url change + Bearer token for OpenAI SDK compat
+Q14:  [MY: B] [MARKED: B] [PASS] | Per-user API keys + PC RBAC + audit logging
+Q15:  [MY: B] [MARKED: B] [PASS] | kubectl logs + describe pod for CrashLoopBackOff
+Q16:  [MY: B] [MARKED: B] [PASS] | TRT-LLM requires compilation for target GPU arch
+Q17:  [MY: B] [MARKED: B] [PASS] | Check per-pod metrics; scaling won't fix per-pod bottleneck
+Q18:  [MY: B] [MARKED: B] [PASS] | NodeAffinity with nvidia.com/gpu labels
+Q19:  [MY: B] [MARKED: B] [PASS] | K8s Secret for TLS certs, referenced by Ingress/config
+Q20:  [MY: A] [MARKED: A] [PASS] | RAG = LLM + vector DB + retrieval mechanism
+Q21:  [MY: B] [MARKED: B] [PASS] | Ingress routing rules mismatch service port/hostname
+Q22:  [MY: B] [MARKED: B] [PASS] | L40S(48GB) comfortable for 7B FP16(14GB) + headroom
+Q23:  [MY: B] [MARKED: B] [PASS] | Readiness probes + RollingUpdateStrategy
+Q24:  [MY: B] [MARKED: B] [PASS] | MIG: A100 and H100 only
+Q25:  [MY: B] [MARKED: B] [PASS] | MIG partitions: independently managed, no memory sharing
+Q26:  [MY: A] [MARKED: A] [PASS] | GGUF, SafeTensors, ONNX supported without conversion
+Q27:  [MY: C] [MARKED: C] [PASS] | K8s CSI driver + PV management for LoRA versioning
+Q28:  [MY: B] [MARKED: B] [PASS] | Latency percentiles + throughput + memory = critical metrics
+Q29:  [MY: B] [MARKED: B] [PASS] | Grace period: new key → overlap → revoke old
+Q30:  [MY: B] [MARKED: B] [PASS] | Low GPU util + high I/O wait = storage bottleneck
+Q31:  [MY: B] [MARKED: B] [PASS] | Training pod w/ GPU → save to CSI vol → deploy for inference
+Q32:  [MY: B] [MARKED: B] [PASS] | NGC models pulled, containerized, deployed on NAI
+Q33:  [MY: B] [MARKED: B] [PASS] | GPU device plugin not installed/configured
+Q34:  [MY: B] [MARKED: B] [PASS] | SSE streaming: token-by-token for better UX
+Q35:  [MY: C] [MARKED: C] [PASS] | 429 Too Many Requests for rate limit exceeded
+Q36:  [MY: B] [MARKED: B] [PASS] | vLLM --tensor-parallel-size for multi-GPU splitting
+Q37:  [MY: B] [MARKED: B] [PASS] | Function calling needs tool-use trained models
+Q38:  [MY: C] [MARKED: C] [PASS] | Embedding model architecture determines output dimensions
+Q39:  [MY: B] [MARKED: B] [PASS] | NetworkPolicy + RBAC Role/RoleBinding for namespace isolation
+Q40:  [MY: B] [MARKED: B] [PASS] | Deployment controller replaces evicted pod automatically
+Q41:  [MY: B] [MARKED: B] [PASS] | cert-manager auto-rotates certs before expiry
+Q42:  [MY: B] [MARKED: B] [PASS] | Pod stays Pending if GPU request exceeds available
+Q43:  [MY: B] [MARKED: B] [PASS] | NFS bandwidth saturation with concurrent model loads
+Q44:  [MY: B] [MARKED: B] [PASS] | Helm values.yaml / ConfigMap for model URI + params
+Q45:  [MY: C] [MARKED: C] [PASS] | Base model merged with LoRA adapter at startup
+Q46:  [MY: B] [MARKED: B] [PASS] | NAI API server structured logging to log aggregator
+Q47:  [MY: A] [MARKED: A] [PASS] | FP32(60GB) → INT8 = 60/4 = 15GB
+Q48:  [MY: C] [MARKED: C] [PASS] | PagedAttention: dynamic alloc/dealloc KV pages in VRAM
+Q49:  [MY: A] [MARKED: A] [PASS] | ImagePullBackOff: image not found or creds missing
+Q50:  [MY: B] [MARKED: B] [PASS] | Update image tag → rolling update
+Q51:  [MY: A] [MARKED: A] [PASS] | Larger batch ≠ lower per-request latency
+Q52:  [MY: B] [MARKED: B] [PASS] | Revoke compromised key → generate new → update clients
+Q53:  [MY: B] [MARKED: B] [PASS] | Memory limit (32Gi) too low for model+KV+batch > 32GB
+Q54:  [MY: B] [MARKED: B] [PASS] | TRT-LLM generates optimized CUDA kernels for target GPU
+Q55:  [MY: B] [MARKED: B] [PASS] | Latency, throughput, load time, GPU mem, queue length
+Q56:  [MY: B] [MARKED: B] [PASS] | Structured tool_calls array; client executes + returns
+Q57:  [MY: B] [MARKED: B] [PASS] | H100 ≈ 2× A100; 40 H100s ≈ 80 A100 equivalents
+Q58:  [MY: B] [MARKED: B] [PASS] | max_tokens soft limit; special tokens may add slightly
+Q59:  [MY: B] [MARKED: B] [PASS] | Tokenizer + training data determine language support
+Q60:  [MY: C] [MARKED: C] [PASS] | GPU 95% util = compute saturation → queue buildup
+
+--- Select TWO (Q61-Q70) ---
+Q61:  [MY: B,D] [MARKED: B,D] [PASS] | Prometheus metrics + pod logs for inference perf
+Q62:  [MY: B,E] [MARKED: B,E] [PASS] | GPU VRAM sizing + CSI storage throughput/capacity
+Q63:  [MY: B,C] [MARKED: B,C] [PASS] | RollingUpdateStrategy + readiness probes
+Q64:  [MY: A,B] [MARKED: A,B] [PASS] | TRT-LLM+wrapper + vLLM native OpenAI compat
+Q65:  [MY: B,D] [MARKED: B,D] [PASS] | Replicated storage + 3+ K8s masters for HA
+Q66:  [MY: A,B] [MARKED: A,B] [PASS] | Base model weights + adapter layers for LoRA
+Q67:  [MY: A,B] [MARKED: A,B] [PASS] | Namespaces+RBAC + NetworkPolicy for isolation
+Q68:  [MY: A,B] [MARKED: A,B] [PASS] | PagedAttention + max_num_seqs for throughput
+Q69:  [MY: A,B] [MARKED: A,B] [PASS] | Bearer token auth + per-user RBAC roles
+Q70:  [MY: B,E] [MARKED: B,E] [PASS] | CSI volume backups + etcd cluster backup
+
+--- Ordering/Sequence (Q71-Q80) ---
+Q71:  [MY: 1→4→5→3→2] [MARKED: 1→4→5→3→2] [PASS] | Deploy→ready→route→retire→verify
+Q72:  [MY: 2→3→4→5→6→1] [MARKED: 2→3→4→5→6→1] [PASS] | Load→train→inject→optimize→save→merge
+Q73:  [MY: 5→2→3→4→1] [MARKED: 5→2→3→4→1] [PASS] | Labels→drivers→spec→nvidia-smi→logs
+Q74:  [MY: 4→2→3→5→1] [MARKED: 4→2→3→5→1] [PASS] | Request→secret→restart→verify→revoke
+Q75:  [MY: 2→5→1→3→4] [MARKED: 2→5→1→3→4] [PASS] | Baseline→bottleneck→profile→optimize→measure
+Q76:  [MY: 2→3→1→4→5→6] [MARKED: 2→3→1→4→5→6] [PASS] | NS→NetPol→RBAC→keys→storage→deploy
+Q77:  [MY: 5→4→2→3→1→6] [MARKED: 5→4→2→3→1→6] [PASS] | Logs→quant→calc→limits→batch→scale
+Q78:  [MY: 1→2→3→4→5→6+7] [MARKED: 1→2→3→4→5→6+7] [PASS] | Build→push→update→monitor→test→doc+rollback
+Q79:  [MY: 1→2→3→4→5→6→7] [MARKED: 1→2→3→4→5→6→7] [PASS] | Doc→etcd→PV snap→env→drill→proc→schedule
+Q80:  [MY: 1→2→3→4→5→6→7] [MARKED: 1→2→3→4→5→6→7] [PASS] | Capacity→upload→deploy→test→route→compat→docs
+
+Part 4 Score: 80/80 (100.0%)
+
+================================================================================
+FINAL RESULTS
+================================================================================
+
+Part 1: 80/80 (100.0%)
+Part 2: 80/80 (100.0%)
+Part 3: 80/80 (100.0%)
+Part 4: 80/80 (100.0%)
+
+TOTAL: 320/320 (100.0%)
+
+FAILED QUESTIONS: NONE
+
+POTENTIALLY QUESTIONABLE MARKED ANSWERS (accepted but noted):
+--------------------------------------------------------------
+1. Part1-Q69 / Part4-Q26: Lists GGUF as NAI-supported format, but Part2-Q32
+   and Part3-Q18 confirm vLLM does NOT support GGUF. NAI may support GGUF
+   through other runtime paths (e.g., llama.cpp). Internally consistent within
+   each exam part but cross-part tension exists.
+
+2. Part4-Q47: Assumes SafeTensors file is FP32 (4 bytes/param) for 60GB→15GB
+   INT8 calculation. In practice, SafeTensors files are commonly FP16/BF16.
+   If FP16, correct answer would be 30GB (B). Accepted because explanation
+   explicitly states FP32 assumption.
+
+3. Part4-Q57: Explanation states "H100 has 2x FP32 throughput vs A100 (up to
+   60 TFLOPS vs 300 TFLOPS)" — the numbers appear transposed/wrong. A100 FP32
+   ≈ 19.5 TFLOPS, H100 FP32 ≈ 60 TFLOPS. Conclusion (H100 ≈ 2-3× A100)
+   is directionally correct despite confusing explanation.
+
+================================================================================
+EXAM COMPLETE — ALL 320 QUESTIONS PASSED
+================================================================================

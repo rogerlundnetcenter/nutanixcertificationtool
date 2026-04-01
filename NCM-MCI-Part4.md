@@ -217,8 +217,8 @@ An administrator wants to filter the VM list to only return VMs with the categor
 - C) `{"kind": "vm", "filter": "category_name==Environment;category_value==Production"}`
 - D) `{"kind": "vm", "filter": "Environment==Production"}`
 
-**Answer: D**
-The v3 list API filter syntax for categories uses the simple format `"CategoryKey==CategoryValue"`. The filter string `"Environment==Production"` directly matches VMs assigned that category. No `category` or `categories` prefix is needed.
+**Answer: B**
+The v3 list API filter syntax for categories uses the FIQL format with a `categories.` prefix: `"categories.CategoryKey==CategoryValue"`. The filter string `"categories.Environment==Production"` matches VMs assigned that category. The bare format without the prefix does not work — the `categories.` qualifier is required to indicate a category-based filter rather than a top-level entity attribute filter.
 
 ---
 
@@ -312,8 +312,8 @@ An administrator suspects the Genesis service has crashed on a CVM and needs to 
 - C) `cluster restart` (Genesis auto-restarts all services)
 - D) Genesis is self-healing and restarts automatically via the watchdog; manually restart with `genesis stop && cluster start`
 
-**Answer: D**
-Genesis is the service manager on each CVM and monitors all other services. If Genesis itself crashes, the systemd watchdog restarts it automatically. If manual intervention is needed, `genesis stop` followed by `cluster start` is used. There is no `genesis restart` command — Genesis manages other services but uses `cluster start` to reinitialize.
+**Answer: A**
+The `genesis restart` command is a valid command documented in the AOS Command Reference (AOS 6.5+). Genesis supports `start|stop|restart|status` subcommands. While Genesis does have a self-healing watchdog that auto-restarts crashed services, when manual intervention is explicitly needed, `genesis restart` is the most direct approach. The alternative `genesis stop && cluster start` also works but is a two-step process typically used for broader cluster service reinitialization.
 
 ---
 
@@ -817,26 +817,26 @@ The `curator_cli start_scan type=full` command manually triggers a Curator full 
 ### Q61
 An administrator needs to create a protection domain with an hourly replication schedule. Which sequence of commands is correct?
 
-- A) `ncli pd create name=PD-HR type=async` then `ncli pd add-schedule name=PD-HR interval=60`
+- A) `ncli pd create name=PD-HR type=async` then `ncli pd add-hourly-schedule name=PD-HR every-nth-hour=1`
 - B) `ncli pd create name=PD-HR type=async` then `ncli pd set-schedule name=PD-HR every-nth-min=60`
 - C) `ncli pd create name=PD-HR type=async schedule=hourly`
 - D) `acli pd.create PD-HR repl_schedule=3600`
 
 **Answer: A**
-Protection domain creation and schedule configuration are separate operations. First, create the PD with `ncli pd create`, then add a replication schedule with `ncli pd add-schedule` specifying the interval in minutes. The two-step process allows multiple schedules on a single PD.
+Protection domain creation and schedule configuration are separate operations. First, create the PD with `ncli pd create`, then add a replication schedule with `ncli pd add-hourly-schedule` specifying the interval. The two-step process allows multiple schedules on a single PD. Alternative schedule commands include `add-daily-schedule` and `add-minutely-schedule`.
 
 ---
 
 ### Q62
 An administrator needs to configure a remote site for replication between Cluster-A and Cluster-B. Which command on Cluster-A initiates the pairing?
 
-- A) `ncli remote-site create name=ClusterB address=<ClusterB-VIP> username=admin password=<pass>`
+- A) `ncli remote-site create name=ClusterB address-list=<ClusterB-VIP>`
 - B) `ncli pd add-remote-site name=PD-1 remote=ClusterB ip=<ClusterB-IP>`
 - C) `acli remote.create ClusterB ip=<ClusterB-VIP>`
 - D) `ncli replication create-pair local=ClusterA remote=ClusterB`
 
 **Answer: A**
-The `ncli remote-site create` command establishes a remote site pairing by specifying the remote cluster's virtual IP, credentials, and a friendly name. This creates a bidirectional trust relationship. The remote site can then be referenced when configuring protection domain replication schedules.
+The `ncli remote-site create` command establishes a remote site pairing by specifying the remote cluster's virtual IP via `address-list=`. Authentication is handled through cluster-level trust (Prism credentials are exchanged during setup). The remote site can then be referenced when configuring protection domain replication schedules.
 
 ---
 
@@ -856,13 +856,13 @@ The `ncli pd add-vms` command adds one or more VMs to a protection domain using 
 ### Q64
 An administrator needs to perform a planned failover of protection domain "PD-Finance" from the primary cluster to the remote site. What is the correct sequence?
 
-- A) On primary: `ncli pd migrate name=PD-Finance` — this triggers a final replication and activates VMs on the remote site
+- A) On primary: `ncli pd migrate name=PD-Finance remote-site=ClusterB` — this triggers a final replication and activates VMs on the remote site
 - B) On remote: `ncli pd activate name=PD-Finance` without any action on primary
 - C) On primary: `ncli pd deactivate name=PD-Finance` then on remote: `ncli pd activate name=PD-Finance`
 - D) On primary: `ncli pd failover name=PD-Finance remote-site=ClusterB`
 
 **Answer: A**
-A planned (graceful) failover uses `ncli pd migrate` on the primary cluster. This performs a final replication of any outstanding changes, deactivates VMs on the primary, and activates them on the remote site. This ensures zero data loss because the final replication completes before failover.
+A planned (graceful) failover uses `ncli pd migrate` with `remote-site=` on the primary cluster. This performs a final replication of any outstanding changes, deactivates VMs on the primary, and activates them on the remote site. This ensures zero data loss because the final replication completes before failover.
 
 ---
 
@@ -1084,7 +1084,7 @@ The Prism UI provides a built-in CSR generation wizard under Settings > SSL Cert
 |---|--------|---|--------|---|--------|---|--------|
 | 1 | B | 21 | B | 41 | A | 61 | A |
 | 2 | B | 22 | A | 42 | B | 62 | A |
-| 3 | A | 23 | D | 43 | B | 63 | A |
+| 3 | A | 23 | A | 43 | B | 63 | A |
 | 4 | A | 24 | C | 44 | B | 64 | A |
 | 5 | A | 25 | B | 45 | A | 65 | A |
 | 6 | A | 26 | C | 46 | A | 66 | B |
@@ -1097,7 +1097,7 @@ The Prism UI provides a built-in CSR generation wizard under Settings > SSL Cert
 | 13 | B | 33 | B | 53 | B | 73 | A |
 | 14 | A | 34 | A | 54 | B | 74 | C |
 | 15 | B | 35 | B | 55 | C | 75 | B |
-| 16 | D | 36 | B | 56 | C | 76 | C |
+| 16 | B | 36 | B | 56 | C | 76 | C |
 | 17 | C | 37 | A | 57 | A | 77 | B |
 | 18 | B | 38 | B | 58 | B | 78 | A |
 | 19 | A | 39 | A | 59 | A | 79 | A |

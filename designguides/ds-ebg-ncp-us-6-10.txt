@@ -1,0 +1,795 @@
+ 
+EXAM BLUEPRINT GUIDE 
+Nutanix Certified Professional ​
+Unified Storage ​
+(NCP-US) 6.10 Exam 
+1 
+Table of Contents 
+Author​
+3 
+Contributors​
+3 
+1. The Exam​
+4 
+1.1 Purpose of Exam​
+4 
+1.2 Number of Questions​
+4 
+1.3 Pricing​
+4 
+1.4 Passing Score​
+4 
+1.5 How Objectives Relate to Questions on the Exam​
+4 
+1.6 Languages​
+4 
+1.7 Time Limit​
+4 
+1.8 Scheduling and Taking the Exam​
+5 
+1.9 Certification Tracks​
+5 
+1.10 Retake Policy​
+5 
+1.11 Exam Security​
+5 
+1.12 Recertification​
+5 
+1.13 Benefits of Certification​
+6 
+2. Intended Audience​
+6 
+3. Objectives Covered in the NCP-US 6.10 Exam​
+7 
+3.1 Introduction​
+7 
+3.2 Objectives​
+7 
+Section 1 – Deploy and Upgrade Nutanix Unified Storage​
+7 
+Section 2 – Configure and Utilize Nutanix Unified Storage​
+9 
+Section 3 – Analyze and Monitor Unified Storage​
+13 
+Section 4 – Troubleshoot Nutanix Unified Storage​
+15 
+4. NCP-US 6.10 Training Recommendations​
+18 
+4.1 Course Recommendation​
+18 
+5. Resources​
+19 
+5.1 Nutanix Community Edition​
+19 
+5.2 Test Drive​
+19 
+5.3 The Nutanix Community​
+19 
+5.4 Additional Unified Storage Resources​
+19 
+ 
+ 
+2 
+Author 
+Jeff Hall, Manager, Technical Certification Development  
+ 
+Contributors 
+Alex Kovtun, Converged Solutions Architect 
+Assen Spassov, Staff Worldwide Trainer 
+Brian Jeschke, FR Solutions Consultant 
+Bruce Heavner, Field Consultant II 
+Chad Lucas, Advisory Systems Engineer 
+Christian Marrero, Shared Services Systems Engineer 
+Drew Plaster, Sr. Network System Administrator 
+Eslam Wageh, Sr. Infrastructure Engineer 
+Frank Mazzotti, Sr. Digital Hybrid Infrastructure Engineer 
+Guillaume Pare, Advisory Systems Engineer 
+Ivan Milijic, Sr. Lead Engineer 
+Jim Corder, Founder, Corder Enterprises International 
+John Burton, Sr. Staff Escalation Engineer 
+Leandro Leonhardt Degregorio 
+Lev Goronshtein, Advisory Systems Engineer 
+Manuel Risco-Herrera, Staff Technical Account Manager 
+Maroane Boutayeb, Global Unit Lead - Nutanix on OVHcloud 
+Matthew Gauch, Sr. Staff Escalation Engineer 
+Paul Murray, EUC Solutions Architect 
+Randy Anthony, Sr. Solutions Architect 
+Rickard Wendel, Sr. Systems Engineer 
+Rob Buchanan, Sr. Systems Engineer 
+Robert Johnson, National Principal Specialist Solutions Architect 
+Ross Hunt, Staff Resident Architect 
+Samuele Cerutti, Advisory Systems Engineer 
+Shaun Sparks, Sr. Cloud Engineer 
+Stephen Edge, Principal Consultant 
+Stephen Linker, Systems Administrator 
+Talel Zidi, Resident Consultant 
+Troy Johnson, Sr. Systems Engineer 
+Tyler Pope, Staff Escalation Engineer 
+Zeeshan Sarvaiya, Sr. Administrator 
+ 
+Disclaimer:​
+The Nutanix Certified Professional - Unified Storage (NCP-US) 6.10 Exam Blueprint Guide provides an overview of the objectives that must be mastered to achieve the NCP-US 6 
+credential. Nutanix does not offer any guarantees that this guide will ensure a candidate’s success in achieving the NCP-US 6 certification. All information in this guide is subject to 
+change at any time at the sole discretion of Nutanix. 
+3 
+1.​The Exam 
+1.1 Purpose of Exam 
+The Nutanix Certified Professional - Unified Storage (NCP-US) 6.10 exam will measure a candidate’s ability to 
+deploy, configure, optimize, troubleshoot, and perform administrative tasks in a multicloud Nutanix Unified 
+Storage (Files, Objects, and Volumes) environment. Successful candidates demonstrate mastery of these 
+skills and abilities. 
+1.2 Number of Questions 
+The NCP-US 6.10 exam consists of 75 multiple-choice and multiple-response questions. 
+1.3 Pricing 
+The cost for the NCP-US 6.10 exam is $200 USD. 
+1.4 Passing Score 
+The passing score for this exam is 3000, using a scaled scoring method. The scale is from 1000-6000. Scaled 
+scores are calculated using a mathematical formula that considers a variety of factors, including the 
+number and type of exam questions included in a specific version of the exam. 
+Because this combination may vary in different versions of the same examination, scaled scores provide a 
+fair score for everyone based on the version of the exam taken. 
+1.5 How Objectives Relate to Questions on the Exam 
+Objectives summarize what the test is designed to measure. Objectives are developed by Exam Developers 
+and Subject Matter Experts based on identified tasks that relate to the job of deploying, configuring, 
+optimizing, troubleshooting, and performing administrative tasks in a multicloud Nutanix Unified Storage 
+(Files, Objects, and Volumes) environment.  
+Once the initial development process is complete, these objectives are verified using an external group of 
+individuals in the actual job role. Finally, a number of questions is determined for each objective, which 
+relates directly to the criticality of the task in the job role. 
+1.6 Languages 
+The exam is available in English. 
+1.7 Time Limit 
+The time limit for the exam is 120 minutes. 
+ 
+ 
+4 
+ 
+1.8 Scheduling and Taking the Exam 
+This exam is delivered via remote proctoring or in-person at select test centers.  
+If you select remote proctoring, after registering for the exam and providing valid identification, you will 
+receive information on how to take the exam from your location using a web browser. Because the exam ​
+is remote proctored, you will be provided with a locked down, monitored, secure exam experience.  
+If you select in-person testing, you will be able to select a test center near you. On the day of the exam, ​
+you will need to arrive at the test center 15 minutes prior to the exam start time with a valid 
+government-issued ID. 
+1.9 Certification Tracks 
+The NCP-US 6.10 exam is a core component of the Nutanix Unified Storage track. Passing this exam results 
+in achieving the NCP-US 6 certification.  
+The certification requires a passing score on the exam. While it is not required that you attend a course, 
+Nutanix provides training that covers the objectives on the exam. Details on the recommended training 
+course are provided in Section 4. 
+1.10 Retake Policy 
+If a candidate fails an exam on the first attempt, he or she is allowed two additional attempts. There is ​
+a seven-day waiting period between attempts. Like the first attempt, these are paid for individually and 
+Nutanix recommends that you allow sufficient time between attempts to be properly prepared and to 
+maximize your chances for success.  
+Please note: After three attempts, you will be unable to take the exam for 60 days, after which you can ​
+email university.nutanix.com and request that your attempts are reset. Nutanix recommends you utilize the 
+time to thoroughly review this guide and the related references and/or take the recommended training for 
+this exam. 
+1.11 Exam Security 
+Nutanix reserves the right to refuse certifying a candidate who violates exam security policies. This includes 
+copying and redistribution of exam material, using any type of study material during the exam itself, 
+attempting to photograph exam items and taking an exam using a false identity. Your identity is captured 
+as part of the exam registration process and must be validated before you will be allowed to take the exam. 
+1.12 Recertification 
+Once you have passed the Nutanix Certified Professional – Unified Storage 6.10 exam and achieved the 
+NCP-US 6 certification, it will remain valid for three years.  
+To maintain your certification status, you must either renew your existing certification, pass an equivalent 
+NCP-level exam within another certification track, or pass the NCM-MCI exam. 
+5 
+1.13 Benefits of Certification 
+●​
+Digital badge from Credly that you can share on social media  
+●​
+Access to the Certification store at http://store.nutanix.com for shirts, mugs, and more   
+●​
+Opportunity to participate as a SME to develop future exams  
+●​
+Discount on attending Nutanix .NEXT 
+2. Intended Audience 
+A candidate for the NCP-US 6.10 exam and NCP-US 6 certification has approximately 1-2 years of ​
+general IT experience, with six to 12 months of Nutanix Unified Storage experience or applicable training.  
+Successful candidates are typically IT professionals and IT architects who are capable of deploying, 
+configuring, optimizing, troubleshooting, and performing administrative tasks in a multicloud Nutanix 
+Unified Storage (Files, Objects, and Volumes) environment.  
+Finally, the successful candidate will most likely have taken training courses, such as the Nutanix Unified 
+Storage Administration (NUSA) course. 
+ 
+6 
+3. Objectives Covered in the NCP-US 6.10 Exam 
+3.1 Introduction 
+It is recommended that candidates have the knowledge and skills necessary for deploying, configuring, 
+optimizing, troubleshooting, and performing administrative tasks in a multicloud Nutanix Unified Storage 
+(Files, Objects, and Volumes) environment before attempting the NCP-US 6.10 exam. It is also 
+recommended that the candidate complete the training course described in Section 4 prior to taking the 
+exam.  
+For the NCP-US 6 certification, candidates will be tested on the following software versions:  
+●​
+AOS: version 6.10 
+●​
+Prism Central: version pc2024.2 
+●​
+Volumes: version 6.10 
+●​
+Files: version 5.0 
+●​
+File Analytics: version 3.4 
+●​
+Data Lens: version DL2024.6 
+●​
+Objects: version 5.0 
+3.2 Objectives 
+Prior to taking this exam, candidates should understand each of the following objectives. Each objective ​
+is listed below; along with related tools the candidate should have experience with, and related 
+documentation that contains information relevant to the objective. Please note that some documentation 
+requires access via the Support Portal. Information on creating an account for use with the Support Portal 
+can be found here.  
+All objectives may also be referenced in other product documentation not specifically highlighted below. 
+The candidate should be familiar with all relevant product documentation or have the equivalent skills.  
+​
+Section 1 – Deploy and Upgrade Nutanix Unified Storage 
+Objective 1.1: Identify the steps to deploy Nutanix Files 
+Knowledge 
+●​
+Identify prerequisites and limitations for Files deployment 
+●​
+Identify appropriate client and storage networks 
+●​
+Ensure NTP, DNS and Active Directory Services have been correctly configured 
+●​
+Identify supported protocols 
+●​
+Integrate Files with Data Lens 
+●​
+Describe how to deploy File Analytics 
+7 
+●​
+Describe integration with Nutanix Central 
+●​
+Identify how to use VDI Sync to sync profiles between sites 
+●​
+Identify subdomains vs. folder structures for FQDN pathing 
+ 
+References 
+●​
+Prerequisites for Deploying Files 
+●​
+Deploying Files 
+●​
+Installing Files 
+●​
+Files Overview 
+●​
+Creating a File Server 
+●​
+Network Segmentation 
+​
+Objective 1.2: Identify the steps to deploy Nutanix Objects 
+Knowledge 
+●​
+Identify prerequisites and limitations for Objects deployment 
+●​
+Ensure NTP, DNS, and Active Directory Services have been correctly configured 
+●​
+Identify requirements for enabling fault tolerance 
+●​
+Integrate Objects with Data Lens 
+●​
+Validate connectivity before handoff 
+ 
+References 
+●​
+Nutanix Objects Overview 
+●​
+Objects Prerequisites and Limitations 
+●​
+Objects Deployment Prerequisites - AHV and ESXi 
+●​
+Enabling Objects 
+●​
+Objects Life Cycle Manager Upgrades 
+ 
+Objective 1.3: Perform upgrades/maintenance for Files/Objects implementations 
+Knowledge 
+●​
+Determine Files/Objects dependencies and prerequisites 
+●​
+Explain Files/Objects upgrade process 
+●​
+Maintain impact for Files and Objects (i.e. distributed versus standard shares) 
+●​
+Understand when to scale up/scale out 
+8 
+ 
+References 
+●​
+Introduction to Nutanix Files 
+●​
+Nutanix Files Upgrades 
+●​
+Updating File Server Basics 
+●​
+Upgrading the Files Manager 
+●​
+File Server Updates 
+●​
+Scaling FSVMs 
+●​
+Upgrading Objects Manager 
+●​
+Performance Optimization 
+​
+Objective 1.4: Apply product and implementation parameters 
+Knowledge 
+●​
+Determine capacity and performance requirements for Files/Objects 
+●​
+Determine capacity and performance requirements for Volumes 
+●​
+Determine network segmentation requirements of each product 
+ 
+References 
+●​
+Nutanix Objects Configuration Maximums 
+●​
+Nutanix Files Configuration Maximums 
+●​
+Nutanix Files Prerequisites 
+●​
+Creating a File Server 
+ 
+ 
+Section 2 – Configure and Utilize Nutanix Unified Storage 
+Objective 2.1: Configure Nutanix Files with advanced features 
+Knowledge 
+●​
+Configure Smart DR, File Analytics, and Smart Tiering 
+●​
+Onboard Nutanix File instances to Data Lens 
+●​
+Create a CIFS, NFS, and multi-protocol share 
+●​
+Manage permissions 
+●​
+Implement nested shares and exports 
+9 
+ 
+References 
+●​
+Nutanix Files Data Sync 
+●​
+Nutanix Files Permissions 
+●​
+File Analytics Ports and Protocols 
+●​
+Files Data Collection 
+●​
+Stopping a File Server VM (FSVM) 
+●​
+Configuring a Tiering Location 
+●​
+Creating an SMB Share 
+●​
+Files Share and Export Management 
+●​
+Creating a Multi-Protocol Share or Export 
+ 
+Objective 2.2: Configure Nutanix Volumes 
+Knowledge 
+●​
+Present Nutanix Volumes to physical servers 
+●​
+Present Nutanix Volumes to virtual machines 
+●​
+Add/Remove volumes to Volume Groups 
+●​
+Configure CHAP 
+●​
+Determine when to use cluster white lists versus volume white lists 
+ 
+References 
+●​
+Nutanix Volumes Overview 
+●​
+Creating a Volume Group for Use with Nutanix Volumes 
+●​
+Configuring Windows Clients 
+●​
+Configuring the QLogic HBA 
+●​
+Examples of Supported Volumes Use Cases 
+●​
+Nutanix Cloud Infrastructure (NCI) 
+ 
+ 
+ 
+10 
+​
+Objective 2.3: Configure Nutanix Objects 
+Knowledge 
+●​
+Validate connectivity within a Nutanix Objects environment 
+●​
+Generate access keys 
+●​
+Configure Nutanix Objects for endpoint access 
+●​
+Create and configure buckets 
+●​
+Create additional namespaces 
+●​
+Configure Federation 
+●​
+Secure Objects 
+ 
+References 
+●​
+Enabling Objects 
+●​
+Objects Prerequisites and Limitations 
+●​
+AHV Configuration for Objects Deployment 
+●​
+Creating and Configuring an NFS Bucket in Objects 
+●​
+Sharing a Bucket in Objects 
+●​
+Use Cases and Recommendations for Network File System on Objects 
+●​
+Replication Topologies Supported for Nutanix Objects as Destination 
+●​
+Viewing Object Store Deployments 
+●​
+Role-Based Access Control Workflows for Objects 
+ 
+Objective 2.4: Given a scenario, configure shares, buckets, and/or Volume groups 
+Knowledge 
+●​
+Given a scenario, determine the appropriate product to meet business requirements for such 
+storage technologies as: 
+○​
+iSCSI 
+○​
+NFS 
+○​
+SMB 
+○​
+S3 
+ 
+11 
+​
+References 
+●​
+Salient Features of Objects 
+●​
+Creating a Lifecycle Rule in Objects 
+●​
+Access-Based Enumeration (SMB only) 
+●​
+Share and Export Management 
+●​
+Creating a Multi-Protocol Share or Export 
+ 
+Objective 2.5: Determine the appropriate method to ensure data availability/recoverability 
+Knowledge 
+●​
+Given a scenario with RPO and RTO defined, determine the appropriate Nutanix local and remote 
+platform solution 
+●​
+Given a scenario with RPO and RTO defined, determine the appropriate local and remote. backup 
+basic recovery options 
+●​
+Recognize how to integrate Mine with Objects​
+ 
+References 
+●​
+Metro Availability for Nutanix Files 
+●​
+Protection Policies 
+●​
+Self-Service Restore 
+●​
+Cloning a File Server 
+●​
+Smart DR 
+●​
+Nutanix Support & Insights Portal 
+ 
+Objective 2.6: Explain Data Management capabilities for Files and Objects 
+Knowledge 
+●​
+Describe technologies used to ensure data availability, such as: 
+○​
+Smart DR 
+○​
+Smart Tiering 
+○​
+Data Sync 
+○​
+Self-Service Restore 
+○​
+Protection Domain and Protection Policies 
+12 
+●​
+Describe HA options within Files and Objects 
+●​
+Describe data recoverability using Mine for Objects​
+ 
+References 
+●​
+Data Management 
+●​
+Smart Tier Architecture 
+●​
+Files Options 
+●​
+Durable SMB File Handles 
+●​
+Performance Optimization 
+●​
+Creating an NFS Export 
+●​
+Enabling Self-Service Restore 
+ 
+Section 3 – Analyze and Monitor Unified Storage 
+Objective 3.1: Utilize File Analytics for data security 
+Knowledge 
+●​
+Use anomalies to determine suspicious activity or abnormal behavior 
+○​
+Determine if something has been deleted 
+●​
+Audit file access, usage, and modifications 
+○​
+Determine users with too many resource demands 
+○​
+Determine top active users 
+○​
+Determine file distribution by type 
+●​
+Detect ransomware and other security threats 
+ 
+References 
+●​
+File Analytics Dashboard 
+●​
+Audit Trails 
+●​
+File Analytics Anomalies 
+●​
+Configuring an SMTP Server 
+●​
+Ransomware Protection Features 
+●​
+Enabling Ransomware Protection 
+13 
+​
+Objective 3.2: Describe how to monitor performance and usage 
+Knowledge 
+●​
+Identify when to scale up/out Files and Objects clusters 
+●​
+Identify metrics to determine when to scale up/out 
+●​
+Identify performance constraints from a cluster utilization perspective 
+●​
+Recognize management/monitoring interfaces and their usage, such as: 
+○​
+Nutanix Central 
+○​
+Prism Central 
+○​
+File Server Manager 
+○​
+Prism Element 
+ 
+References 
+●​
+Objects Prometheus Explorer 
+●​
+File Analytics Administration 
+●​
+Prism Central Application Switcher 
+●​
+Nutanix Central 
+●​
+Performance Monitoring in Prism Element 
+ 
+Objective 3.3: Describe the use of Data Lens for data security 
+Knowledge 
+●​
+Describe use cases for Data Lens 
+●​
+Relate requirements and supported features to a given use case 
+●​
+Differentiate between Smart Tiering, Standard Tiering, and Advanced Tiering 
+●​
+Differentiate File Analytics and Data Lens 
+ 
+References 
+●​
+Nutanix Data Lens Overview 
+●​
+Data Lens Licensing 
+●​
+Data Lens Premium and Basic Features 
+●​
+Smart Tiering 
+14 
+●​
+Data Lens Risk Profiles 
+●​
+Data Lens Reports 
+ 
+Section 4 – Troubleshoot Nutanix Unified Storage 
+Objective 4.1: Troubleshoot issues related to Files 
+Knowledge 
+●​
+Determine user permissions issues for: 
+○​
+Multiple groups 
+○​
+Conflicting permissions 
+○​
+Back-up accounts 
+○​
+Share administrator 
+○​
+Identity Access Management 
+●​
+Determine shared visibility issues 
+●​
+Determine the reasons for deployment failures 
+○​
+Determine the Active Directory service account 
+○​
+Determine why DNS records were not created 
+●​
+Determine why data is not being tiered 
+●​
+Determine why Directory Services and DNS are not being changed in Smart DR 
+●​
+Determine issues related to failing over and failing back a file server 
+●​
+Address cross cluster User profile issues 
+ 
+References 
+●​
+Access-Based Enumeration (SMB only) 
+●​
+Share and Export Management 
+●​
+Distributed Shares 
+●​
+Audit Trails 
+●​
+Creating a File Server 
+●​
+Nutanix Files - Troubleshooting DNS record validation failures 
+ 
+ 
+ 
+15 
+Objective 4.2: Troubleshoot issues related to Objects 
+Knowledge 
+●​
+Troubleshoot the reasons for deployment failures 
+●​
+Troubleshoot issues with read/write capabilities 
+●​
+Troubleshoot appropriate access for troubleshooting 
+●​
+Troubleshoot Objects with appropriate CLI commands 
+●​
+Troubleshoot issues with Objects replication 
+●​
+Troubleshoot issues related to Cloud Tiering 
+ 
+References 
+●​
+Prism Element Clusters or Subnets Not Listed in the User Interface 
+●​
+Nutanix Objects: Troubleshooting deployment failures of downloading files from server 
+●​
+Cloud Bucket Endpoint Recommended Settings 
+ 
+Objective 4.3: Troubleshoot issues related to Volumes 
+Knowledge 
+●​
+Determine proper authentication 
+●​
+Determine proper firewall settings 
+●​
+Determine correct IQNs/whitelists 
+●​
+Determine proper iSCSI timeout settings 
+●​
+Determine the basic steps needed to add a capacity to a VG 
+●​
+Troubleshoot the inability to see newly added capacity 
+ 
+References 
+●​
+Enable Nutanix Volumes 
+●​
+SCSI UNMAP 
+●​
+Discovering the Nutanix Volumes Target from the Linux Client 
+●​
+Discovering the Nutanix Volumes Target from the Windows Client 
+●​
+Volume Group/File Server Tab missing from Prism UI 
+ 
+ 
+16 
+Objective 4.4: Troubleshoot a failed upgrade for Files/Objects 
+Knowledge 
+●​
+Address AOS/Nutanix Central/Prism Central compatibility issues and requirements 
+●​
+Determine the appropriate logs to review 
+●​
+Address File Analytics compatibility issues and requirements 
+●​
+Address Data Lens compatibility issues and requirements 
+ 
+References 
+●​
+Nutanix Files Upgrades 
+●​
+Nutanix Files - Preupgrade Check failure due to an internal error 
+17 
+4. NCP-US 6.10 Training Recommendations 
+4.1 Course Recommendation 
+Nutanix offers a course that provides training on the objectives tested for in the exam. More information on 
+this course, including delivery methods and pricing, can be found at nutanix.com/training.  
+The course details are as follows  
+The Nutanix® Unified Storage Administration (NUSA) course teaches the skills needed to  install, configure, 
+manage, and upgrade three different Nutanix storage solution products: Nutanix Files, Nutanix Volumes, 
+and Nutanix Objects. 
+ The NUSA course explores a number of subjects, including: 
+●​
+Understanding Nutanix Unified Storage Concepts 
+●​
+Nutanix Volumes - Learn how Nutanix Volumes provides block storage for your VMs or physical hosts 
+using the iSCSI protocol, with the same simplicity as virtualized workloads, consolidating 
+infrastructure into a single unified platform. 
+●​
+Nutanix Files - Set up and manage Nutanix Files, a software-defined, scale-out file storage 
+solution that provides Server Message Block (SMB) and Network File System (NFS) file services to 
+clients. 
+●​
+Nutanix Objects - Learn how easy it is to use Nutanix Objects, a software-defined, scale-out object 
+storage solution that provides a scalable repository for unstructured data. 
+ 
+This course is available online or instructor-led. More information including schedules and how to register 
+can be found at www.nutanix.com/university.  
+ 
+18 
+5. Resources 
+5.1 Nutanix Community Edition 
+The Nutanix Community Edition is a free product that allows you to deploy a Nutanix Cloud Platform. To 
+download the software and build your own environment for exam preparation, click here. 
+5.2 Test Drive 
+You can also take a 2-hour Hyperconverged Test Drive, which utilizes the Nutanix Community Edition, ​
+by clicking here. 
+5.3 The Nutanix Community 
+Connect with cloud builders from around the world, learn from IT Pros in your industry and share 
+experiences on the Nutanix Community. The community maintains an area focused on Nutanix 
+certifications, which is located here. 
+5.4 Additional Unified Storage Resources 
+Find a wealth of additional Unified Storage resources here. 
+ 
+ 
++1 (855) 688-2649  |  certification@nutanix.com  |  www.nutanix.com​
+​
+​
+​
+​
+ 
+©2025 Nutanix, Inc. All rights reserved. Nutanix, the Nutanix logo and all product and service names mentioned herein are registered trademarks or trademarks of ​
+Nutanix, Inc. in the United States and other countries. All other brand names mentioned herein are for identification purposes only and may be the trademarks of their respective 
+holder(s). 
+ 
+19 

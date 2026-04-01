@@ -570,13 +570,13 @@ Cold-tier storage is optimized for cost over performance. Accessing objects that
 
 ### Q48
 An external Linux server cannot discover iSCSI targets on a Nutanix Volume Group. The VG is created and has an iSCSI client configured. What should the administrator verify first?
-- A) That the iSCSI target portal IP is correct and the discovery port (3261) is reachable from the Linux server
+- A) That the iSCSI target portal IP is correct and the discovery port (3260) is reachable from the Linux server
 - B) That the FSVM has a DNS A record for the Linux server
 - C) That the Objects IAM user has read permissions on the Volume Group
 - D) That the NFS export policy allows the Linux server's IP
 
 **Answer: A**
-iSCSI target discovery requires network connectivity to the target portal IP on the correct port (Nutanix uses port 3261 by default for external iSCSI). If the portal IP or port is unreachable, the initiator cannot discover available targets.
+iSCSI target discovery requires network connectivity to the target portal IP on the correct port (Nutanix uses port 3260 by default for external iSCSI). If the portal IP or port is unreachable, the initiator cannot discover available targets.
 
 ---
 
@@ -666,13 +666,13 @@ External iSCSI clients connect to Nutanix Volume Groups through the cluster's Da
 
 ### Q56
 A Linux administrator configures the iSCSI initiator using iscsiadm but receives a "no portals found" error during discovery. The Data Services IP is confirmed correct. What should be checked?
-- A) That the discovery target address uses the correct port (3261) and network connectivity is verified
+- A) That the discovery target address uses the correct port (3260) and network connectivity is verified
 - B) That the FSVM has an A record in DNS for the Linux server's hostname
 - C) That the Objects bucket allows anonymous access from the Linux server's IP
 - D) That the Prism Central license includes iSCSI initiator support for Linux
 
 **Answer: A**
-Nutanix uses port 3261 (not the standard 3260) for external iSCSI discovery. If the administrator uses the wrong port or if firewall rules block port 3261, discovery will fail with a "no portals found" error.
+Nutanix uses port 3260 for external iSCSI discovery. If the administrator uses the wrong port or if firewall rules block port 3260, discovery will fail with a "no portals found" error.
 
 ---
 

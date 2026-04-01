@@ -131,8 +131,8 @@ An administrator wants to configure SNMP v3 monitoring integration with SolarWin
 - C) Settings > Network > SNMP Trap Receiver
 - D) Settings > SNMP > Add Trap Receiver
 
-**Answer: A**
-SNMP configuration in Prism Element is found under Settings > SNMP, where administrators add transports (for polling) and trap receivers (for event notifications). SNMPv3 requires configuring authentication and privacy protocols within this section.
+**Answer: D**
+The question asks about configuring the SNMP **trap destination**. In Prism Element under Settings > SNMP, there are two sections: "Add Transport" (for SNMP polling/queries) and "Add Trap Receiver" (for sending event notifications to a destination). Since we need the trap destination, the correct path is Settings > SNMP > **Add Trap Receiver**. SNMPv3 requires configuring authentication and privacy protocols within this section.
 
 ---
 
@@ -479,8 +479,8 @@ An administrator needs to stop all services on a single CVM for hardware mainten
 - C) cvm_shutdown -P now
 - D) genesis stop prism stargate curator cerebro
 
-**Answer: B**
-The "cluster stop" command run from a specific CVM stops all Nutanix services on that CVM. Note that despite the name, when run locally it affects only the local CVM's services. Individual services can be stopped with "genesis stop <service_name>."
+**Answer: D**
+The `cluster stop` command (option B) is a **cluster-wide** operation that stops services on ALL CVMs, not just the local one. To stop services on only the local CVM, use `genesis stop <service_name>` for each service. Option D (`genesis stop prism stargate curator cerebro`) correctly stops the major services on only the local CVM. For full hardware maintenance, the standard procedure is `cvm_shutdown -P now` which gracefully stops all services and powers off the CVM.
 
 ---
 

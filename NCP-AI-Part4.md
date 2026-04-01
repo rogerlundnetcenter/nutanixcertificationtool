@@ -333,13 +333,13 @@ MIG creates independent logical GPUs with isolated memory pools. A 40GB partitio
 ### Q26
 A customer uploads a custom model to NAI via manual artifact upload. Which formats are immediately supported for inference without conversion?
 
-- A) GGUF, SafeTensors, ONNX
+- A) SafeTensors, GPTQ, and AWQ formats
 - B) Raw PyTorch checkpoints only
 - C) TensorFlow SavedModel exclusively
 - D) All formats require conversion to ONNX first
 
 **Answer: A**
-GGUF (quantized), SafeTensors (efficient tensor serialization), and ONNX (framework-agnostic) are directly supported by inference engines. Raw PyTorch checkpoints require loading as Python objects, not directly serialized inference format.
+SafeTensors (efficient tensor serialization), GPTQ (quantized), and AWQ (quantized) are directly supported by vLLM on NAI. GGUF is designed for llama.cpp and is not natively supported by vLLM or TensorRT-LLM. Raw PyTorch checkpoints require loading as Python objects.
 
 ---
 
@@ -742,7 +742,7 @@ A NAI cluster scales to 10 nodes, each with 4 × H100 GPUs. How many A100 GPU eq
 - D) Comparison is meaningless
 
 **Answer: B**
-H100 has ≈ 2× FP32 throughput vs A100 (up to 60 TFLOPS vs 300 TFLOPS). So 40 H100s ≈ 80 A100 equivalents in compute. This helps capacity planning when mixing GPU types.
+H100 delivers roughly 2–3× the inference throughput of A100 depending on workload (A100 SXM FP32 ≈ 19.5 TFLOPS, H100 SXM FP32 ≈ 67 TFLOPS; for FP16 with Tensor Cores the gap widens further). So 40 H100s ≈ 80–120 A100 equivalents in compute. This helps capacity planning when mixing GPU types.
 
 ---
 

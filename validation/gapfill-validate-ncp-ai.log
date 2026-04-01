@@ -1,0 +1,38 @@
+NCP-AI Part 5: Blueprint Gap-Fill Validation Summary
+=====================================================
+
+Validation Date: 2025-01-18
+File: NCP-AI-Part5-GapFill.md
+Total Questions: 15
+
+Validation Results:
+-------------------
+
+Q1: PASS - NKP App Catalog one-click install/upgrade is exclusive; wrong options correctly describe shared features
+Q2: PASS - kubectl+Helm method correct for non-NKP; wrong options properly implausible
+Q3: PASS - Version compatibility handling difference is accurate; distractors address irrelevant factors
+Q4: PASS - Top 5 API Keys widget location correct; wrong locations plausible but wrong
+Q5: PASS - Investigation + rate limiting response appropriate; wrong options are poor decisions
+Q6: PASS - Compatibility matrix verification required; wrong options are incorrect prerequisites
+Q7: PASS - GPU Operator version mismatch causes deployment failure; distractors unrelated to version compatibility
+Q8: PASS - DNS + Ingress configuration first step; wrong options address unrelated aspects
+Q9: PASS - NAI UI Users section for role-based access control; wrong options incorrect access methods
+Q10: PASS - User deactivation preserves audit history; wrong options ineffective or don't revoke access
+Q11: PASS - NAI Settings section for API tokens; wrong options point to incorrect locations
+Q12: PASS - Endpoint detail page shows assigned keys; wrong options use wrong dashboard/tools
+Q13: PASS - View Sample Code provides ready-to-use snippets; wrong options describe different features
+Q14: PASS - Endpoint detail shows metrics + key assignments; wrong options unavailable in UI
+Q15: PASS - Deploy rerank as separate endpoint in RAG pipeline; wrong options incorrect architectural approaches
+
+Summary:
+--------
+Overall Status: ALL PASS (15/15)
+
+No errors found. All questions:
+✓ Have correct marked answers
+✓ Present plausible but clearly wrong distractors
+✓ Include accurate explanations aligned with answer
+✓ Map correctly to stated blueprint objectives
+✓ Test appropriate difficulty level for NCP-AI exam
+
+Recommendations: This question bank is ready for use as a practice exam.

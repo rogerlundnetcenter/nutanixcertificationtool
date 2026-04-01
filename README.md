@@ -1,24 +1,25 @@
 # 🎯 Nutanix Certification Study Tool
 
-A WinForms-based exam preparation tool for Nutanix certifications featuring 1,280 validated practice questions across 4 exams, a synthwave-themed GUI, and an integrated knowledge base with direct links to Nutanix documentation.
+A WinForms-based exam preparation tool for Nutanix certifications featuring **1,458 validated practice questions** across 4 exams, a synthwave-themed GUI, integrated exam blueprint coverage tracking, and a knowledge base with direct links to Nutanix documentation.
 
 ![.NET 8.0](https://img.shields.io/badge/.NET-8.0-blue)
 ![License](https://img.shields.io/badge/License-BSD%203--Clause-green)
-![Questions](https://img.shields.io/badge/Questions-1%2C280-orange)
+![Questions](https://img.shields.io/badge/Questions-1%2C458-orange)
 ![Status](https://img.shields.io/badge/Status-Alpha-yellow)
 
 ## 📋 Supported Certifications
 
 | Exam | Questions | Format | Duration |
 |------|-----------|--------|----------|
-| **NCP-US 6.10** — Unified Storage | 320 | 75 MCQ, pass 3000/6000 | 120 min |
-| **NCP-CI 6.10** — Cloud Integration | 320 | 75 MCQ | 120 min |
-| **NCP-AI 6.10** — AI Infrastructure | 320 | 75 MCQ | 120 min |
-| **NCM-MCI 6.10** — Multicloud Infrastructure (Master) | 320 | 16-20 live lab scenarios | 180 min |
+| **NCP-US 6.10** — Unified Storage | 400 | 75 MCQ, pass 3000/6000 | 120 min |
+| **NCP-CI 6.10** — Cloud Integration | 363 | 75 MCQ | 120 min |
+| **NCP-AI 6.10** — AI Infrastructure | 335 | 75 MCQ | 120 min |
+| **NCM-MCI 6.10** — Multicloud Infrastructure (Master) | 360 | 16-20 live lab scenarios | 180 min |
 
 ## ✨ Features
 
-- **1,280 practice questions** — 320 per exam covering all blueprint domains
+- **1,458 practice questions** — comprehensive coverage across all blueprint domains
+- **Blueprint coverage panel** — toggle with `B` to see which exam objectives each question covers
 - **Mixed question formats** — Standard MCQ, multi-select ("Select TWO"), and ordering/sequence questions
 - **Synthwave-themed GUI** — Dark neon aesthetic with animated progress bars
 - **Explain This Question** panel — Every question has contextual explanations with:
@@ -26,15 +27,15 @@ A WinForms-based exam preparation tool for Nutanix certifications featuring 1,28
   - Links to relevant Nutanix KB articles
   - General documentation resources
   - Scrollable reference content
-- **Keyboard shortcuts** — `1-5` select answers, `Enter` submit, `N`/`P` navigate, `E` toggle explain
+- **Keyboard shortcuts** — `1-5` select answers, `Enter` submit, `N`/`P` navigate, `E` toggle explain, `B` toggle blueprint
 - **Score tracking** — Real-time accuracy stats per exam
-- **100% validated** — Every answer independently verified by LLM reasoning + KB cross-reference
+- **100% validated** — Every answer verified through 2 independent validation passes (LLM reasoning + solo web/knowledge review)
 
 ## 🚀 Quick Start
 
 ### Option 1: Download Pre-Built Binary (No SDK Required)
 
-1. Download `CertStudy-v0.1.0-alpha-win-x64.zip` from the [Releases](https://github.com/rogerlundnetcenter/nutanixcertificationtool/releases) page or from the repo root (tracked via Git LFS)
+1. Download `CertStudy-v0.2.0-alpha-win-x64.zip` from the [Releases](https://github.com/rogerlundnetcenter/nutanixcertificationtool/releases) page or from the repo root (tracked via Git LFS)
 2. Extract the zip
 3. Run `CertStudy.exe`
 
@@ -67,28 +68,36 @@ The app will launch with all 4 exam tabs. Select an exam, answer questions, and 
 │   ├── MainForm.cs               # Main GUI (question display, explain panel, navigation)
 │   ├── SynthwaveColors.cs        # Neon color scheme
 │   ├── Controls/
-│   │   └── AnimatedProgressBar.cs
+│   │   ├── AnimatedProgressBar.cs
+│   │   └── BlueprintPanel.cs     # Blueprint coverage overlay panel
 │   ├── Models/
-│   │   └── Question.cs           # Question data model
+│   │   ├── Question.cs           # Question data model
+│   │   └── BlueprintObjective.cs # Blueprint objective model
 │   └── Services/
 │       ├── QuestionParser.cs     # Markdown → Question parser
-│       └── ReferenceService.cs   # KB references, doc links, explain content
+│       ├── ReferenceService.cs   # KB references, doc links, explain content
+│       └── BlueprintService.cs   # Exam blueprint objectives & keyword matching
 │
 ├── NCP-US-Part1.md               # Unified Storage questions (Domains 1-2, 160 Q)
 ├── NCP-US-Part2-D3.md            # Unified Storage questions (Domain 3, 80 Q)
 ├── NCP-US-Part2-D4.md            # Unified Storage questions (Domain 4, 80 Q)
+├── NCP-US-Part3-GapFill.md       # Unified Storage gap-fill questions (80 Q)
 ├── NCP-CI-Part[1-4].md           # Cloud Integration questions (80 Q each)
+├── NCP-CI-Part5-GapFill.md       # Cloud Integration gap-fill questions (43 Q)
 ├── NCP-AI-Part[1-4].md           # AI Infrastructure questions (80 Q each)
+├── NCP-AI-Part5-GapFill.md       # AI Infrastructure gap-fill questions (15 Q)
 ├── NCM-MCI-Part[1-4].md          # Multicloud Infrastructure questions (80 Q each)
+├── NCM-MCI-Part5-GapFill.md      # MCM-MCI gap-fill questions (40 Q)
+│
+├── designguides/                 # Official exam blueprint PDFs & extracted text
 │
 ├── validation/                   # Validation reports & logs
-│   ├── llm-val-*.log             # LLM answer validation logs (per exam)
-│   ├── kb-100-*.md               # KB coverage verification reports
-│   └── kb-audit-*.md             # KB audit reports
+│   ├── blueprint-*-coverage.md   # Blueprint coverage analysis reports
+│   ├── zerogap-*.md              # Zero-gap verification reports
+│   ├── gapfill-validate-*.log    # Gap-fill validation logs
+│   └── CORRECTIONS_SUMMARY.txt   # All answer corrections applied
 │
-├── validate_answers.py           # CLI tool for batch answer validation
-├── generate_questions.py         # Question generation script
-├── CertStudy-v0.1.0-alpha-win-x64.zip  # Pre-built binary (Git LFS)
+├── CertStudy-v0.2.0-alpha-win-x64.zip  # Pre-built binary (Git LFS)
 ├── .gitattributes                # Git LFS tracking rules
 ├── LICENSE                       # BSD 3-Clause
 └── README.md
@@ -128,11 +137,23 @@ D. On-premises Prism Central
 
 ## 🔍 Validation
 
-All 1,280 questions have been through multiple validation passes:
+All 1,458 questions have been through **multiple validation passes**:
 
-1. **LLM Answer Validation** — Each question independently answered and compared against marked answers (100% agreement rate)
-2. **KB Cross-Reference** — Every question matched to Nutanix knowledge base articles (100% coverage)
-3. **Expert Review** — Incorrect/ambiguous answers identified and corrected across all exams
+1. **LLM Answer Validation** — 8 independent agents answered every question; disagreements researched and resolved
+2. **Blueprint Gap Analysis** — Official exam blueprints analyzed; 178 gap-fill questions generated to achieve zero coverage gaps
+3. **Direct First-Pass Validation** — Every question read and verified; 7 corrections applied (GGUF→GPTQ/AWQ, port fixes, answer key fixes)
+4. **Solo Second-Pass Validation** — All 1,458 questions re-validated through web research and knowledge verification; zero additional issues found
+
+### Corrections Applied
+| File | Question | Fix |
+|------|----------|-----|
+| NCP-AI-Part1 | Q69 | GGUF → GPTQ/AWQ (NAI supported formats) |
+| NCP-AI-Part4 | Q26 | GGUF → GPTQ/AWQ |
+| NCP-AI-Part4 | Q57 | TFLOPS value corrected |
+| NCP-CI-Part5 | Q37 | NLB → NAT Gateway (outbound internet for NC2 guests) |
+| NCP-CI-Part5 | Q37-Q42 | Answer key realigned after Q37 fix |
+| NCM-MCI-Part2 | Q11 | A → D (SNMP trap = "Add Trap Receiver") |
+| NCM-MCI-Part2 | Q40 | B → D (cluster stop is cluster-wide command) |
 
 Validation logs are in the `validation/` directory.
 

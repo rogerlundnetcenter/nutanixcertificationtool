@@ -1,0 +1,800 @@
+ 
+EXAM BLUEPRINT GUIDE 
+Nutanix Certified Master ​
+Multicloud Infrastructure ​
+(NCM-MCI) 6.10 Exam 
+1 
+Table of Contents 
+Authors​
+3 
+Contributors​
+3 
+1. Exam​
+4 
+1.1 Purpose of Exam​
+4 
+1.2 Number of Questions​
+4 
+1.3 Pricing​
+4 
+1.4 Passing Score​
+4 
+1.5 How Objectives Relate to Questions on the Exam​
+4 
+1.6 Languages​
+4 
+1.7 Time Limit​
+4 
+1.8 Scheduling and Taking the Exam​
+4 
+1.9 Certification Tracks​
+5 
+1.10 Retake Policy​
+5 
+1.11 Exam Security​
+5 
+1.12 Requirements​
+5 
+1.13 Recertification​
+5 
+1.14 Benefits of Certification​
+6 
+2. Intended Audience​
+6 
+3. Objectives Covered in the NCM-MCI 6.10 Exam​
+7 
+3.1 Introduction​
+7 
+3.2 Objectives​
+7 
+Section 1 - Monitoring & Troubleshooting​
+7 
+Section 2 - Optimize & Scale​
+8 
+Section 3 - Security​
+9 
+Section 4 - Design & Architecture​
+10 
+Section 5 - Business Continuity​
+11 
+4. NCM-MCI 6.10 Training Recommendations​
+12 
+4.1 Course Recommendation​
+12 
+5. Live Lab Considerations​
+13 
+5.1 General Lab Layout​
+13 
+5.2 Lab Components​
+13 
+5.3 Provided Documentation​
+13 
+5.4 Tips and Tricks​
+14 
+5. Resources​
+15 
+5.1 Nutanix Community Edition​
+15 
+5.2 Test Drive​
+15 
+5.3 The Nutanix Next Community​
+15 
+ 
+2 
+Authors 
+Joshua Andrews, Sr. Staff Technical Certification Developer 
+Jeff Hall, Manager, Technical Certification Development  
+ 
+Contributors 
+Chris McMahon, Advisory Portfolio Architect - NCM 
+Chris Nelson, Principal Portfolio Architect 
+Christian Marrero, System Engineer - Healthcare 
+Daniel Sullivan, Consultant 
+Dave Keefe, Advisory Portfolio Architect - NKP 
+Drew Plaster, Sr Network Systems Administrator 
+John Burton, Staff Systems Reliability Engineer 
+Jorge Aragoncortes, Sr technical Trainer 
+Joshua Hutchins, Staff Escalation Engineer 
+Kenneth Fingerlos, Director, Global Practices - Services 
+Lev Goronshtein, Advisory Systems Engineer 
+Lochan Serma, Staff Consulting Architect 
+Maroane Boutayeb, Global Unit Lead for the Nutanix 
+Matthew Gauch, Sr. Staff Escalation Engineer 
+Michael Heistruevers, Senior Systems Engineer 
+Nat Hatfield, Staff Escalation Engineer 
+Owen Thomas, Sr. Worldwide Trainer 
+Paul Monroe, Staff Escalation Engineer 
+Rickard Wendel, Senior Systems Engineer 
+Ross Davies, Advisory Systems Engineer 
+Ross Hunt, Staff Resident Architect 
+Samuele Cerutti, Advisory Systems Engineer 
+Shane Lindsay, Advisory Systems Engineer 
+Tod Holsenbeck, Director Professional Services 
+Todd Burris, Expert Systems Engineer 
+Vlad Glemb, Sr. Staff Consulting Architect 
+ 
+ 
+ 
+Disclaimer:​
+The Nutanix Certified Master - Multicloud Infrastructure (NCM-MCI) 610 Exam Blueprint Guide provides an overview of the objectives that must be mastered to achieve the 
+NCM-MCI 6 credential. Nutanix does not offer any guarantees that this guide will ensure a candidate’s success in achieving the NCM-MCI 6 certification. All information in this guide 
+is subject to change at any time at the sole discretion of Nutanix. 
+3 
+1.​Exam 
+1.1 Purpose of Exam 
+The Nutanix Certified Master - Multicloud Infrastructure (NCM-MCI) 6.10 exam will measure a candidate’s 
+ability to analyze, evaluate, and optimize platform performance, configuration, and health. Successful 
+candidates demonstrate mastery of these skills and abilities. 
+The exam will also validate the candidate’s ability to remediate and evolve the platform to be in compliance 
+with business requirements 
+1.2 Number of Questions 
+The NCM-MCI 6.10 exam consists of 17 scenarios that are to be performed in a live Nutanix multi-cluster 
+environment. 
+1.3 Pricing 
+The cost for the NCM-MCI 6.10 exam is $300 USD. 
+1.4 Passing Score 
+The passing score for this exam is 3000, using a scaled scoring method. The scale is from 1000-6000. ​
+Scaled scores are calculated using a mathematical formula that considers a variety of factors, including ​
+the number and type of exam questions included in a specific version of the exam.  
+Because this combination may vary in different versions of the same examination, scaled scores provide ​
+a fair score for everyone based on the version of the exam taken. 
+1.5 How Objectives Relate to Questions on the Exam 
+Objectives summarize what the test is designed to measure. Objectives are developed by Exam Developers 
+and Subject Matter Experts based on identified tasks that relate to the job of deploying and administering 
+an AOS and Prism Central environment.  
+Once the initial development process is complete, these objectives are verified using an external group of 
+individuals in the actual job role. Finally, a number of questions is determined for each objective, which 
+relates directly to the criticality of the task in the job role. 
+1.6 Languages 
+The exam is available in English. 
+1.7 Time Limit 
+The time limit for the exam is 180 minutes. 
+1.8 Scheduling and Taking the Exam 
+This exam is delivered via remote proctoring or in-person at select test centers.  
+4 
+If you select remote proctoring, after registering for the exam and providing valid identification, you will 
+receive information on how to take the exam from your location using a web browser. Because the exam ​
+is remote proctored, you will be provided with a locked down, monitored, secure exam experience.  
+If you select in-person testing, you will be able to select a test center near you. On the day of the exam, ​
+you will need to arrive at the test center 15 minutes prior to the exam start time with a valid 
+government-issued ID. 
+1.9 Certification Tracks 
+The NCM-MCI 6.10 exam is a core component of the Nutanix Multicloud Infrastructure track.  Passing this 
+exam results in achieving the NCM-MCI 6 certification. 
+The certification requires a passing score on the exam. While it is not required that you attend a course, 
+Nutanix provides training that covers the objectives on the exam. Details on the recommended training 
+course are provided in Section 4. 
+1.10 Retake Policy 
+If a candidate fails an exam on the first attempt, he or she is allowed two additional attempts. There is ​
+a seven-day waiting period between attempts. Like the first attempt, these are paid for individually and 
+Nutanix recommends that you allow sufficient time between attempts to be properly prepared and to 
+maximize your chances for success.  
+Please note: After three attempts, you will be unable to take the exam for 60 days, after which you can ​
+email university.nutanix.com and request that your attempts are reset. Nutanix recommends you utilize the 
+time to thoroughly review this guide and the related references and/or take the recommended training for 
+this exam. 
+1.11 Exam Security 
+Nutanix reserves the right to refuse certifying a candidate who violates exam security policies. This includes 
+copying and redistribution of exam material, using any type of study material during the exam itself, 
+attempting to photograph exam items and taking an exam using a false identity. Your identity is captured 
+as part of the exam registration process and must be validated before you will be allowed to take the exam. 
+1.12 Requirements 
+A candidate for the Nutanix Certified Professional – Multicloud Infrastructure 6.10 (NCM-MCI) 6.10 exam must 
+hold an unexpired NCP or NCM certification in order to be eligible to schedule the exam. Once you have 
+passed the NCM-MCI 6.10 exam and achieved the NCM-MCI 6 certification, it will remain valid for three years.  
+To maintain your certification status, you must either renew your existing certification or take an equivalent 
+NCM-level exam within another certification track. 
+1.13 Recertification 
+Once you have passed the Nutanix Certified Master – Multicloud Infrastructure 6.10 exam and achieved the 
+NCM-MCI 6 certification, it will remain valid for three years. 
+5 
+To maintain your certification status, you must pass the next version of the NCM exam within two years of 
+passing this exam. 
+1.14 Benefits of Certification 
+●​
+Digital badge from Credly that you can share on social media  
+●​
+Access to the Certification store at http://store.nutanix.com for shirts, mugs, and more   
+●​
+Opportunity to participate as a SME to develop future exams  
+●​
+Discount on attending Nutanix .NEXT 
+2. Intended Audience 
+A candidate taking the NCM-MCI 6.10 exam should have approximately 3-5 years of holistic IT infrastructure 
+experience and 2-3 years of Nutanix virtualization experience or applicable training. 
+Successful candidates are typically senior IT staff new to Nutanix, Senior NOC/SOC escalation engineers and 
+operators, and Tier 2/3 support personnel who are able to analyze business objectives and requirements, 
+configure platforms to support stated business requirements, and have a high degree of familiarity with API 
+calls and CLI functionalities. 
+Finally, the successful candidate should be able to analyze and implement business continuity plans and 
+security policies. 
+ 
+ 
+6 
+3. Objectives Covered in the NCM-MCI 6.10 
+Exam 
+3.1 Introduction 
+It is recommended that candidates have the knowledge and skills necessary to deploy, administer and 
+troubleshoot a Nutanix AOS environment before attempting the NCM-MCI 6.10 exam. It is also 
+recommended that the candidate complete the training course described in Section 4 prior to taking the 
+exam. 
+ 
+3.2 Objectives 
+Prior to taking this exam, candidates should understand each of the following objectives. Each objective ​
+is listed below; along with related tools the candidate should have experience with, and related 
+documentation that contains information relevant to the objective. Please note that some documentation 
+requires access via the Support Portal. Information on creating an account for use with the Support Portal 
+can be found here.  
+All objectives may also be referenced in other product documentation not specifically highlighted below. 
+The candidate should be familiar with all relevant product documentation or have the equivalent skills.  
+ 
+ 
+Section 1 - Monitoring & Troubleshooting 
+Objective 1.1 - Use prism analysis tools to identify performance issues​
+Knowledge 
+●​
+Utilize performance graphs to look for anomalies  
+●​
+Correlate events with issues observed with metric or entity charts 
+●​
+Given a scenario, create analysis graphs to diagnose a problem 
+●​
+Utilize prism central to identify resource constraints 
+●​
+Given a scenario, review the MSSQL Instance Details to identify and resolve an issue.  
+References 
+●​
+Performance Monitoring 
+●​
+Reports Management 
+●​
+Generating Events Summary Report 
+ 
+Objective 1.2 - Perform health check and collect logs  
+7 
+Knowledge 
+●​
+Utilize prism to collect system logs capturing an event 
+●​
+Proceed with the log gathering using CLI 
+●​
+Review audit logs and troubleshoot cluster configuration issues. 
+●​
+Given a problem description, utilize the NCC CLI to run the appropriate check(s) 
+●​
+Use CLI commands to extract cluster configuration information 
+References 
+●​
+Run NCC checks 
+●​
+Configuring Health Checks 
+●​
+Scheduling and Automatically Emailing NCC Results 
+●​
+Log Collection 
+ 
+Objective 1.3 - Interpret alerts and take appropriate actions for remediation  
+Knowledge 
+●​
+Identify components impacted and conduct root cause analysis 
+●​
+Given an issue, use the KB article to provide a resolution. 
+References 
+●​
+Network Configuration 
+●​
+Configuring Health Checks 
+●​
+NCC Health Check: backup_schedule_check 
+ 
+Objective 1.4 - Create reports and custom metrics to monitor the environment 
+Knowledge 
+●​
+Given a scenario select the correct entity and metrics to add to a graph 
+●​
+Given a scenario create a custom alert when a threshold is passed 
+●​
+Given a scenario, create reports to monitor workload inefficiencies. e.g. Latency  
+●​
+Evaluate cluster performance using reports. 
+References 
+●​
+Creating a Custom Report Configuration 
+●​
+Adding a Custom View 
+●​
+Configuring Report Settings 
+ 
+8 
+Section 2 - Optimize & Scale 
+Objective 2.1 - Utilize runway scenario to evaluate workload changes  
+Knowledge 
+●​
+Review and analyze current and potential resource needs through the planning dashboard 
+●​
+Given a scenario provide a cluster rightsizing for a greenfield deployment 
+●​
+Given a scenario plan for a future cluster expansion  
+References 
+●​
+Creating a Scenario 
+●​
+Modifying a Scenario 
+ 
+Objective 2.2 - Implement workload-based best practices  
+Knowledge 
+●​
+Locate, read, and understand workload specific BPG and Technotes 
+●​
+Identify the preferred values for a workload based upon a supplied BPG 
+●​
+Configure appropriate settings for a given EUC workload (e.g. vGPU, container, etc.) 
+●​
+Identify VM settings for optimal performance according to SQL Server BPG,  
+●​
+Identify optimal settings for VM and Storage Container for a given scenario 
+References 
+●​
+Creating a Storage Container 
+●​
+Microsoft SQL Server on Nutanix Best Practices 
+●​
+Windows 11 on Nutanix AHV 
+ 
+Objective 2.3 - Utilize APIs to automate management tasks  
+Knowledge 
+●​
+Manage  cluster at scale conducting CRUD operations using APIs 
+●​
+Conduct API-based information gathering and export\ 
+References 
+●​
+Nutanix Intentful API (3.1.0) 
+●​
+categories 
+●​
+network_security_rules 
+●​
+subnets 
+●​
+vms 
+●​
+Nutanix Flow Network Security Policies via REST API 
+ 
+9 
+Objective 2.4 - Utilize Playbook for making a call to a REST API endpoint 
+Knowledge 
+●​
+Configure cluster policies and features to meet minimum requirements for availability and 
+resiliency (U/A) 
+●​
+Configure cluster resiliency to meet application requirements 
+●​
+Use “Rebuild Capacity Reservation” to enhance the cluster's self-healing mechanism. 
+●​
+Set Cluster Resiliency Preference for a failure event vs planned outage  
+References 
+●​
+Setting Cluster Resiliency Preference 
+●​
+Reserving Rebuild Capacity 
+ 
+Objective 2.5 - Create/Configure VMs based on the requirements of the workload they will be hosting  
+Knowledge 
+●​
+Given a scenario configure advanced VM settings 
+●​
+Adjust VM configuration to meet high-intensity workload requirements 
+●​
+Evaluate optimal storage configuration for a business-critical application 
+●​
+Use X-Play to monitor and optimize VM performance 
+References 
+●​
+Memory Overcommit 
+●​
+Creating a VM 
+●​
+SQL Server Best Practices 
+ 
+Section 3 - Security 
+Objective 3.1 - Perform advanced cluster configuration incl. security and hardening  
+Knowledge 
+●​
+Configure SCMA and AIDE as determined by security requirements 
+●​
+Implement hardening mechanisms from the Nutanix security guide based upon customer scenario 
+●​
+Given a scenario create an appropriate RBAC structure to meet requirements 
+●​
+Configure cluster lockdown mode 
+●​
+Given a scenario configure network segmentation for a cluster  
+References 
+●​
+Securing Traffic Through Network Segmentation 
+10 
+●​
+Security Management Using Nutanix Command Line Interface 
+●​
+Controlling Cluster Access 
+ 
+Objective 3.2 - Implement Flow Virtual Networking and Flow Network Security based upon security 
+requirements  
+Knowledge 
+●​
+Implement VPC’s and gateways. 
+●​
+Given a scenario, implement multi-tenancy and overlay networks. 
+●​
+Protect a multi-tiered application using Flow Security Policies. 
+●​
+Apply Security policies based on user group membership using a VDI Policy 
+References 
+●​
+Flow Virtual Networking Configurations 
+●​
+Application Security Policy Configuration 
+●​
+network_security_rules 
+ 
+Objective 3.3 - Configure SYSLOG for advanced log management 
+Knowledge 
+●​
+Given a set of parameters, configure a remote SYSLOG server 
+●​
+Given a scenario, export logs for a specific service at a desired severity to a SYSLOG server 
+●​
+Identify why SYSLOG messages are not being sent to a configured server 
+References 
+●​
+Configuring the Remote Syslog Server Settings 
+●​
+Send Logs to Remote Syslog Server 
+●​
+Configuring Syslog Monitoring 
+ 
+Objective 3.4 - Implement authentication according to best practices  
+Knowledge 
+●​
+Replace self-signed certificates with customer’s CA signed 
+●​
+Given a scenario select the proper IAM authentication methods (AD, SAML, Local) and conduct 
+configuration steps required 
+●​
+Given a scenario create a custom role with required permissions 
+●​
+Manage accounts and passwords according to provided requirements  
+References 
+11 
+SSL Certificate Management 
+Security Management Using Prism Central (PC) 
+ 
+ 
+Objective 3.5 - Implement encryption, including KMS 
+Knowledge 
+●​
+Configure Data-at-Rest Encryption  
+●​
+Configure Data-in-Transit Encryption 
+●​
+Encrypt the storage of specific VMs within the environment 
+References 
+●​
+Data-in-Transit Encryption 
+●​
+Data-at-Rest Encryption 
+●​
+Managing Storage Policies 
+●​
+Storage Policy Based Encryption 
+ 
+Section 4 - Design & Architecture 
+Objective 4.1 - Configure Nutanix products and features to meet business needs  
+Knowledge 
+●​
+Identify the need for an RF1 container and apply the correct configuration 
+●​
+Identify the need for Load-Balanced Volume Groups, configure them, and enable the feature for the 
+VM/VG(s) required 
+●​
+Given a workload, ensure that the appropriate storage efficiency settings are enabled 
+References 
+●​
+Volume Group Connectivity 
+●​
+Enabling Load Balancing of vDisks in a Volume Group 
+●​
+Storage Components 
+​
+​
+Objective 4.2 - Align cluster configuration to Nutanix Validated Design (NVD)  
+Knowledge 
+●​
+Validate the CVM and Hypervisor VLAN configurations 
+●​
+For a given workload type, validate CVM resource configurations 
+●​
+For a given workload type, validate CPU oversubscription ratio 
+12 
+●​
+For a given scenario, validate cluster high availability configuration. 
+References 
+●​
+VM High Availability in Acropolis 
+●​
+Controller VM (CVM) Specifications 
+●​
+Resource Oversubscription 
+●​
+Nutanix On-Premises Hybrid Cloud with AHV Design 
+ 
+Section 5 - Business Continuity 
+Objective 5.1 - Create protection policies based on RPO and RTO requirements 
+Knowledge 
+●​
+Given a scenario, configure an appropriate protection mechanism for a specific group of multi-tiered 
+application respecting mission critical RPO/RTO requirement 
+●​
+Given a scenario, troubleshoot a given Protection Policy/Protection Domain for specific multi-tiered 
+application and update it respecting mission critical RPO/RTO requirements 
+●​
+Troubleshoot protection policy with automatic assignment of target clusters.  
+Requirements 
+●​
+Disaster Recovery Configuration 
+●​
+Data Protection and Recovery with Prism Element 
+Objective 5.2 - Create recovery plans based upon application requirements  
+Knowledge 
+●​
+Given a scenario create a recovery plan for a 3-tiered application  
+●​
+Create a recovery plan which uses a custom script for application reconfiguration 
+●​
+Create recovery plans and add/remove stages based on application requirements 
+●​
+Create/modify recovery plans incl. network and IP mapping based on specific requirements 
+●​
+Create/Update a RP Configuration from Async/NearSync to a Sync configuration 
+●​
+Troubleshoot and resolve recovery plan issues.  
+Requirements 
+●​
+Disaster Recovery Configuration 
+●​
+Data Protection and Recovery with Prism Element 
+Objective 5.3 - Execute disaster recovery, including troubleshooting  
+Knowledge 
+●​
+When performing an RP test and encountering errors, fix errors in order to achieve test 
+13 
+●​
+When performing an RP failover and encountering errors on a VM IP configuration, fix issues and 
+validate RP 
+●​
+Given a scenario where a RP fails, troubleshoot and resolve the issue 
+●​
+Given a scenario identify and resolve Metro AHV configuration issues 
+Requirements 
+●​
+Disaster Recovery Configuration 
+●​
+Data Protection and Recovery with Prism Element 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+14 
+4. NCM-MCI 6.10 Training Recommendations 
+4.1 Course Recommendation 
+Nutanix offers a course that provides training on the objectives tested for in the exam. More information ​
+on this course, including delivery methods and pricing, can be found at nutanix.com/training.  
+The course details are as follows  
+The Nutanix® Advanced Administration and Performance Management (AAPM) course will provide a deep 
+dive for the experienced Nutanix administrator that will give a rich, nuanced understanding of the Nutanix 
+platform, and will help get the most from the deployed Nutanix solutions.  
+AAPM is divided into six major sections, each focused on performance improvements and advanced 
+administration techniques for different aspects of your clusters: 
+●​
+Storage: Take a deep dive into AOS storage services, different aspects of Acropolis Distributed 
+Storage, storage optimization, and storage best practices for application workloads. 
+●​
+Networks: Learn how to optimize physical and virtual workloads, as well as how to implement Flow 
+Virtual Networking and Virtual Private Clouds (VPCs). 
+●​
+VMs: Learn about sizing the CVM and Prism Central VMs, alternate methods of VM provisioning (such 
+as via CLI), how to work with GPUs, and how to improve VM storage and network performance. 
+●​
+Security: Understand important features such as authentication, RBAC, IAM, and encryption. Learn 
+how to use essential security products, such as Flow Security Central and Flow Network Security. 
+●​
+Analyzing Problems: Explore ways to monitor and identify health issues, network performance, VM 
+performance, and cluster performance. 
+●​
+Business Continuity and Disaster Recovery: Learn about Nutanix data backup, web-scale data 
+protection, protection from ransomware, self service restore, and third-party integrations. You will 
+also learn how to use protection domains and Nutanix Leap for disaster recovery. 
+ 
+This course is available online or instructor-led. More information including schedules and how to register 
+can be found at www.nutanix.com/university.  
+The material provided in the course covers a majority of the objectives (approximately 80%) that appear on 
+the NCM-MCI 6.10 exam and is recommended for individuals who want to gain a good understanding of 
+these objectives. Please note that additional exposure to a Nutanix environment is highly recommended. 
+ 
+ 
+15 
+5. Live Lab Considerations 
+5.1 General Lab Layout 
+The NCM-MCI 6.10 exam will launch into a Windows desktop. That desktop will have Firefox, Adobe Acrobat 
+Reader, Postman, and Putty installed, with the relevant links on the desktop.  The desktop will also have a 
+folder with documentation and support PDFs. 
+The exam scenarios will be accessed from a web browser. Each scenario will include some or all of the 
+following: background, requirement(s), configuration(s), access information and credentials.  The web page 
+with the questions will open automatically when the exam launches but it can also be accessed using the 
+“Instructions” link on the desktop. 
+5.2 Lab Components 
+The scenarios will be performed on two live AOS clusters connected to one Prism Central VM. These clusters 
+are nested in the Google Cloud Platform and have a few differences compared to physical environments, so 
+some suspension of disbelief is required - for instance none of the VMs will have an OS and most will not 
+have hard drives or networking attached.    
+The GCP deployment also prevents the 192.168.5.x internal host/CVM network from working and there will be 
+an unused and powered off CVM listed on each node.  Do not make changes to any component you are not 
+asked to manipulate.  Environment differences that could affect a scenario will be described in the scenario. 
+The environment is located behind a NAT firewall, so the internal IPs are consistent from exam to exam, but 
+from the provided workstation, they will have a different IP address.   The 172.30.x addresses will not be 
+directly available from the workstation, and the environment components will only be able to use the 
+172.30.0.x address range.  For example, to access the node on Cluster 1 from the Windows desktop, you will 
+need to use the NATed IP to connect to the CVM and from there SSH to 172.30.0.5. 
+ 
+16 
+5.3 Provided Documentation 
+The Windows desktop will have a folder containing the following PDFs: 
+●​
+BP-2015-Microsoft-SQL-Server.pdf 
+●​
+Intelligent-Operations-Guide-vpc_2024_2.pdf 
+●​
+KB-3532 - SQL Server Best Practices - How to split a single datafile.pdf 
+●​
+NCC-Guide-NCC-v4_5 
+●​
+NCC Health Check_backup_schedule_check.pdf 
+●​
+Network Automation_Nutanix Flow Network Security Policies via REST API - Nutanix.dev.pdf 
+●​
+Nutanix-Flow-Network-Security-Guide-v4_2_0.pdf 
+●​
+Nutanix-Security-Guide-v6_10.pdf 
+●​
+NVD-2031-Hybrid-Cloud-6-5-On-Premises-Design.pdf 
+●​
+NVD-2174-Hybrid-Cloud-6-5-Mid-Market-Design.pdf 
+●​
+Prism-Central-Admin-Center-Guide-vpc_2024_2.pdf 
+●​
+Prism-Central-Alert-Reference-vpc_2024_2.pdf 
+●​
+Prism-Central-Guide-vpc_2024_2.pdf 
+●​
+TN-2164-Windows-11-on-AHV.pdf 
+There will also be the same list of docs from the  6.5 exam available: 
+●​
+Acropolis-Upgrade-Guide-v6_5.pdf 
+●​
+Advanced NUMA Configuration Options in AHV.pdf 
+●​
+Advanced-Admin-AOS-v6_5.pdf 
+●​
+AHV host networking.pdf 
+●​
+AHV-Admin-Guide-v6_5.pdf 
+●​
+API-Ref-AOS-v6_5.pdf 
+●​
+BP-2015-Microsoft-SQL-Server.pdf 
+●​
+BP-2029-AHV.pdf 
+●​
+BP-2125-Citrix-Virtual-Apps-and-Desktops-with-Flow.pdf 
+●​
+Command-Ref-AOS-v6_5.pdf 
+●​
+Enabling Jumbo MTU on AHV for UVMs.pdf 
+●​
+Hardware-Admin-Guide.pdf 
+●​
+Karbon-v2_4.pdf 
+●​
+Leap-Xi-Leap-Admin-Guide-v2022_6.pdf 
+●​
+NCC Health Check_ default_password_check and pc_default_password_check.pdf 
+●​
+Nutanix Bible classic.pdf 
+●​
+Nutanix-compliance-for-RHEL-STIGs-v6_5.pdf 
+●​
+Nutanix-Flow-Guide-v6_5.pdf 
+●​
+Nutanix-Security-Guide-v6_5.pdf 
+●​
+Prism-Central-Guide-vpc_2022_6.pdf 
+●​
+Prism-Element-Data-Protection-Guide-v6_5.pdf 
+●​
+SSP-Admin-Guide-v6_5.pdf 
+●​
+SSP-User-Guide-v6_5.pdf 
+●​
+TN-2033-Citrix-Virtual-Apps-and-Desktops-on-AHV.pdf 
+●​
+Updating Active Directory config via ncli fails with a _java.lang.NullPointerException_.pdf 
+●​
+Web-Console-Guide-Prism-v6_5.pdf 
+ 
+17 
+5.4 Tips and Tricks 
+Here are a few suggestions to improve your exam experience: 
+●​
+Be familiar with Prism Element pass-though from Prism Central.  This may work better in the lab 
+than directly accessing PE. 
+●​
+Working on a higher resolution display will improve your exam experience. 
+●​
+Make sure your desktop is not “zoomed in” or scaled.  This is common on smaller laptops. 
+●​
+If you cannot use a high-resolution display, you can scale the browser to improve visibility and 
+ensure all parts of the GUI can be seen or accessed. 
+●​
+Copy and paste hot-keys will not work. Use your mouse for copy and paste. 
+●​
+Be familiar with Adobe Acrobat's Advanced Search function to search an entire folder of PDFs at 
+once. 
+●​
+While Postman is provided, you may find it easier to complete API items using the REST API 
+Explorer for that component. All API items can be completed using the API Explorer. 
+●​
+If you see an alert in a cluster or a configuration change you think should be made – but is not 
+covered by a specific point in a scenario – do not change it. Only make changes as directed in the 
+scenarios on the specific cluster or component referenced by the scenario. 
+●​
+We suggest you complete the items in order.  If you want to skip around, please use Notepad in 
+the environment to track which scenarios you have completed.  The interface will indicate if you 
+have viewed a scenario but there is no indication if you completed it.  You can also use the flag 
+ability in the interface to note scenarios to review at the end. 
+●​
+Partial credit will be given for each scenario, but scoring is performed after the exam is 
+completed. If a scenario specifies to not reboot a component (and there is a scoring point 
+associated with not rebooting) if you reboot that component when working on another portion 
+of the exam, you will not be awarded the point. 
+●​
+Make sure you read any notes included with the scenarios as they may have tips that take the 
+environment design into consideration. 
+18 
+5. Resources 
+5.1 Nutanix Community Edition 
+The Nutanix Community Edition is a free product that allows you to deploy a Nutanix Enterprise Cloud. To 
+download the software and build your own environment for exam preparation, click here. 
+5.2 Test Drive 
+You can also take a 2-hour Hyperconverged Test Drive, which utilizes the Nutanix Community Edition, ​
+by clicking here. 
+5.3 The Nutanix Next Community 
+The Nutanix Next Community is a social interaction site where professionals can connect with cloud 
+builders from around the world, learn from IT Pros in the industry and share experiences. The community 
+maintains an area focused on the NCP certification, which is located here. 
+ 
+ 
++1 (855) 688-2649  |  certification@nutanix.com  |  www.nutanix.com​
+​
+​
+​
+​
+ 
+©2025 Nutanix, Inc. All rights reserved. Nutanix, the Nutanix logo and all product and service names mentioned herein are registered trademarks or trademarks of ​
+Nutanix, Inc. in the United States and other countries. All other brand names mentioned herein are for identification purposes only and may be the trademarks of their 
+respective holder(s). 
+ 
+19 

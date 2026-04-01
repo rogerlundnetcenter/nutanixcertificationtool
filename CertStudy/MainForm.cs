@@ -21,6 +21,18 @@ class MainForm : Form
     private int _streak;
     private readonly Dictionary<string, (int answered, int correct)> _domainStats = new();
 
+    // ── Answer Randomization ──
+    private bool _randomizeAnswers = true;
+    private List<AnswerOption> _displayOptions = new();
+
+    // ── Wrong-Answer Tracking ──
+    private readonly HashSet<string> _wrongAnswers = new();
+    private bool _reviewingMistakes;
+
+    // ── Exam Simulator ──
+    private bool _examSimMode;
+    private readonly List<string> _examSimWrongKeys = new();
+
     // ── Mode ──
     private bool _testMode;
     private int _testTotal = 75;
@@ -57,10 +69,20 @@ class MainForm : Form
     private Label _domainStatsLabel = null!;
     private Label _streakLabel = null!;
     private Button _resetBtn = null!;
+    private CheckBox _randomizeCheckBox = null!;
+    private Button _reviewMistakesBtn = null!;
+    private Label _wrongCountLabel = null!;
+    private Button _startExamBtn = null!;
 
     private readonly List<Panel> _optionCards = new();
     private readonly List<Label> _optionLabels = new();
     private readonly List<Panel> _optionIndicators = new();
+
+    // ── Blueprint ──
+    private BlueprintPanel _blueprintPanel = null!;
+    private Button _blueprintBtn = null!;
+    private bool _showBlueprint;
+    // BlueprintService is static — accessed via BlueprintService.GetBlueprint() etc.
 
     // ── GDI+ resources ──
     private readonly Pen _scanlinePen = new(Color.FromArgb(8, 0, 0, 0));
@@ -143,6 +165,11 @@ class MainForm : Form
         _studyModeRadio = MakeRadio("● Study Mode", true);
         _testModeRadio = MakeRadio("○ Test Mode", false);
 
+        var viewSectionLabel = MakeSectionLabel("─── VIEW ───");
+        _blueprintBtn = MakeFlatButton("  📋 Blueprint Coverage", SynthwaveColors.NeonPurple);
+        _blueprintBtn.Width = 252;
+        _blueprintBtn.Height = 32;
+
         var statsSectionLabel = MakeSectionLabel("─── STATS ───");
         _statsLabel = new Label
         {
@@ -179,12 +206,50 @@ class MainForm : Form
         _resetBtn.Height = 32;
         _resetBtn.Margin = new Padding(0, 10, 0, 0);
 
+        _randomizeCheckBox = new CheckBox
+        {
+            Text = "  🔀 Randomize Answers",
+            Dock = DockStyle.Top,
+            Height = 26,
+            Font = _mainFont,
+            ForeColor = SynthwaveColors.TextPrimary,
+            Checked = true,
+            FlatStyle = FlatStyle.Flat,
+            BackColor = Color.Transparent,
+            Cursor = Cursors.Hand,
+        };
+
+        _reviewMistakesBtn = MakeFlatButton("  ❌ Review Mistakes", SynthwaveColors.StatusRed);
+        _reviewMistakesBtn.Width = 252;
+        _reviewMistakesBtn.Height = 32;
+
+        _startExamBtn = MakeFlatButton("  🎯 Start Exam", SynthwaveColors.NeonMagenta);
+        _startExamBtn.Width = 252;
+        _startExamBtn.Height = 32;
+
+        _wrongCountLabel = new Label
+        {
+            Dock = DockStyle.Top,
+            Height = 22,
+            Font = _smallFont,
+            ForeColor = SynthwaveColors.StatusRed,
+            Text = "Wrong: 0",
+            Padding = new Padding(6, 0, 0, 0),
+            BackColor = Color.Transparent,
+        };
+
         // Add to side panel (reverse order because Dock.Top stacks)
         _sidePanel.Controls.Add(_resetBtn);
         _sidePanel.Controls.Add(_streakLabel);
         _sidePanel.Controls.Add(_domainStatsLabel);
+        _sidePanel.Controls.Add(_wrongCountLabel);
         _sidePanel.Controls.Add(_statsLabel);
         _sidePanel.Controls.Add(statsSectionLabel);
+        _sidePanel.Controls.Add(_startExamBtn);
+        _sidePanel.Controls.Add(_reviewMistakesBtn);
+        _sidePanel.Controls.Add(_blueprintBtn);
+        _sidePanel.Controls.Add(viewSectionLabel);
+        _sidePanel.Controls.Add(_randomizeCheckBox);
         _sidePanel.Controls.Add(_testModeRadio);
         _sidePanel.Controls.Add(_studyModeRadio);
         _sidePanel.Controls.Add(modeSectionLabel);
@@ -363,7 +428,16 @@ class MainForm : Form
         _questionPanel.Controls.Add(_optionsPanel);
         _questionPanel.Controls.Add(_stemLabel);
 
+        // ── Blueprint Panel (initially hidden) ──
+        _blueprintPanel = new BlueprintPanel
+        {
+            Dock = DockStyle.Fill,
+            Visible = false,
+        };
+        _blueprintPanel.SetObjectiveClickHandler(OnBlueprintObjectiveClick);
+
         _bodyPanel.Controls.Add(_questionPanel);
+        _bodyPanel.Controls.Add(_blueprintPanel);
         _bodyPanel.Controls.Add(splitter);
         _bodyPanel.Controls.Add(_explainPanel);
 
@@ -432,6 +506,10 @@ class MainForm : Form
         _prevBtn.Click += (_, _) => NavigatePrev();
         _skipBtn.Click += (_, _) => NavigateNext();
         _resetBtn.Click += (_, _) => ResetStats();
+        _blueprintBtn.Click += (_, _) => ToggleBlueprintView();
+        _randomizeCheckBox.CheckedChanged += (_, _) => _randomizeAnswers = _randomizeCheckBox.Checked;
+        _reviewMistakesBtn.Click += (_, _) => ReviewMistakes();
+        _startExamBtn.Click += (_, _) => StartExamSim();
         _studyModeRadio.CheckedChanged += (_, _) => SetMode(false);
         _testModeRadio.CheckedChanged += (_, _) =>
         {
@@ -465,6 +543,7 @@ class MainForm : Form
             case Keys.Enter: SubmitAnswer(); break;
             case Keys.N: NavigateNext(); break;
             case Keys.P: NavigatePrev(); break;
+            case Keys.B: ToggleBlueprintView(); break;
         }
         e.Handled = true;
     }
@@ -505,7 +584,11 @@ class MainForm : Form
         }
 
         _progressBar.Maximum = _currentQuestions.Count;
-        ShowQuestion();
+
+        if (_showBlueprint)
+            RefreshBlueprintPanel();
+        else
+            ShowQuestion();
 
         if (_testMode) StartTestTimer();
     }
@@ -557,6 +640,11 @@ class MainForm : Form
         _submitted = false;
         _explainBox.Text = "Submit an answer to see the explanation.";
 
+        // shuffle options if randomization is on
+        _displayOptions = _randomizeAnswers
+            ? q.Options.OrderBy(_ => Random.Shared.Next()).ToList()
+            : new List<AnswerOption>(q.Options);
+
         BuildOptionCards(q);
     }
 
@@ -579,9 +667,9 @@ class MainForm : Form
 
         int cardWidth = Math.Max(400, _questionPanel.ClientSize.Width - 40);
 
-        for (int i = 0; i < q.Options.Count; i++)
+        for (int i = 0; i < _displayOptions.Count; i++)
         {
-            var opt = q.Options[i];
+            var opt = _displayOptions[i];
             int idx = i;
 
             var card = new Panel
@@ -684,7 +772,7 @@ class MainForm : Form
     {
         if (_submitted || idx < 0 || idx >= _optionCards.Count) return;
         var q = _currentQuestions[_currentIndex];
-        var letter = q.Options[idx].Letter;
+        var letter = _displayOptions[idx].Letter;
 
         if (q.IsMultiSelect)
         {
@@ -734,6 +822,10 @@ class MainForm : Form
         else
         {
             _streak = 0;
+            var wrongKey = $"{_currentExam}-Q{q.Id}";
+            _wrongAnswers.Add(wrongKey);
+            if (_examSimMode)
+                _examSimWrongKeys.Add(wrongKey);
         }
 
         // domain stats
@@ -745,7 +837,7 @@ class MainForm : Form
         // Color the cards
         for (int i = 0; i < _optionCards.Count; i++)
         {
-            var letter = q.Options[i].Letter;
+            var letter = _displayOptions[i].Letter;
             if (correct.Contains(letter))
             {
                 _optionCards[i].BackColor = Color.FromArgb(15, 60, 10);
@@ -770,6 +862,24 @@ class MainForm : Form
     private void ShowExplanation(Question q)
     {
         _explainBox.Clear();
+
+        // ── Blueprint Objectives ──
+        var qText = q.Stem + " " + string.Join(" ", q.Options.Select(o => o.Text));
+        var objectives = BlueprintService.GetObjectivesForQuestion(_currentExam, qText);
+        if (objectives.Count > 0)
+        {
+            _explainBox.SelectionFont = _mainFontBold;
+            _explainBox.SelectionColor = SynthwaveColors.NeonPurple;
+            _explainBox.AppendText("📋 BLUEPRINT OBJECTIVES\n");
+            _explainBox.SelectionFont = _explainFont;
+            _explainBox.SelectionColor = SynthwaveColors.TextDim;
+            foreach (var (objId, objTitle) in objectives.Take(3))
+            {
+                _explainBox.AppendText($"  • {objId}: {objTitle}\n");
+            }
+            _explainBox.AppendText("\n");
+        }
+
         _explainBox.SelectionFont = _mainFontBold;
         _explainBox.SelectionColor = SynthwaveColors.NeonCyan;
         _explainBox.AppendText("EXPLANATION\n");
@@ -848,6 +958,10 @@ class MainForm : Form
 
         _streakLabel.Text = $"Current streak: {_streak}";
 
+        int wrongForExam = _wrongAnswers.Count(k => k.StartsWith(_currentExam + "-"));
+        _wrongCountLabel.Text = $"Wrong: {wrongForExam} (this exam)";
+        _wrongCountLabel.ForeColor = wrongForExam > 0 ? SynthwaveColors.StatusRed : SynthwaveColors.TextDim;
+
         var lines = new List<string>();
         foreach (var kv in _domainStats.OrderBy(k => k.Key))
         {
@@ -865,10 +979,132 @@ class MainForm : Form
         _totalCorrect = 0;
         _streak = 0;
         _domainStats.Clear();
+        _wrongAnswers.Clear();
+        _examSimWrongKeys.Clear();
         _statsLabel.Text = "Score: 0/0 (0%)";
         _statsLabel.ForeColor = SynthwaveColors.TextPrimary;
         _domainStatsLabel.Text = "";
         _streakLabel.Text = "Current streak: 0";
+        _wrongCountLabel.Text = "Wrong: 0";
+        _wrongCountLabel.ForeColor = SynthwaveColors.TextDim;
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    //  BLUEPRINT VIEW
+    // ═══════════════════════════════════════════════════════════════
+
+    private void ToggleBlueprintView()
+    {
+        _showBlueprint = !_showBlueprint;
+        _questionPanel.Visible = !_showBlueprint;
+        _blueprintPanel.Visible = _showBlueprint;
+
+        if (_showBlueprint)
+        {
+            _blueprintBtn.Text = "  🎯 Back to Questions";
+            _blueprintBtn.ForeColor = SynthwaveColors.NeonCyan;
+            _headerLabel.Text = $"Blueprint Coverage — {_currentExam}";
+            RefreshBlueprintPanel();
+        }
+        else
+        {
+            _blueprintBtn.Text = "  📋 Blueprint Coverage";
+            _blueprintBtn.ForeColor = SynthwaveColors.NeonPurple;
+            if (_currentQuestions.Count > 0)
+                ShowQuestion();
+        }
+    }
+
+    private void RefreshBlueprintPanel()
+    {
+        if (string.IsNullOrEmpty(_currentExam)) return;
+        var blueprint = BlueprintService.GetBlueprint(_currentExam);
+        if (blueprint == null) return;
+
+        var questions = _exams.GetValueOrDefault(_currentExam) ?? new();
+        var qTexts = questions.Select(q => q.Stem + " " + string.Join(" ", q.Options.Select(o => o.Text))).ToList();
+        var coverage = BlueprintService.CalculateCoverage(_currentExam, qTexts);
+        _blueprintPanel.LoadBlueprint(blueprint, coverage);
+
+        // Show blueprint info in explain panel
+        _explainBox.Clear();
+        _explainBox.SelectionFont = _mainFontBold;
+        _explainBox.SelectionColor = SynthwaveColors.NeonCyan;
+        _explainBox.AppendText($"📋 {blueprint.ExamTitle}\n\n");
+
+        _explainBox.SelectionFont = _explainFont;
+        _explainBox.SelectionColor = SynthwaveColors.TextPrimary;
+        _explainBox.AppendText($"Questions: {blueprint.QuestionCount}\n");
+        _explainBox.AppendText($"Time: {blueprint.TimeLimitMinutes} min\n");
+        _explainBox.AppendText($"Pass: {blueprint.PassingScore}\n");
+        _explainBox.AppendText($"Sections: {blueprint.Sections.Count}\n\n");
+
+        int totalObj = blueprint.Sections.Sum(s => s.Objectives.Count);
+        int coveredObj = coverage.Count(kv => kv.Value > 0);
+        _explainBox.SelectionFont = _mainFontBold;
+        _explainBox.SelectionColor = coveredObj >= totalObj ? SynthwaveColors.StatusGreen : SynthwaveColors.StatusAmber;
+        _explainBox.AppendText($"Coverage: {coveredObj}/{totalObj} objectives\n\n");
+
+        // Nutanix Bible links
+        var bibleLinks = BlueprintService.GetBibleSections(_currentExam);
+        if (bibleLinks.Count > 0)
+        {
+            _explainBox.SelectionFont = _mainFontBold;
+            _explainBox.SelectionColor = SynthwaveColors.NeonPurple;
+            _explainBox.AppendText("📖 NUTANIX BIBLE SECTIONS\n");
+            _explainBox.SelectionFont = _explainFont;
+            _explainBox.SelectionColor = SynthwaveColors.TextDim;
+            _explainBox.AppendText("─────────────────────────\n");
+            foreach (var (title, url) in bibleLinks)
+            {
+                _explainBox.SelectionFont = _mainFontBold;
+                _explainBox.SelectionColor = SynthwaveColors.NeonCyan;
+                _explainBox.AppendText("• " + title + "\n");
+                _explainBox.SelectionFont = _explainFont;
+                _explainBox.SelectionColor = SynthwaveColors.TextDim;
+                _explainBox.AppendText("  " + url + "\n");
+            }
+        }
+
+        _explainBox.SelectionStart = 0;
+        _explainBox.ScrollToCaret();
+    }
+
+    private void OnBlueprintObjectiveClick(string objectiveId)
+    {
+        if (string.IsNullOrEmpty(_currentExam)) return;
+        var questions = _exams.GetValueOrDefault(_currentExam) ?? new();
+
+        // Find questions matching this objective
+        var matching = new List<Question>();
+        foreach (var q in questions)
+        {
+            var qText = q.Stem + " " + string.Join(" ", q.Options.Select(o => o.Text));
+            var objectives = BlueprintService.GetObjectivesForQuestion(_currentExam, qText);
+            if (objectives.Any(o => o.ObjId == objectiveId))
+                matching.Add(q);
+        }
+
+        if (matching.Count > 0)
+        {
+            // Show matching questions info in explain panel
+            _explainBox.Clear();
+            _explainBox.SelectionFont = _mainFontBold;
+            _explainBox.SelectionColor = SynthwaveColors.NeonCyan;
+            _explainBox.AppendText($"Objective {objectiveId}\n");
+            _explainBox.AppendText($"{matching.Count} matching questions\n\n");
+
+            _explainBox.SelectionFont = _explainFont;
+            _explainBox.SelectionColor = SynthwaveColors.TextPrimary;
+            foreach (var q in matching.Take(15))
+            {
+                string stem = q.Stem.Length > 80 ? q.Stem[..80] + "…" : q.Stem;
+                _explainBox.AppendText($"Q{q.Id}: {stem}\n");
+            }
+
+            _explainBox.SelectionStart = 0;
+            _explainBox.ScrollToCaret();
+        }
     }
 
     // ═══════════════════════════════════════════════════════════════
@@ -897,7 +1133,16 @@ class MainForm : Form
 
     private void StartTestTimer()
     {
-        _testSecondsRemaining = 120 * 60; // 120 minutes
+        if (_examSimMode)
+        {
+            _testSecondsRemaining = _currentExam.StartsWith("NCM-MCI", StringComparison.OrdinalIgnoreCase)
+                ? 180 * 60
+                : 120 * 60;
+        }
+        else
+        {
+            _testSecondsRemaining = 120 * 60;
+        }
         ResetStats();
         _testTimer?.Dispose();
         _testTimer = new System.Windows.Forms.Timer { Interval = 1000 };
@@ -927,6 +1172,38 @@ class MainForm : Form
     private void FinishTest()
     {
         StopTestTimer();
+
+        if (_examSimMode)
+        {
+            int pointsPerQ = 6000 / Math.Max(1, _testTotal);
+            int score = _totalCorrect * pointsPerQ;
+            bool passed = score >= 3000;
+
+            var wrongLines = new List<string>();
+            foreach (var key in _examSimWrongKeys.Take(20))
+                wrongLines.Add($"  • {key}");
+            if (_examSimWrongKeys.Count > 20)
+                wrongLines.Add($"  ... and {_examSimWrongKeys.Count - 20} more");
+
+            var wrongSection = wrongLines.Count > 0
+                ? $"\nWrong questions:\n{string.Join("\n", wrongLines)}"
+                : "\nPerfect score!";
+
+            MessageBox.Show(
+                $"Exam Simulation Complete!\n\n" +
+                $"Score: {score}/6000\n" +
+                $"Correct: {_totalCorrect}/{_totalAnswered}\n" +
+                $"Result: {(passed ? "PASS ✅" : "FAIL ❌")}\n" +
+                $"Pass threshold: 3000/6000\n" +
+                wrongSection,
+                passed ? "EXAM PASSED" : "EXAM FAILED",
+                MessageBoxButtons.OK,
+                passed ? MessageBoxIcon.Information : MessageBoxIcon.Warning);
+
+            _examSimMode = false;
+            return;
+        }
+
         double pct = _totalAnswered > 0 ? 100.0 * _totalCorrect / _totalAnswered : 0;
         string result = pct >= 75 ? "PASSED ✅" : "FAILED ❌";
         MessageBox.Show(
@@ -937,6 +1214,69 @@ class MainForm : Form
             "Test Results",
             MessageBoxButtons.OK,
             pct >= 75 ? MessageBoxIcon.Information : MessageBoxIcon.Warning);
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    //  REVIEW MISTAKES
+    // ═══════════════════════════════════════════════════════════════
+
+    private void ReviewMistakes()
+    {
+        if (_reviewingMistakes)
+        {
+            _reviewingMistakes = false;
+            _reviewMistakesBtn.Text = "  ❌ Review Mistakes";
+            _reviewMistakesBtn.ForeColor = SynthwaveColors.StatusRed;
+            if (!string.IsNullOrEmpty(_currentExam))
+                SelectExam(_currentExam);
+            return;
+        }
+
+        if (string.IsNullOrEmpty(_currentExam)) return;
+
+        var allQuestions = _exams.GetValueOrDefault(_currentExam) ?? new();
+        var wrongQuestions = allQuestions
+            .Where(q => _wrongAnswers.Contains($"{_currentExam}-Q{q.Id}"))
+            .ToList();
+
+        if (wrongQuestions.Count == 0)
+        {
+            MessageBox.Show("No wrong answers to review for this exam!",
+                "Review Mistakes", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return;
+        }
+
+        _reviewingMistakes = true;
+        _reviewMistakesBtn.Text = "  ↩ Back to All Questions";
+        _reviewMistakesBtn.ForeColor = SynthwaveColors.NeonCyan;
+        _currentQuestions = wrongQuestions;
+        _currentIndex = 0;
+        _submitted = false;
+        _progressBar.Maximum = _currentQuestions.Count;
+        _headerLabel.Text = $"{_currentExam} — Review Mistakes ({wrongQuestions.Count})";
+        ShowQuestion();
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    //  EXAM SIMULATOR
+    // ═══════════════════════════════════════════════════════════════
+
+    private void StartExamSim()
+    {
+        if (string.IsNullOrEmpty(_currentExam) || !_exams.ContainsKey(_currentExam)) return;
+
+        _examSimMode = true;
+        _examSimWrongKeys.Clear();
+        _reviewingMistakes = false;
+        _reviewMistakesBtn.Text = "  ❌ Review Mistakes";
+        _reviewMistakesBtn.ForeColor = SynthwaveColors.StatusRed;
+
+        _testMode = true;
+        _studyModeRadio.Text = "○ Study Mode";
+        _testModeRadio.Text = "● Test Mode";
+        _testModeRadio.Checked = true;
+
+        SelectExam(_currentExam);
     }
 
     // ═══════════════════════════════════════════════════════════════
