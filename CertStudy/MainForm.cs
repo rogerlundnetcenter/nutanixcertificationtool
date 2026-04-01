@@ -73,6 +73,7 @@ class MainForm : Form
     private Button _reviewMistakesBtn = null!;
     private Label _wrongCountLabel = null!;
     private Button _startExamBtn = null!;
+    private Button _exportPdfBtn = null!;
 
     private readonly List<Panel> _optionCards = new();
     private readonly List<Label> _optionLabels = new();
@@ -227,6 +228,10 @@ class MainForm : Form
         _startExamBtn.Width = 252;
         _startExamBtn.Height = 32;
 
+        _exportPdfBtn = MakeFlatButton("  📄 Export to PDF", SynthwaveColors.NeonCyan);
+        _exportPdfBtn.Width = 252;
+        _exportPdfBtn.Height = 32;
+
         _wrongCountLabel = new Label
         {
             Dock = DockStyle.Top,
@@ -246,6 +251,7 @@ class MainForm : Form
         _sidePanel.Controls.Add(_statsLabel);
         _sidePanel.Controls.Add(statsSectionLabel);
         _sidePanel.Controls.Add(_startExamBtn);
+        _sidePanel.Controls.Add(_exportPdfBtn);
         _sidePanel.Controls.Add(_reviewMistakesBtn);
         _sidePanel.Controls.Add(_blueprintBtn);
         _sidePanel.Controls.Add(viewSectionLabel);
@@ -510,6 +516,7 @@ class MainForm : Form
         _randomizeCheckBox.CheckedChanged += (_, _) => _randomizeAnswers = _randomizeCheckBox.Checked;
         _reviewMistakesBtn.Click += (_, _) => ReviewMistakes();
         _startExamBtn.Click += (_, _) => StartExamSim();
+        _exportPdfBtn.Click += (_, _) => ExportToPdf();
         _studyModeRadio.CheckedChanged += (_, _) => SetMode(false);
         _testModeRadio.CheckedChanged += (_, _) =>
         {
@@ -987,6 +994,115 @@ class MainForm : Form
         _streakLabel.Text = "Current streak: 0";
         _wrongCountLabel.Text = "Wrong: 0";
         _wrongCountLabel.ForeColor = SynthwaveColors.TextDim;
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    //  PDF EXPORT
+    // ═══════════════════════════════════════════════════════════════
+
+    private void ExportToPdf()
+    {
+        var menu = new ContextMenuStrip();
+        menu.BackColor = SynthwaveColors.CardBg;
+        menu.ForeColor = SynthwaveColors.TextPrimary;
+        menu.Font = _mainFont;
+        menu.Renderer = new ToolStripProfessionalRenderer(new SynthwaveMenuColorTable());
+
+        var currentItem = new ToolStripMenuItem($"Export Current Exam ({_currentExam})");
+        currentItem.Click += (_, _) => DoExportCurrentExam();
+
+        var currentNoAnswers = new ToolStripMenuItem($"Export Current Exam (no answers)");
+        currentNoAnswers.Click += (_, _) => DoExportCurrentExam(false);
+
+        var allItem = new ToolStripMenuItem("Export All Exams (with answers)");
+        allItem.Click += (_, _) => DoExportAllExams();
+
+        var allNoAnswers = new ToolStripMenuItem("Export All Exams (no answers)");
+        allNoAnswers.Click += (_, _) => DoExportAllExams(false);
+
+        menu.Items.Add(currentItem);
+        menu.Items.Add(currentNoAnswers);
+        menu.Items.Add(new ToolStripSeparator());
+        menu.Items.Add(allItem);
+        menu.Items.Add(allNoAnswers);
+
+        var btnPos = _exportPdfBtn.PointToScreen(new Point(_exportPdfBtn.Width, 0));
+        menu.Show(btnPos);
+    }
+
+    private void DoExportCurrentExam(bool includeAnswers = true)
+    {
+        if (string.IsNullOrEmpty(_currentExam) || !_exams.ContainsKey(_currentExam)) return;
+
+        using var dlg = new SaveFileDialog
+        {
+            Title = "Export to PDF",
+            Filter = "PDF Files (*.pdf)|*.pdf",
+            FileName = $"{_currentExam}-Questions{(includeAnswers ? "" : "-NoAnswers")}.pdf",
+            InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+        };
+
+        if (dlg.ShowDialog() != DialogResult.OK) return;
+
+        try
+        {
+            Cursor = Cursors.WaitCursor;
+            ExportService.ExportExam(_currentExam, _exams[_currentExam], dlg.FileName, includeAnswers);
+            Cursor = Cursors.Default;
+            MessageBox.Show(
+                $"Exported {_exams[_currentExam].Count} questions to:\n{dlg.FileName}",
+                "Export Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(dlg.FileName) { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            Cursor = Cursors.Default;
+            MessageBox.Show($"Export failed: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+
+    private void DoExportAllExams(bool includeAnswers = true)
+    {
+        using var dlg = new SaveFileDialog
+        {
+            Title = "Export All Exams to PDF",
+            Filter = "PDF Files (*.pdf)|*.pdf",
+            FileName = $"Nutanix-Complete-Study-Guide{(includeAnswers ? "" : "-NoAnswers")}.pdf",
+            InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+        };
+
+        if (dlg.ShowDialog() != DialogResult.OK) return;
+
+        try
+        {
+            Cursor = Cursors.WaitCursor;
+            ExportService.ExportAll(_exams, dlg.FileName, includeAnswers);
+            int total = _exams.Values.Sum(q => q.Count);
+            Cursor = Cursors.Default;
+            MessageBox.Show(
+                $"Exported {total} questions across {_exams.Count} exams to:\n{dlg.FileName}",
+                "Export Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(dlg.FileName) { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            Cursor = Cursors.Default;
+            MessageBox.Show($"Export failed: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+
+    // Synthwave-styled context menu colors
+    private class SynthwaveMenuColorTable : ProfessionalColorTable
+    {
+        public override Color MenuItemSelected => SynthwaveColors.CardHover;
+        public override Color MenuBorder => SynthwaveColors.NeonCyan;
+        public override Color MenuItemBorder => SynthwaveColors.NeonMagenta;
+        public override Color ToolStripDropDownBackground => SynthwaveColors.DarkPanel;
+        public override Color ImageMarginGradientBegin => SynthwaveColors.DarkPanel;
+        public override Color ImageMarginGradientMiddle => SynthwaveColors.DarkPanel;
+        public override Color ImageMarginGradientEnd => SynthwaveColors.DarkPanel;
+        public override Color SeparatorDark => SynthwaveColors.CardBg;
+        public override Color SeparatorLight => SynthwaveColors.CardBg;
     }
 
     // ═══════════════════════════════════════════════════════════════
