@@ -48,7 +48,7 @@ export class CiNetworkingView extends BaseView {
                 <div class="card">
                     <div class="card-header">🟠 AWS Networking Architecture</div>
                     <div class="card-body" style="font-size:var(--font-size-sm);">
-                        <div style="background:#f8f9fa;padding:16px;border-radius:6px;font-family:monospace;font-size:12px;white-space:pre;line-height:1.8;">
+                        <div style="background:var(--surface-tertiary);padding:16px;border-radius:6px;font-family:monospace;font-size:12px;white-space:pre;line-height:1.8;">
 VPC (/16 recommended)
 ├── Host Subnet (/25 minimum)
 │   ├── NC2 Nodes (i3.metal)
@@ -73,7 +73,7 @@ VPC (/16 recommended)
                 <div class="card">
                     <div class="card-header">🔵 Azure Networking Architecture</div>
                     <div class="card-body" style="font-size:var(--font-size-sm);">
-                        <div style="background:#f8f9fa;padding:16px;border-radius:6px;font-family:monospace;font-size:12px;white-space:pre;line-height:1.8;">
+                        <div style="background:var(--surface-tertiary);padding:16px;border-radius:6px;font-family:monospace;font-size:12px;white-space:pre;line-height:1.8;">
 VNet (custom address space)
 ├── Delegated Subnet (/24 minimum)
 │   ├── BareMetal nodes

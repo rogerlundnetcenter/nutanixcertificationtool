@@ -133,15 +133,15 @@ export class AiNaiView extends BaseView {
                             </div>
                         `).join('')}
                     </div>
-                    <div style="margin-top:16px;padding:12px;background:#ffeaea;border-radius:6px;font-size:var(--font-size-sm);">
+                    <div style="margin-top:16px;padding:12px;background:var(--status-critical-bg);border-radius:6px;font-size:var(--font-size-sm);">
                         <strong>⚠️ Exam Trap:</strong> Installing NAI Operator <em>before</em> GPU Operator → GPU detection failure.
                         Wrong order causes cascading failures. Always follow: NKP → GPU Operator → CSI → NAI Operator → Endpoints.
                     </div>
                     <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:16px;font-size:var(--font-size-sm);">
-                        <div style="padding:12px;background:#f0f7ff;border-radius:6px;">
+                        <div style="padding:12px;background:var(--status-info-bg);border-radius:6px;">
                             <strong>NKP Installation:</strong> One-click via NKP App Catalog (GUI). Validated compatibility.
                         </div>
-                        <div style="padding:12px;background:#fff8e1;border-radius:6px;">
+                        <div style="padding:12px;background:var(--status-warning-bg);border-radius:6px;">
                             <strong>Non-NKP (vanilla K8s):</strong> Manual kubectl + Helm. Must install CRDs, GPU Operator, CSI, manage versions manually. NOT via App Catalog.
                         </div>
                     </div>
@@ -287,7 +287,7 @@ export class AiNaiView extends BaseView {
                             <select class="form-input" data-field="format" id="format-select">
                                 ${FORMATS.map(f => `<option value="${f.id}" ${f.id === data.format ? 'selected' : ''} ${!f.vllm && !f.trt ? 'style="color:var(--status-critical);"' : ''}>${f.name}</option>`).join('')}
                             </select>
-                            <div id="format-warning" style="display:none;margin-top:8px;padding:12px;background:#ffeaea;border-radius:6px;font-size:var(--font-size-sm);color:var(--status-critical);"></div>
+                            <div id="format-warning" style="display:none;margin-top:8px;padding:12px;background:var(--status-critical-bg);border-radius:6px;font-size:var(--font-size-sm);color:var(--status-critical);"></div>
                         </div>
                     `,
                     bind: (body, data) => {

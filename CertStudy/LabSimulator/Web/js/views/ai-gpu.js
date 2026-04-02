@@ -158,7 +158,7 @@ export class AiGpuView extends BaseView {
                             <li>A100 80GB → 7 × ~10GB partitions</li>
                             <li>Ideal for multi-tenant small models</li>
                         </ul>
-                        <div style="margin-top:8px;padding:8px;background:#ffeaea;border-radius:4px;">
+                        <div style="margin-top:8px;padding:8px;background:var(--status-critical-bg);border-radius:4px;">
                             <strong>⚠️ ONLY A100 & H100</strong><br>
                             T4 and L40S do NOT support MIG!
                         </div>

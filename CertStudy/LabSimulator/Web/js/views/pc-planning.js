@@ -149,10 +149,10 @@ export class PcPlanningView extends BaseView {
     #barChart(label, months) {
         const maxMonths = 36;
         const pct = Math.min((months / maxMonths) * 100, 100);
-        let color = '#4caf50';
-        if (months <= 3) color = '#f44336';
-        else if (months <= 6) color = '#ff9800';
-        else if (months <= 12) color = '#2196f3';
+        let color = 'var(--status-good)';
+        if (months <= 3) color = 'var(--status-critical)';
+        else if (months <= 6) color = 'var(--status-warning)';
+        else if (months <= 12) color = 'var(--status-info)';
 
         return `
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">

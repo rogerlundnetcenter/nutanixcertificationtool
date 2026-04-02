@@ -265,12 +265,12 @@ export class CiDeployView extends BaseView {
                                     <option value="noNAT" ${data.network_mode === 'noNAT' ? 'selected' : ''}>noNAT (Recommended) — VMs keep original IPs, direct routing</option>
                                     <option value="NAT" ${data.network_mode === 'NAT' ? 'selected' : ''}>NAT — Address translation (for IP conflicts only)</option>
                                 </select>
-                                <div style="margin-top:8px;padding:10px;background:#fff8e1;border-radius:6px;font-size:var(--font-size-sm);">
+                                <div style="margin-top:8px;padding:10px;background:var(--status-warning-bg);border-radius:6px;font-size:var(--font-size-sm);">
                                     ⚠️ <strong>Network mode is IRREVERSIBLE after deployment.</strong> noNAT is recommended for most deployments.
                                 </div>
                             </div>
                         ` : `
-                            <div class="text-secondary text-sm" style="padding:12px;background:#f0f7ff;border-radius:6px;">
+                            <div class="text-secondary text-sm" style="padding:12px;background:var(--status-info-bg);border-radius:6px;">
                                 ℹ️ <strong>AWS Note:</strong> Flow Gateway is NOT required on AWS. VPC natively integrates with AHV overlay.
                                 Security Groups handle port-level access: 9440 (Prism), 2049 (NFS), 3260 (iSCSI), 22 (SSH).
                             </div>

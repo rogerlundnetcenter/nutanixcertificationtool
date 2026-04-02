@@ -160,10 +160,10 @@ export class PcReportsView extends BaseView {
                     content: `
                         <h4>Cluster: ${cluster.name}</h4>
                         <table style="width:100%;font-size:13px;border-collapse:collapse;">
-                            <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;" class="text-secondary">Total Capacity</td><td style="padding:8px;font-weight:600;">${totalCap.toFixed(1)} TB</td></tr>
-                            <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;" class="text-secondary">Used</td><td style="padding:8px;">${usedCap.toFixed(1)} TB (${Math.round(usedCap / totalCap * 100)}%)</td></tr>
-                            <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;" class="text-secondary">Containers with Compression</td><td style="padding:8px;">${compressedContainers.length} of ${containers.length}</td></tr>
-                            <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;" class="text-secondary">Containers with Dedup</td><td style="padding:8px;">${dedupContainers.length} of ${containers.length}</td></tr>
+                            <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:8px;" class="text-secondary">Total Capacity</td><td style="padding:8px;font-weight:600;">${totalCap.toFixed(1)} TB</td></tr>
+                            <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:8px;" class="text-secondary">Used</td><td style="padding:8px;">${usedCap.toFixed(1)} TB (${Math.round(usedCap / totalCap * 100)}%)</td></tr>
+                            <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:8px;" class="text-secondary">Containers with Compression</td><td style="padding:8px;">${compressedContainers.length} of ${containers.length}</td></tr>
+                            <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:8px;" class="text-secondary">Containers with Dedup</td><td style="padding:8px;">${dedupContainers.length} of ${containers.length}</td></tr>
                             <tr><td style="padding:8px;" class="text-secondary">Erasure Coding Enabled</td><td style="padding:8px;">${containers.filter(c => c.erasure_coding).length} container(s)</td></tr>
                         </table>`,
                 };
@@ -177,8 +177,8 @@ export class PcReportsView extends BaseView {
                         <h4>Virtual Machines (${vms.length} total)</h4>
                         <div style="margin-bottom:12px;"><strong>Running:</strong> ${running.length} | <strong>Stopped:</strong> ${stopped.length} | <strong>CVMs:</strong> ${vms.filter(v => v.is_cvm).length}</div>
                         <table style="width:100%;font-size:12px;border-collapse:collapse;">
-                            <tr style="background:#f5f5f5;"><th style="padding:6px;text-align:left;">Name</th><th style="padding:6px;">vCPU</th><th style="padding:6px;">RAM</th><th style="padding:6px;">State</th><th style="padding:6px;">Host</th></tr>
-                            ${vms.map(v => `<tr style="border-bottom:1px solid #eee;">
+                            <tr style="background:var(--surface-secondary);"><th style="padding:6px;text-align:left;">Name</th><th style="padding:6px;">vCPU</th><th style="padding:6px;">RAM</th><th style="padding:6px;">State</th><th style="padding:6px;">Host</th></tr>
+                            ${vms.map(v => `<tr style="border-bottom:1px solid var(--border-light);">
                                 <td style="padding:6px;">${v.name}</td>
                                 <td style="padding:6px;text-align:center;">${v.vcpus}</td>
                                 <td style="padding:6px;text-align:center;">${v.memory_gb} GB</td>
@@ -194,10 +194,10 @@ export class PcReportsView extends BaseView {
                     content: `
                         <h4>Storage Containers</h4>
                         <table style="width:100%;font-size:12px;border-collapse:collapse;">
-                            <tr style="background:#f5f5f5;"><th style="padding:6px;text-align:left;">Container</th><th style="padding:6px;">Capacity</th><th style="padding:6px;">Used</th><th style="padding:6px;">%</th><th style="padding:6px;">RF</th><th style="padding:6px;">Compression</th><th style="padding:6px;">Dedup</th></tr>
+                            <tr style="background:var(--surface-secondary);"><th style="padding:6px;text-align:left;">Container</th><th style="padding:6px;">Capacity</th><th style="padding:6px;">Used</th><th style="padding:6px;">%</th><th style="padding:6px;">RF</th><th style="padding:6px;">Compression</th><th style="padding:6px;">Dedup</th></tr>
                             ${containers.map(c => {
                                 const pct = Math.round((c.used_tb / c.capacity_tb) * 100);
-                                return `<tr style="border-bottom:1px solid #eee;">
+                                return `<tr style="border-bottom:1px solid var(--border-light);">
                                     <td style="padding:6px;">${c.name}</td>
                                     <td style="padding:6px;text-align:center;">${c.capacity_tb} TB</td>
                                     <td style="padding:6px;text-align:center;">${c.used_tb} TB</td>
@@ -215,10 +215,10 @@ export class PcReportsView extends BaseView {
                     content: `
                         <h4>Security Posture</h4>
                         <table style="width:100%;font-size:13px;border-collapse:collapse;">
-                            <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;" class="text-secondary">Cluster</td><td style="padding:8px;">${cluster.name}</td></tr>
-                            <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;" class="text-secondary">Flow Policies</td><td style="padding:8px;">${state.getAll('flow_policies').length} (${state.getAll('flow_policies').filter(p => p.mode === 'applied').length} enforced)</td></tr>
-                            <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;" class="text-secondary">Local Users</td><td style="padding:8px;">${state.getAll('users').length}</td></tr>
-                            <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;" class="text-secondary">AD Connected</td><td style="padding:8px;">${state.getAll('ad_config').some(c => c.connected) ? '✅ Yes' : '❌ No'}</td></tr>
+                            <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:8px;" class="text-secondary">Cluster</td><td style="padding:8px;">${cluster.name}</td></tr>
+                            <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:8px;" class="text-secondary">Flow Policies</td><td style="padding:8px;">${state.getAll('flow_policies').length} (${state.getAll('flow_policies').filter(p => p.mode === 'applied').length} enforced)</td></tr>
+                            <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:8px;" class="text-secondary">Local Users</td><td style="padding:8px;">${state.getAll('users').length}</td></tr>
+                            <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:8px;" class="text-secondary">AD Connected</td><td style="padding:8px;">${state.getAll('ad_config').some(c => c.connected) ? '✅ Yes' : '❌ No'}</td></tr>
                             <tr><td style="padding:8px;" class="text-secondary">DNS Configured</td><td style="padding:8px;">${cluster.dns?.length > 0 ? '✅ ' + cluster.dns.join(', ') : '❌ Not configured'}</td></tr>
                         </table>`,
                 };
@@ -231,9 +231,9 @@ export class PcReportsView extends BaseView {
                     content: `
                         <h4>Protection Overview</h4>
                         <table style="width:100%;font-size:13px;border-collapse:collapse;">
-                            <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;" class="text-secondary">PE Protection Domains</td><td style="padding:8px;">${pds.length}</td></tr>
-                            <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;" class="text-secondary">PC Protection Policies</td><td style="padding:8px;">${pps.length}</td></tr>
-                            <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;" class="text-secondary">Recovery Plans</td><td style="padding:8px;">${rps.length}</td></tr>
+                            <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:8px;" class="text-secondary">PE Protection Domains</td><td style="padding:8px;">${pds.length}</td></tr>
+                            <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:8px;" class="text-secondary">PC Protection Policies</td><td style="padding:8px;">${pps.length}</td></tr>
+                            <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:8px;" class="text-secondary">Recovery Plans</td><td style="padding:8px;">${rps.length}</td></tr>
                             <tr><td style="padding:8px;" class="text-secondary">Protected VMs</td><td style="padding:8px;">${new Set(pds.flatMap(pd => pd.vms || [])).size}</td></tr>
                         </table>
                         <h4 style="margin-top:16px;">Protection Domains</h4>
@@ -252,9 +252,9 @@ export class PcReportsView extends BaseView {
                     content: `
                         <h4>Resource Utilization</h4>
                         <table style="width:100%;font-size:13px;border-collapse:collapse;">
-                            <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;" class="text-secondary">CPU</td><td style="padding:8px;">${usedCpu} / ${totalCpu} cores (${Math.round(usedCpu / totalCpu * 100)}%)</td></tr>
-                            <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;" class="text-secondary">Memory</td><td style="padding:8px;">${usedMem} / ${totalMem} GB (${Math.round(usedMem / totalMem * 100)}%)</td></tr>
-                            <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;" class="text-secondary">Nodes</td><td style="padding:8px;">${hosts.length}</td></tr>
+                            <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:8px;" class="text-secondary">CPU</td><td style="padding:8px;">${usedCpu} / ${totalCpu} cores (${Math.round(usedCpu / totalCpu * 100)}%)</td></tr>
+                            <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:8px;" class="text-secondary">Memory</td><td style="padding:8px;">${usedMem} / ${totalMem} GB (${Math.round(usedMem / totalMem * 100)}%)</td></tr>
+                            <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:8px;" class="text-secondary">Nodes</td><td style="padding:8px;">${hosts.length}</td></tr>
                             <tr><td style="padding:8px;" class="text-secondary">Total VMs</td><td style="padding:8px;">${vms.length}</td></tr>
                         </table>
                         <h4 style="margin-top:16px;">Recommendations</h4>

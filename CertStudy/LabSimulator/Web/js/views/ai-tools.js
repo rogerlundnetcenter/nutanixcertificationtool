@@ -344,7 +344,7 @@ Practical Total     ≈ Model Weights × Overhead Factor (1.3× to 2.0×)
 
         // Validate auth format
         if (!auth?.startsWith('Bearer ')) {
-            respDiv.innerHTML = `<div style="padding:12px;background:#ffeaea;border-radius:6px;"><strong>401 Unauthorized</strong><br><br>Invalid authorization header format.<br>Expected: <code>Authorization: Bearer &lt;token&gt;</code><br>Got: <code>${auth}</code><br><br>❌ Exam trap: Use <code>Bearer</code>, NOT <code>Token</code>.</div>`;
+            respDiv.innerHTML = `<div style="padding:12px;background:var(--status-critical-bg);border-radius:6px;"><strong>401 Unauthorized</strong><br><br>Invalid authorization header format.<br>Expected: <code>Authorization: Bearer &lt;token&gt;</code><br>Got: <code>${auth}</code><br><br>❌ Exam trap: Use <code>Bearer</code>, NOT <code>Token</code>.</div>`;
             return;
         }
 
@@ -352,12 +352,12 @@ Practical Total     ≈ Model Weights × Overhead Factor (1.3× to 2.0×)
         let reqBody = null;
         if (path !== '/models') {
             try { reqBody = JSON.parse(bodyText); }
-            catch { respDiv.innerHTML = `<div style="padding:12px;background:#ffeaea;border-radius:6px;"><strong>400 Bad Request</strong><br>Invalid JSON in request body.</div>`; return; }
+            catch { respDiv.innerHTML = `<div style="padding:12px;background:var(--status-critical-bg);border-radius:6px;"><strong>400 Bad Request</strong><br>Invalid JSON in request body.</div>`; return; }
         }
 
         // Check for common mistakes
         if (path === '/chat/completions' && reqBody?.prompt && !reqBody?.messages) {
-            respDiv.innerHTML = `<div style="padding:12px;background:#ffeaea;border-radius:6px;">
+            respDiv.innerHTML = `<div style="padding:12px;background:var(--status-critical-bg);border-radius:6px;">
                 <strong>422 Unprocessable Entity</strong><br><br>
                 <code>/v1/chat/completions</code> requires <code>"messages"</code> array, not <code>"prompt"</code> string.<br><br>
                 ❌ You sent: <code>{"prompt": "..."}</code><br>
@@ -368,7 +368,7 @@ Practical Total     ≈ Model Weights × Overhead Factor (1.3× to 2.0×)
         }
 
         if (path === '/completions' && reqBody?.messages && !reqBody?.prompt) {
-            respDiv.innerHTML = `<div style="padding:12px;background:#ffeaea;border-radius:6px;">
+            respDiv.innerHTML = `<div style="padding:12px;background:var(--status-critical-bg);border-radius:6px;">
                 <strong>422 Unprocessable Entity</strong><br><br>
                 <code>/v1/completions</code> requires <code>"prompt"</code> string, not <code>"messages"</code> array.<br><br>
                 Use <code>/v1/chat/completions</code> for conversation-style inference.
@@ -468,7 +468,7 @@ Practical Total     ≈ Model Weights × Overhead Factor (1.3× to 2.0×)
 
             <h4 style="margin-bottom:8px;">GPU Recommendations</h4>
             ${recommendations.map(r => `
-                <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid ${r.feasible ? 'var(--border-light)' : 'var(--status-critical)'};border-radius:6px;margin-bottom:8px;background:${r.fits ? '#f0fff0' : r.tpViable ? '#fff8e1' : '#ffeaea'};">
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid ${r.feasible ? 'var(--border-light)' : 'var(--status-critical)'};border-radius:6px;margin-bottom:8px;background:${r.fits ? 'var(--status-good-bg)' : r.tpViable ? 'var(--status-warning-bg)' : 'var(--status-critical-bg)'};">
                     <div>
                         <strong>${r.id}</strong> <span class="text-secondary text-sm">(${r.vram}GB)</span>
                     </div>
