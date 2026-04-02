@@ -3,6 +3,10 @@ import { bridge } from './core/BridgeClient.js';
 import { router } from './core/Router.js';
 import { state } from './core/StateEngine.js';
 import { PeDashboardView } from './views/pe-dashboard.js';
+import { PeVmsView } from './views/pe-vms.js';
+import { PeStorageView } from './views/pe-storage.js';
+import { PeNetworkView } from './views/pe-network.js';
+import { PeImagesView } from './views/pe-images.js';
 import { PlaceholderView } from './views/PlaceholderView.js';
 
 /**
@@ -36,10 +40,10 @@ class App {
     #registerRoutes() {
         // PE routes
         router.register('/pe/dashboard', PeDashboardView);
-        router.register('/pe/vms', this.#placeholder('Virtual Machines', 'pe'));
-        router.register('/pe/storage', this.#placeholder('Storage Containers', 'pe'));
-        router.register('/pe/network', this.#placeholder('Network Config', 'pe'));
-        router.register('/pe/images', this.#placeholder('Image Configuration', 'pe'));
+        router.register('/pe/vms', PeVmsView);
+        router.register('/pe/storage', PeStorageView);
+        router.register('/pe/network', PeNetworkView);
+        router.register('/pe/images', PeImagesView);
         router.register('/pe/protection', this.#placeholder('Data Protection', 'pe'));
         router.register('/pe/hardware', this.#placeholder('Hardware', 'pe'));
         router.register('/pe/health', this.#placeholder('Health', 'pe'));
