@@ -21,6 +21,10 @@ import { PcXplayView } from './views/pc-xplay.js';
 import { PcRbacView } from './views/pc-rbac.js';
 import { PcReportsView } from './views/pc-reports.js';
 import { PcApiView } from './views/pc-api.js';
+import { UsFilesView } from './views/us-files.js';
+import { UsAnalyticsView } from './views/us-analytics.js';
+import { UsObjectsView } from './views/us-objects.js';
+import { UsVolumesView } from './views/us-volumes.js';
 import { PlaceholderView } from './views/PlaceholderView.js';
 
 /**
@@ -75,6 +79,12 @@ class App {
         router.register('/pc/rbac', PcRbacView);
         router.register('/pc/reports', PcReportsView);
         router.register('/pc/api', PcApiView);
+
+        // Unified Storage routes
+        router.register('/pc/files', UsFilesView);
+        router.register('/pc/analytics', UsAnalyticsView);
+        router.register('/pc/objects', UsObjectsView);
+        router.register('/pc/volumes', UsVolumesView);
     }
 
     #placeholder(title, ctx) {

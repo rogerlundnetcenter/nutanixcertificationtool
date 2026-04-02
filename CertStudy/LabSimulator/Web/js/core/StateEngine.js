@@ -198,6 +198,27 @@ class StateEngine {
                 { uuid: 'pb-002', name: 'Auto-Snapshot-Daily', trigger: { type: 'schedule', schedule: 'daily' }, actions: [{ type: 'snapshot', target: 'All Production VMs' }], enabled: true, execution_count: 30, last_run: '2026-04-01' },
             ],
             reports: [],
+            fsvms: [
+                { uuid: 'fsvm-001', name: 'FSVM-01', ip: '10.42.100.51', vcpus: 4, memory_gb: 12, host_uuid: 'host-001', status: 'healthy' },
+                { uuid: 'fsvm-002', name: 'FSVM-02', ip: '10.42.100.52', vcpus: 4, memory_gb: 12, host_uuid: 'host-002', status: 'healthy' },
+                { uuid: 'fsvm-003', name: 'FSVM-03', ip: '10.42.100.53', vcpus: 4, memory_gb: 12, host_uuid: 'host-003', status: 'healthy' },
+            ],
+            file_shares: [
+                { uuid: 'share-001', name: 'Engineering', protocol: 'SMB', path: '\\\\NTNX-Files\\Engineering', max_size_gb: 500, ssr_enabled: true, multi_protocol: false },
+                { uuid: 'share-002', name: 'HR-Docs', protocol: 'SMB', path: '\\\\NTNX-Files\\HR-Docs', max_size_gb: 100, ssr_enabled: true, multi_protocol: false },
+                { uuid: 'share-003', name: 'linux-home', protocol: 'NFS', path: '/export/linux-home', max_size_gb: null, ssr_enabled: false, multi_protocol: false },
+            ],
+            object_stores: [
+                { uuid: 'os-001', name: 'ntnx-objects', capacity_tb: 10, endpoint: 'ntnx-objects.ntnxlab.local', status: 'online' },
+            ],
+            object_buckets: [
+                { uuid: 'bucket-001', name: 'backup-2026', store: 'ntnx-objects', versioning: true, worm_enabled: false, lifecycle: { days: 90, action: 'delete' } },
+                { uuid: 'bucket-002', name: 'compliance-archive', store: 'ntnx-objects', versioning: true, worm_enabled: true, lifecycle: null },
+            ],
+            volume_groups: [
+                { uuid: 'vg-001', name: 'SQL-Data-VG', iscsi_target: 'iqn.2025-01.local.ntnxlab:sql-data-vg', disks: [{ index: 0, size_gb: 100, container: 'Gold-Container' }, { index: 1, size_gb: 100, container: 'Gold-Container' }], clients: [{ iqn: 'iqn.2025-01.com.server01:initiator', type: 'external' }], chap_enabled: true, flash_mode: false },
+                { uuid: 'vg-002', name: 'Oracle-Log-VG', iscsi_target: 'iqn.2025-01.local.ntnxlab:oracle-log-vg', disks: [{ index: 0, size_gb: 50, container: 'Gold-Container' }], clients: [], chap_enabled: false, flash_mode: true },
+            ],
         };
     }
 }
