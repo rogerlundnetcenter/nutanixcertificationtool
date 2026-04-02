@@ -31,6 +31,8 @@ import { CiNetworkingView } from './views/ci-networking.js';
 import { AiGpuView } from './views/ai-gpu.js';
 import { AiNaiView } from './views/ai-nai.js';
 import { AiToolsView } from './views/ai-tools.js';
+import { ScenariosView } from './views/scenarios.js';
+import { ServicePagesView } from './views/service-pages.js';
 import { PlaceholderView } from './views/PlaceholderView.js';
 
 /**
@@ -101,6 +103,10 @@ class App {
         router.register('/pc/gpu', AiGpuView);
         router.register('/pc/nai', AiNaiView);
         router.register('/pc/nai-tools', AiToolsView);
+
+        // Scenarios & Tools routes
+        router.register('/pc/scenarios', ScenariosView);
+        router.register('/pe/services', ServicePagesView);
     }
 
     #placeholder(title, ctx) {
