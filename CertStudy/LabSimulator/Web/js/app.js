@@ -25,6 +25,9 @@ import { UsFilesView } from './views/us-files.js';
 import { UsAnalyticsView } from './views/us-analytics.js';
 import { UsObjectsView } from './views/us-objects.js';
 import { UsVolumesView } from './views/us-volumes.js';
+import { CiConsoleView } from './views/ci-console.js';
+import { CiDeployView } from './views/ci-deploy.js';
+import { CiNetworkingView } from './views/ci-networking.js';
 import { PlaceholderView } from './views/PlaceholderView.js';
 
 /**
@@ -85,6 +88,11 @@ class App {
         router.register('/pc/analytics', UsAnalyticsView);
         router.register('/pc/objects', UsObjectsView);
         router.register('/pc/volumes', UsVolumesView);
+
+        // Cloud Integration (NC2) routes
+        router.register('/pc/nc2-console', CiConsoleView);
+        router.register('/pc/nc2-deploy', CiDeployView);
+        router.register('/pc/nc2-networking', CiNetworkingView);
     }
 
     #placeholder(title, ctx) {

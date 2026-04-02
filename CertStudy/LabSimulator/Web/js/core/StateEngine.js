@@ -219,6 +219,10 @@ class StateEngine {
                 { uuid: 'vg-001', name: 'SQL-Data-VG', iscsi_target: 'iqn.2025-01.local.ntnxlab:sql-data-vg', disks: [{ index: 0, size_gb: 100, container: 'Gold-Container' }, { index: 1, size_gb: 100, container: 'Gold-Container' }], clients: [{ iqn: 'iqn.2025-01.com.server01:initiator', type: 'external' }], chap_enabled: true, flash_mode: false },
                 { uuid: 'vg-002', name: 'Oracle-Log-VG', iscsi_target: 'iqn.2025-01.local.ntnxlab:oracle-log-vg', disks: [{ index: 0, size_gb: 50, container: 'Gold-Container' }], clients: [], chap_enabled: false, flash_mode: true },
             ],
+            nc2_clusters: [
+                { uuid: 'nc2-001', name: 'NC2-Prod-AWS', provider: 'AWS', region: 'us-east-1', az: 'us-east-1a', instance_type: 'i3.metal', node_count: 4, rf: 'RF2', vpc_cidr: '10.100.0.0/16', subnet_cidr: '10.100.1.0/25', flow_gateway_count: 0, network_mode: 'native', billing: 'PAYG', status: 'running', aos_version: '6.10.1.2', ahv_version: '20230302.10015' },
+                { uuid: 'nc2-002', name: 'NC2-DR-Azure', provider: 'Azure', region: 'eastus', az: 'eastus-az1', instance_type: 'BareMetal-AHV', node_count: 3, rf: 'RF2', vpc_cidr: '10.200.0.0/16', subnet_cidr: '10.200.1.0/24', flow_gateway_count: 2, network_mode: 'noNAT', billing: '1yr', status: 'running', aos_version: '6.10.1.2', ahv_version: '20230302.10015' },
+            ],
         };
     }
 }
