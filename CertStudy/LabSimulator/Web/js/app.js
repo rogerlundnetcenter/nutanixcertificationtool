@@ -28,6 +28,9 @@ import { UsVolumesView } from './views/us-volumes.js';
 import { CiConsoleView } from './views/ci-console.js';
 import { CiDeployView } from './views/ci-deploy.js';
 import { CiNetworkingView } from './views/ci-networking.js';
+import { AiGpuView } from './views/ai-gpu.js';
+import { AiNaiView } from './views/ai-nai.js';
+import { AiToolsView } from './views/ai-tools.js';
 import { PlaceholderView } from './views/PlaceholderView.js';
 
 /**
@@ -93,6 +96,11 @@ class App {
         router.register('/pc/nc2-console', CiConsoleView);
         router.register('/pc/nc2-deploy', CiDeployView);
         router.register('/pc/nc2-networking', CiNetworkingView);
+
+        // AI Infrastructure routes
+        router.register('/pc/gpu', AiGpuView);
+        router.register('/pc/nai', AiNaiView);
+        router.register('/pc/nai-tools', AiToolsView);
     }
 
     #placeholder(title, ctx) {

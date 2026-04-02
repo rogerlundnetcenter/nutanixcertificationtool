@@ -223,6 +223,16 @@ class StateEngine {
                 { uuid: 'nc2-001', name: 'NC2-Prod-AWS', provider: 'AWS', region: 'us-east-1', az: 'us-east-1a', instance_type: 'i3.metal', node_count: 4, rf: 'RF2', vpc_cidr: '10.100.0.0/16', subnet_cidr: '10.100.1.0/25', flow_gateway_count: 0, network_mode: 'native', billing: 'PAYG', status: 'running', aos_version: '6.10.1.2', ahv_version: '20230302.10015' },
                 { uuid: 'nc2-002', name: 'NC2-DR-Azure', provider: 'Azure', region: 'eastus', az: 'eastus-az1', instance_type: 'BareMetal-AHV', node_count: 3, rf: 'RF2', vpc_cidr: '10.200.0.0/16', subnet_cidr: '10.200.1.0/24', flow_gateway_count: 2, network_mode: 'noNAT', billing: '1yr', status: 'running', aos_version: '6.10.1.2', ahv_version: '20230302.10015' },
             ],
+            gpu_devices: [
+                { uuid: 'gpu-001', name: 'GPU-Node1-Slot0', model: 'A100', host: 'AHV-Node-01', mode: 'passthrough', mig_partitions: 0, assigned_to: 'NAI-Worker-01' },
+                { uuid: 'gpu-002', name: 'GPU-Node1-Slot1', model: 'A100', host: 'AHV-Node-01', mode: 'mig', mig_partitions: 7, assigned_to: null },
+                { uuid: 'gpu-003', name: 'GPU-Node2-Slot0', model: 'L40S', host: 'AHV-Node-02', mode: 'passthrough', mig_partitions: 0, assigned_to: 'NAI-Worker-02' },
+                { uuid: 'gpu-004', name: 'GPU-Node3-Slot0', model: 'T4', host: 'AHV-Node-03', mode: 'passthrough', mig_partitions: 0, assigned_to: null },
+            ],
+            nai_endpoints: [
+                { uuid: 'nai-001', name: 'llama-prod', model: 'llama-2-7b-chat', engine: 'vllm', format: 'safetensors', gpu_count: 1, replicas: 2, min_replicas: 2, max_replicas: 5, api_key: 'nai-prod-key-001', status: 'running', url: 'https://llama-prod.nai.ntnxlab.local/v1' },
+                { uuid: 'nai-002', name: 'codellama-dev', model: 'codellama-34b', engine: 'vllm', format: 'gptq', gpu_count: 1, replicas: 1, min_replicas: 1, max_replicas: 3, api_key: 'nai-dev-key-002', status: 'running', url: 'https://codellama-dev.nai.ntnxlab.local/v1' },
+            ],
         };
     }
 }
