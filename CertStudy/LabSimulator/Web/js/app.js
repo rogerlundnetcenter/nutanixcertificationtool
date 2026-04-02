@@ -37,6 +37,11 @@ import { PcVmsView } from './views/pc-vms.js';
 import { PcCalmView } from './views/pc-calm.js';
 import { PcAuditView } from './views/pc-audit.js';
 import { PcClustersView } from './views/pc-clusters.js';
+import { PcLcmView } from './views/pc-lcm.js';
+import { PcSettingsView } from './views/pc-settings.js';
+import { PcNetworkView } from './views/pc-network.js';
+import { PcAlertsView } from './views/pc-alerts.js';
+import { PcProjectsView } from './views/pc-projects.js';
 
 /**
  * App — Bootstrap the Nutanix Lab Simulator.
@@ -115,6 +120,13 @@ class App {
         router.register('/pc/calm', PcCalmView);
         router.register('/pc/audit', PcAuditView);
         router.register('/pc/clusters', PcClustersView);
+
+        // Sprint 12 — New routes
+        router.register('/pc/lcm', PcLcmView);
+        router.register('/pc/pc-settings', PcSettingsView);
+        router.register('/pc/network', PcNetworkView);
+        router.register('/pc/alerts', PcAlertsView);
+        router.register('/pc/projects', PcProjectsView);
     }
 
     #wireNavigation() {

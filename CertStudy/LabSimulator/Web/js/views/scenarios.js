@@ -281,6 +281,94 @@ const SCENARIOS = [
         hints: ['First, create something (e.g., a VM)', 'Then navigate to PC → Audit Log', 'You should see the create event recorded'],
         context: 'pc', startRoute: '/pc/audit',
     },
+    // Sprint 12 — LCM, Networking, Alerts, Projects (8 scenarios)
+    {
+        id: 'lcm-01', exam: 'NCM-MCI', title: 'LCM Firmware Update',
+        difficulty: 'Intermediate', time: '10 min',
+        description: 'Use the Life Cycle Manager to check for firmware/software updates and apply them.',
+        objectives: [
+            { id: 'obj-1', text: 'Navigate to LCM and run a scan', validate: () => true },
+            { id: 'obj-2', text: 'Apply an available update to any component', validate: () => state.getAll('lcm_update_history').length > 2 },
+        ],
+        hints: ['Go to PC → LCM Updates', 'Click "Check for Updates"', 'Select components with updates and click "Update Selected"'],
+        context: 'pc', startRoute: '/pc/lcm',
+    },
+    {
+        id: 'lcm-02', exam: 'NCM-MCI', title: 'PC Settings — NTP & DNS',
+        difficulty: 'Beginner', time: '5 min',
+        description: 'Configure Prism Central NTP and DNS settings for proper time sync and name resolution.',
+        objectives: [
+            { id: 'obj-1', text: 'Add a second NTP server', validate: () => { const s = state.getAll('pc_settings')[0]; return s?.ntp_servers?.length >= 3; } },
+            { id: 'obj-2', text: 'Add a backup DNS server', validate: () => { const s = state.getAll('pc_settings')[0]; return s?.dns_servers?.length >= 2; } },
+        ],
+        hints: ['Go to PC → Settings', 'Switch to the NTP tab and add another server', 'Switch to the DNS tab and add a backup server', 'Click Save on each tab'],
+        context: 'pc', startRoute: '/pc/pc-settings',
+    },
+    {
+        id: 'net-01', exam: 'NCM-MCI', title: 'Create a VPC with Subnet',
+        difficulty: 'Intermediate', time: '10 min',
+        description: 'Create a new VPC with overlay networking and configure a subnet with IP pool.',
+        objectives: [
+            { id: 'obj-1', text: 'Create a VPC named "Lab-VPC"', validate: () => state.getAll('vpcs').some(v => v.name === 'Lab-VPC') },
+            { id: 'obj-2', text: 'Create a subnet inside "Lab-VPC"', validate: () => { const vpc = state.getAll('vpcs').find(v => v.name === 'Lab-VPC'); return vpc && state.getAll('subnets').some(s => s.vpc_uuid === vpc.uuid); } },
+        ],
+        hints: ['Go to PC → VPCs & Subnets', 'Click "+ Create" to create a VPC', 'Switch to Subnets tab, click "+ Create" and select your VPC'],
+        context: 'pc', startRoute: '/pc/network',
+    },
+    {
+        id: 'net-02', exam: 'NCM-MCI', title: 'Allocate a Floating IP',
+        difficulty: 'Beginner', time: '5 min',
+        description: 'Allocate a floating IP to a VPC for external access.',
+        objectives: [
+            { id: 'obj-1', text: 'Allocate a floating IP to any VPC', validate: () => state.getAll('floating_ips').length > 2 },
+        ],
+        hints: ['Go to Floating IPs tab', 'Click "+ Create" to allocate a new floating IP'],
+        context: 'pc', startRoute: '/pc/network',
+    },
+    {
+        id: 'alert-01', exam: 'NCM-MCI', title: 'Create Alert Policy & Resolve Alert',
+        difficulty: 'Intermediate', time: '8 min',
+        description: 'Create an alert policy for critical alerts and resolve an existing alert.',
+        objectives: [
+            { id: 'obj-1', text: 'Create an alert policy', validate: () => state.getAll('alert_policies').length > 2 },
+            { id: 'obj-2', text: 'Resolve the disk usage warning alert', validate: () => { const a = state.getAll('alerts').find(a => a.uuid === 'alert-001'); return a?.resolved; } },
+        ],
+        hints: ['Go to PC → Alerts', 'Click "+ Create Alert Policy"', 'Switch to Alerts tab, select the warning alert, click Resolve'],
+        context: 'pc', startRoute: '/pc/alerts',
+    },
+    {
+        id: 'proj-01', exam: 'NCM-MCI', title: 'Create a Self-Service Project',
+        difficulty: 'Intermediate', time: '10 min',
+        description: 'Create a project with resource quotas and user assignments for self-service.',
+        objectives: [
+            { id: 'obj-1', text: 'Create a project named "Lab-Project"', validate: () => state.getAll('projects').some(p => p.name === 'Lab-Project') },
+            { id: 'obj-2', text: 'Project has vCPU quota set', validate: () => { const p = state.getAll('projects').find(p => p.name === 'Lab-Project'); return p?.vcpu_quota > 0; } },
+        ],
+        hints: ['Go to PC → Projects', 'Click "+ Create Project"', 'Set a name and resource quotas in the wizard'],
+        context: 'pc', startRoute: '/pc/projects',
+    },
+    {
+        id: 'cli-03', exam: 'NCM-MCI', title: 'CLI — LCM & Alert Commands',
+        difficulty: 'Intermediate', time: '8 min',
+        description: 'Use CLI commands to check LCM inventory, list alerts, and manage projects.',
+        objectives: [
+            { id: 'obj-1', text: 'Run lcm_inventory to view components', validate: () => true },
+            { id: 'obj-2', text: 'Run alert list to view active alerts', validate: () => true },
+            { id: 'obj-3', text: 'Run project list to view projects', validate: () => true },
+        ],
+        hints: ['Open the CLI terminal', 'Type "lcm_inventory" to see firmware/software', 'Type "alert list" for alerts', 'Type "project list" for projects'],
+        context: 'pe', startRoute: '/pe/cli',
+    },
+    {
+        id: 'scma-01', exam: 'NCM-MCI', title: 'Enable SCMA Security Hardening',
+        difficulty: 'Beginner', time: '5 min',
+        description: 'Enable Security Configuration Management Automation (SCMA) for STIG compliance.',
+        objectives: [
+            { id: 'obj-1', text: 'Enable SCMA in PC Settings', validate: () => { const s = state.getAll('pc_settings')[0]; return s?.scma_enabled; } },
+        ],
+        hints: ['Go to PC → Settings', 'Switch to the SCMA tab', 'Toggle SCMA on and click Save'],
+        context: 'pc', startRoute: '/pc/pc-settings',
+    },
 ];
 
 export class ScenariosView extends BaseView {

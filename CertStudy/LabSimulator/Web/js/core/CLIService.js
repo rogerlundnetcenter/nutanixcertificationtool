@@ -38,6 +38,9 @@ export class CLIService {
             'whoami': () => 'nutanix',
             'hostname': () => state.hosts[0]?.name || 'NTNX-CVM',
             'date': () => new Date().toString(),
+            'lcm_inventory': () => this.#lcmInventory(args),
+            'alert': () => this.#alertCmd(args),
+            'project': () => this.#projectCmd(args),
             'help': () => this.#help(),
             'clear': () => '__CLEAR__',
         };
@@ -95,6 +98,9 @@ export class CLIService {
   whoami         Current user
   hostname       CVM hostname
   date           Current date/time
+  lcm_inventory  LCM software/firmware inventory
+  alert          Alert management (list, resolve)
+  project        Project management (list, info)
   help           This help message
   clear          Clear terminal
 
@@ -540,6 +546,67 @@ vnet0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 state UP
     #uptime() {
         const days = Math.floor(Math.random() * 30) + 15;
         return ` ${new Date().toLocaleTimeString()} up ${days} days, 14:23, 1 user, load average: 0.42, 0.38, 0.31`;
+    }
+
+    // ── LCM INVENTORY ──
+    #lcmInventory(args) {
+        const sub = args[0]?.toLowerCase();
+        if (!sub || sub === 'list') {
+            const items = state.getAll('lcm_inventory');
+            if (items.length === 0) return 'No LCM inventory data. Run LCM scan first.';
+            let output = 'LCM Software/Firmware Inventory\n' + '═'.repeat(80) + '\n';
+            output += 'Component'.padEnd(20) + 'Category'.padEnd(12) + 'Entity'.padEnd(22) + 'Current'.padEnd(18) + 'Available'.padEnd(18) + 'Status\n';
+            output += '─'.repeat(80) + '\n';
+            items.forEach(i => {
+                output += `${i.name.padEnd(20)}${i.category.padEnd(12)}${i.entity.padEnd(22)}${i.current_version.padEnd(18)}${(i.available_version || '—').padEnd(18)}${i.status}\n`;
+            });
+            const updates = items.filter(i => i.update_available).length;
+            output += `\n${items.length} components, ${updates} update(s) available.`;
+            return output;
+        }
+        return 'Usage: lcm_inventory [list]';
+    }
+
+    // ── ALERT ──
+    #alertCmd(args) {
+        const sub = args[0]?.toLowerCase();
+        if (!sub || sub === 'list') {
+            const alerts = state.getAll('alerts');
+            if (alerts.length === 0) return 'No alerts.';
+            let output = 'Alert List\n' + '═'.repeat(70) + '\n';
+            output += 'Severity'.padEnd(12) + 'Entity'.padEnd(20) + 'Title'.padEnd(30) + 'Status\n';
+            output += '─'.repeat(70) + '\n';
+            alerts.forEach(a => {
+                output += `${a.severity.padEnd(12)}${(a.entity || '').padEnd(20)}${a.title.substring(0, 28).padEnd(30)}${a.resolved ? 'Resolved' : 'Active'}\n`;
+            });
+            return output;
+        }
+        if (sub === 'resolve') {
+            const id = args[1];
+            if (!id) return 'Usage: alert resolve <uuid>';
+            const alert = state.getById('alerts', id);
+            if (!alert) return `Alert ${id} not found.`;
+            state.update('alerts', id, { resolved: true, resolved_at: new Date().toISOString() });
+            return `Alert ${id} resolved.`;
+        }
+        return 'Usage: alert [list|resolve <uuid>]';
+    }
+
+    // ── PROJECT ──
+    #projectCmd(args) {
+        const sub = args[0]?.toLowerCase();
+        if (!sub || sub === 'list') {
+            const projects = state.getAll('projects');
+            if (projects.length === 0) return 'No projects configured.';
+            let output = 'Projects\n' + '═'.repeat(70) + '\n';
+            output += 'Name'.padEnd(20) + 'VMs'.padEnd(6) + 'vCPU Used/Quota'.padEnd(18) + 'Mem Used/Quota'.padEnd(18) + 'Users\n';
+            output += '─'.repeat(70) + '\n';
+            projects.forEach(p => {
+                output += `${p.name.padEnd(20)}${String(p.vm_count || 0).padEnd(6)}${`${p.vcpu_used || 0}/${p.vcpu_quota || '∞'}`.padEnd(18)}${`${p.memory_used_gb || 0}/${p.memory_quota_gb || '∞'} GB`.padEnd(18)}${(p.users || []).length}\n`;
+            });
+            return output;
+        }
+        return 'Usage: project [list]';
     }
 
     #parseKV(args) {

@@ -46,11 +46,11 @@ export class PcDashboardView extends BaseView {
                 ${this.#card('Policies', flowPolicies.length, 'var(--prism-blue)', `${flowPolicies.filter(p => p.mode === 'applied').length} enforced`)}
             </div>
 
-            <!-- Resource Utilization -->
+            <!-- Resource Utilization (SVG Gauges) -->
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--space-lg);margin-bottom:var(--space-xl);">
-                ${this.#utilizationCard('CPU', usedCpu, totalCpu, 'cores', cpuPct)}
-                ${this.#utilizationCard('Memory', usedMem, totalMem, 'GB', memPct)}
-                ${this.#utilizationCard('Storage', usedStorage.toFixed(1), totalStorage.toFixed(0), 'TB', storagePct)}
+                ${this.#gaugeCard('CPU', usedCpu, totalCpu, 'cores', cpuPct)}
+                ${this.#gaugeCard('Memory', usedMem, totalMem, 'GB', memPct)}
+                ${this.#gaugeCard('Storage', usedStorage.toFixed(1), totalStorage.toFixed(0), 'TB', storagePct)}
             </div>
 
             <!-- Bottom Row -->
@@ -105,6 +105,26 @@ export class PcDashboardView extends BaseView {
             <div class="text-secondary text-sm">${title}</div>
             <div class="text-secondary" style="font-size:var(--font-size-xs);">${subtitle}</div>
         </div></div>`;
+    }
+
+    #gaugeCard(label, used, total, unit, pct) {
+        const color = pct > 80 ? 'var(--status-critical)' : pct > 60 ? 'var(--status-warning)' : 'var(--prism-blue)';
+        const radius = 54;
+        const circumference = 2 * Math.PI * radius;
+        const dashOffset = circumference - (pct / 100) * circumference;
+        return `<div class="card">
+            <div class="card-header">${label} Utilization</div>
+            <div class="card-body" style="text-align:center;padding:var(--space-lg);">
+                <svg width="140" height="80" viewBox="0 0 140 80">
+                    <path d="M 10 70 A 54 54 0 0 1 130 70" fill="none" stroke="var(--border-subtle)" stroke-width="10" stroke-linecap="round"/>
+                    <path d="M 10 70 A 54 54 0 0 1 130 70" fill="none" stroke="${color}" stroke-width="10" stroke-linecap="round"
+                          stroke-dasharray="${circumference / 2}" stroke-dashoffset="${dashOffset / 2}"
+                          style="transition: stroke-dashoffset 0.6s ease;"/>
+                    <text x="70" y="62" text-anchor="middle" font-size="22" font-weight="700" fill="var(--text-primary)">${pct}%</text>
+                    <text x="70" y="78" text-anchor="middle" font-size="10" fill="var(--text-secondary)">${used} / ${total} ${unit}</text>
+                </svg>
+            </div>
+        </div>`;
     }
 
     #utilizationCard(label, used, total, unit, pct) {

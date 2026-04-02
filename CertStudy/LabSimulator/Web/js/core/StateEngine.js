@@ -273,6 +273,48 @@ class StateEngine {
                 { uuid: 'rb-002', name: 'VM-Snapshot-Cleanup', type: 'Remediation', status: 'active', run_count: 8, last_run: '2026-03-30T06:00:00Z' },
             ],
             audit_log: [],
+            // Sprint 12 — New collections
+            lcm_inventory: [
+                { uuid: 'lcm-001', name: 'AOS', category: 'software', entity: 'NTNX-POC-Cluster-01', current_version: '6.10.1.2', available_version: null, update_available: false, status: 'up_to_date', update_size_mb: 0 },
+                { uuid: 'lcm-002', name: 'AHV', category: 'software', entity: 'NTNX-POC-Cluster-01', current_version: '20230302.10015', available_version: '20240401.10016', update_available: true, status: 'update_available', update_size_mb: 420 },
+                { uuid: 'lcm-003', name: 'Prism Central', category: 'software', entity: 'Prism-Central-01', current_version: 'pc.2024.2', available_version: null, update_available: false, status: 'up_to_date', update_size_mb: 0 },
+                { uuid: 'lcm-004', name: 'NCC', category: 'software', entity: 'NTNX-POC-Cluster-01', current_version: '4.7.0', available_version: '4.8.0', update_available: true, status: 'update_available', update_size_mb: 85 },
+                { uuid: 'lcm-005', name: 'Foundation', category: 'software', entity: 'NTNX-POC-Cluster-01', current_version: '5.7.1', available_version: null, update_available: false, status: 'up_to_date', update_size_mb: 0 },
+                { uuid: 'lcm-006', name: 'BMC Firmware', category: 'firmware', entity: 'NTNX-A-CVM', current_version: '7.09', available_version: null, update_available: false, status: 'up_to_date', update_size_mb: 0 },
+                { uuid: 'lcm-007', name: 'BIOS', category: 'firmware', entity: 'NTNX-A-CVM', current_version: '42.7.1', available_version: '42.7.2', update_available: true, status: 'update_available', update_size_mb: 32 },
+                { uuid: 'lcm-008', name: 'HBA Firmware', category: 'firmware', entity: 'NTNX-A-CVM', current_version: '16.17.01.00', available_version: null, update_available: false, status: 'up_to_date', update_size_mb: 0 },
+                { uuid: 'lcm-009', name: 'SSD Firmware', category: 'firmware', entity: 'NTNX-A-CVM', current_version: 'GDC5602Q', available_version: null, update_available: false, status: 'up_to_date', update_size_mb: 0 },
+                { uuid: 'lcm-010', name: 'NIC Firmware', category: 'firmware', entity: 'NTNX-A-CVM', current_version: '22.00.48', available_version: null, update_available: false, status: 'up_to_date', update_size_mb: 0 },
+            ],
+            lcm_update_history: [
+                { uuid: 'lcmh-001', component: 'AOS', entity: 'NTNX-POC-Cluster-01', from_version: '6.8.1', to_version: '6.10.1.2', status: 'success', completed_at: '2026-03-20T14:30:00Z' },
+                { uuid: 'lcmh-002', component: 'NCC', entity: 'NTNX-POC-Cluster-01', from_version: '4.6.2', to_version: '4.7.0', status: 'success', completed_at: '2026-03-20T15:00:00Z' },
+            ],
+            pc_settings: [
+                { uuid: 'pc-settings-001', pc_name: 'Prism-Central-01', pc_ip: '10.42.100.39', pc_version: 'pc.2024.2', timezone: 'America/Los_Angeles', ntp_servers: ['pool.ntp.org', '0.us.pool.ntp.org'], dns_servers: ['10.42.100.10'], smtp_server: '', smtp_port: 25, smtp_from: 'prism-central@ntnxlab.local', smtp_security: 'none', ssl_issuer: 'Self-Signed', ssl_expires: '2027-04-01', ssl_subject: 'CN=prism-central.ntnxlab.local', pulse_enabled: true, pulse_email: 'admin@ntnxlab.local', scma_enabled: false, scma_schedule: 'daily' },
+            ],
+            vpcs: [
+                { uuid: 'vpc-001', name: 'Production-VPC', cidr: '172.16.0.0/16', external_subnet: 'VM-Network-100', dns_servers: ['10.42.100.10'], status: 'active', routes: [{ destination: '0.0.0.0/0', target: 'External Gateway', type: 'default' }, { destination: '172.16.0.0/16', target: 'Local', type: 'local' }] },
+                { uuid: 'vpc-002', name: 'Dev-VPC', cidr: '192.168.0.0/16', external_subnet: 'VM-Network-100', dns_servers: ['10.42.100.10'], status: 'active', routes: [{ destination: '0.0.0.0/0', target: 'External Gateway', type: 'default' }, { destination: '192.168.0.0/16', target: 'Local', type: 'local' }] },
+            ],
+            subnets: [
+                { uuid: 'sub-001', name: 'Web-Tier', vpc_uuid: 'vpc-001', type: 'Overlay', cidr: '172.16.1.0/24', gateway: '172.16.1.1', pool_start: '172.16.1.10', pool_end: '172.16.1.250', nat: true },
+                { uuid: 'sub-002', name: 'App-Tier', vpc_uuid: 'vpc-001', type: 'Overlay', cidr: '172.16.2.0/24', gateway: '172.16.2.1', pool_start: '172.16.2.10', pool_end: '172.16.2.250', nat: true },
+                { uuid: 'sub-003', name: 'DB-Tier', vpc_uuid: 'vpc-001', type: 'Overlay', cidr: '172.16.3.0/24', gateway: '172.16.3.1', pool_start: '172.16.3.10', pool_end: '172.16.3.100', nat: false },
+                { uuid: 'sub-004', name: 'Dev-Default', vpc_uuid: 'vpc-002', type: 'Overlay', cidr: '192.168.1.0/24', gateway: '192.168.1.1', pool_start: '192.168.1.10', pool_end: '192.168.1.250', nat: true },
+            ],
+            floating_ips: [
+                { uuid: 'fip-001', ip: '10.42.100.60', vpc_uuid: 'vpc-001', vpc_name: 'Production-VPC', assigned_to: 'Web-Server-01', status: 'assigned' },
+                { uuid: 'fip-002', ip: '10.42.100.61', vpc_uuid: 'vpc-001', vpc_name: 'Production-VPC', assigned_to: null, status: 'available' },
+            ],
+            alert_policies: [
+                { uuid: 'ap-001', name: 'Critical-Email-Admins', entity_type: 'All', severity_filter: ['critical'], action: 'email', enabled: true },
+                { uuid: 'ap-002', name: 'Storage-Warning-SNMP', entity_type: 'Storage Container', severity_filter: ['warning', 'critical'], action: 'snmp', enabled: true },
+            ],
+            projects: [
+                { uuid: 'proj-001', name: 'Engineering', description: 'Engineering team project', vcpu_quota: 100, memory_quota_gb: 256, storage_quota_gb: 2000, vcpu_used: 24, memory_used_gb: 68, storage_used_gb: 430, vm_count: 6, users: [{ username: 'admin', role: 'Project Admin' }, { username: 'jdoe', role: 'Developer' }], infrastructure: { clusters: ['NTNX-POC-Cluster-01'], networks: ['Production-200'], categories: [{ key: 'Environment', value: 'Development' }], vpcs: ['Dev-VPC'] } },
+                { uuid: 'proj-002', name: 'Data Team', description: 'Data engineering and analytics', vcpu_quota: 64, memory_quota_gb: 128, storage_quota_gb: 1000, vcpu_used: 12, memory_used_gb: 32, storage_used_gb: 280, vm_count: 3, users: [{ username: 'operator', role: 'Project Admin' }], infrastructure: { clusters: ['All'], networks: ['All'], categories: [], vpcs: [] } },
+            ],
         };
     }
 }
