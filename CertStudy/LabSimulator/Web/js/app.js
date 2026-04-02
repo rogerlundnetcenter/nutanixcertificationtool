@@ -17,6 +17,10 @@ import { PcCategoriesView } from './views/pc-categories.js';
 import { PcFlowView } from './views/pc-flow.js';
 import { PcLeapView } from './views/pc-leap.js';
 import { PcPlanningView } from './views/pc-planning.js';
+import { PcXplayView } from './views/pc-xplay.js';
+import { PcRbacView } from './views/pc-rbac.js';
+import { PcReportsView } from './views/pc-reports.js';
+import { PcApiView } from './views/pc-api.js';
 import { PlaceholderView } from './views/PlaceholderView.js';
 
 /**
@@ -67,6 +71,10 @@ class App {
         router.register('/pc/flow', PcFlowView);
         router.register('/pc/leap', PcLeapView);
         router.register('/pc/planning', PcPlanningView);
+        router.register('/pc/xplay', PcXplayView);
+        router.register('/pc/rbac', PcRbacView);
+        router.register('/pc/reports', PcReportsView);
+        router.register('/pc/api', PcApiView);
     }
 
     #placeholder(title, ctx) {

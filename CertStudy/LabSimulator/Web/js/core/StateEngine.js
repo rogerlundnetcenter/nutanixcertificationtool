@@ -181,6 +181,23 @@ class StateEngine {
             recovery_plans: [
                 { uuid: 'rp-001', name: 'WebTier-Recovery', boot_groups: [{ order: 1, vms: ['vm-010'], delay_seconds: 0 }, { order: 2, vms: ['vm-009'], delay_seconds: 60 }, { order: 3, vms: ['vm-006', 'vm-007'], delay_seconds: 120 }], network_mapping: { source: 'Production-200', target: 'DR-Prod-200' }, pre_script: null, post_script: '/scripts/validate-dns.sh', status: 'ready', last_test: '2026-03-15' },
             ],
+            users: [
+                { uuid: 'user-001', username: 'admin', email: 'admin@ntnxlab.local', role: 'Cluster Admin', source: 'local', last_login: '2026-04-01' },
+                { uuid: 'user-002', username: 'operator', email: 'ops@ntnxlab.local', role: 'Cluster Admin', source: 'local', last_login: '2026-03-28' },
+                { uuid: 'user-003', username: 'viewer', email: 'viewer@ntnxlab.local', role: 'Viewer', source: 'local', last_login: null },
+                { uuid: 'user-004', username: 'ad-jdoe', email: 'jdoe@ntnxlab.local', role: 'User Admin', source: 'ad', last_login: '2026-03-30' },
+            ],
+            roles: [
+                { uuid: 'role-001', name: 'Cluster Admin', type: 'built_in', permissions: ['VM.Create', 'VM.Delete', 'VM.PowerOps', 'VM.Update', 'Storage.Create', 'Storage.Delete', 'Network.Create', 'Network.Delete', 'Cluster.View', 'Cluster.Update', 'User.Manage', 'Alert.View', 'Alert.Resolve'] },
+                { uuid: 'role-002', name: 'User Admin', type: 'built_in', permissions: ['VM.Create', 'VM.Delete', 'VM.PowerOps', 'VM.Update', 'Cluster.View', 'Alert.View', 'Alert.Resolve'] },
+                { uuid: 'role-003', name: 'Viewer', type: 'built_in', permissions: ['Cluster.View', 'Alert.View'] },
+            ],
+            ad_config: [],
+            playbooks: [
+                { uuid: 'pb-001', name: 'Alert-Notify-Admins', trigger: { type: 'alert', severity: 'critical' }, actions: [{ type: 'email', target: 'admin@ntnxlab.local' }], enabled: true, execution_count: 12, last_run: '2026-03-29' },
+                { uuid: 'pb-002', name: 'Auto-Snapshot-Daily', trigger: { type: 'schedule', schedule: 'daily' }, actions: [{ type: 'snapshot', target: 'All Production VMs' }], enabled: true, execution_count: 30, last_run: '2026-04-01' },
+            ],
+            reports: [],
         };
     }
 }
