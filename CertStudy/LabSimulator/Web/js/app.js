@@ -33,7 +33,10 @@ import { AiNaiView } from './views/ai-nai.js';
 import { AiToolsView } from './views/ai-tools.js';
 import { ScenariosView } from './views/scenarios.js';
 import { ServicePagesView } from './views/service-pages.js';
-import { PlaceholderView } from './views/PlaceholderView.js';
+import { PcVmsView } from './views/pc-vms.js';
+import { PcCalmView } from './views/pc-calm.js';
+import { PcAuditView } from './views/pc-audit.js';
+import { PcClustersView } from './views/pc-clusters.js';
 
 /**
  * App — Bootstrap the Nutanix Lab Simulator.
@@ -78,7 +81,7 @@ class App {
 
         // PC routes
         router.register('/pc/dashboard', PcDashboardView);
-        router.register('/pc/vms', this.#placeholder('PC VMs', 'pc'));
+        router.register('/pc/vms', PcVmsView);
         router.register('/pc/categories', PcCategoriesView);
         router.register('/pc/flow', PcFlowView);
         router.register('/pc/leap', PcLeapView);
@@ -107,12 +110,11 @@ class App {
         // Scenarios & Tools routes
         router.register('/pc/scenarios', ScenariosView);
         router.register('/pe/services', ServicePagesView);
-    }
 
-    #placeholder(title, ctx) {
-        return class extends PlaceholderView {
-            constructor() { super(title, ctx); }
-        };
+        // Sprint 11 — New routes
+        router.register('/pc/calm', PcCalmView);
+        router.register('/pc/audit', PcAuditView);
+        router.register('/pc/clusters', PcClustersView);
     }
 
     #wireNavigation() {

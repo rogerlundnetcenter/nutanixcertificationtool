@@ -42,6 +42,7 @@ class StateEngine {
         if (!this.#state[collection]) this.#state[collection] = [];
         this.#state[collection].push(entity);
         await this.#persist();
+        this.#logAudit(collection, 'create', entity);
         bus.emit(`${collection}:created`, entity);
         bus.emit('state:changed', { collection, action: 'create', entity });
         return entity;
@@ -54,6 +55,7 @@ class StateEngine {
 
         Object.assign(list[idx], changes, { updated_at: new Date().toISOString() });
         await this.#persist();
+        this.#logAudit(collection, 'update', list[idx]);
         bus.emit(`${collection}:updated`, list[idx]);
         bus.emit('state:changed', { collection, action: 'update', entity: list[idx] });
         return list[idx];
@@ -66,6 +68,7 @@ class StateEngine {
 
         const removed = list.splice(idx, 1)[0];
         await this.#persist();
+        this.#logAudit(collection, 'delete', removed);
         bus.emit(`${collection}:deleted`, removed);
         bus.emit('state:changed', { collection, action: 'delete', entity: removed });
         return removed;
@@ -84,6 +87,23 @@ class StateEngine {
     get networks() { return this.getAll('networks'); }
     get images() { return this.getAll('images'); }
     get protectionDomains() { return this.getAll('protection_domains'); }
+
+    // ── Audit logging ──
+
+    #logAudit(collection, action, entity) {
+        if (collection === 'audit_log') return; // no recursion
+        const name = entity?.name || entity?.title || entity?.username || entity?.uuid || '';
+        const detail = action === 'delete' ? `Removed ${collection} item` : action === 'update' ? `Modified ${collection} item` : `Created ${collection} item`;
+        if (!this.#state.audit_log) this.#state.audit_log = [];
+        this.#state.audit_log.push({
+            uuid: crypto.randomUUID(),
+            timestamp: new Date().toISOString(),
+            action, collection,
+            entity_name: name,
+            details: detail,
+        });
+        bus.emit('audit_log:created', { collection, action, entity_name: name });
+    }
 
     // ── Reset ──
 
@@ -233,6 +253,26 @@ class StateEngine {
                 { uuid: 'nai-001', name: 'llama-prod', model: 'llama-2-7b-chat', engine: 'vllm', format: 'safetensors', gpu_count: 1, replicas: 2, min_replicas: 2, max_replicas: 5, api_key: 'nai-prod-key-001', status: 'running', url: 'https://llama-prod.nai.ntnxlab.local/v1' },
                 { uuid: 'nai-002', name: 'codellama-dev', model: 'codellama-34b', engine: 'vllm', format: 'gptq', gpu_count: 1, replicas: 1, min_replicas: 1, max_replicas: 3, api_key: 'nai-dev-key-002', status: 'running', url: 'https://codellama-dev.nai.ntnxlab.local/v1' },
             ],
+            // Sprint 11 — New collections
+            registered_clusters: [
+                { uuid: 'rc-001', name: 'NTNX-POC-Cluster-01', vip: '10.42.100.37', version: 'AOS 6.10.1.2', hypervisor: 'AHV', node_count: 4, rf: 2, vm_count: 11, status: 'healthy', storage_usage: 12.7, storage_capacity: 48.0, last_health_check: '2026-04-01T18:00:00Z' },
+                { uuid: 'rc-002', name: 'NTNX-DR-Site-01', vip: '10.42.200.37', version: 'AOS 6.10.1.2', hypervisor: 'AHV', node_count: 3, rf: 2, vm_count: 5, status: 'healthy', storage_usage: 6.2, storage_capacity: 36.0, last_health_check: '2026-04-01T18:00:00Z' },
+                { uuid: 'rc-003', name: 'NTNX-ESXi-Prod', vip: '10.42.300.37', version: 'AOS 6.8.1', hypervisor: 'ESXi', node_count: 6, rf: 3, vm_count: 42, status: 'healthy', storage_usage: 28.1, storage_capacity: 72.0, last_health_check: '2026-04-01T17:30:00Z' },
+            ],
+            blueprints: [
+                { uuid: 'bp-001', name: 'WebApp-3Tier', type: 'Multi-VM', status: 'active', services: [{ name: 'WebServer', type: 'VM', substrate: 'AHV' }, { name: 'AppServer', type: 'VM', substrate: 'AHV' }, { name: 'Database', type: 'VM', substrate: 'AHV' }], project: 'Engineering', created_at: '2026-03-15', updated_at: '2026-03-28' },
+                { uuid: 'bp-002', name: 'Dev-Sandbox', type: 'Single-VM', status: 'active', services: [{ name: 'DevBox', type: 'VM', substrate: 'AHV' }], project: 'Engineering', created_at: '2026-03-20', updated_at: '2026-03-20' },
+                { uuid: 'bp-003', name: 'MongoDB-HA', type: 'Multi-VM', status: 'published', services: [{ name: 'Primary', type: 'VM', substrate: 'AHV' }, { name: 'Secondary-1', type: 'VM', substrate: 'AHV' }, { name: 'Secondary-2', type: 'VM', substrate: 'AHV' }], project: 'Data Team', created_at: '2026-02-10', updated_at: '2026-03-01' },
+            ],
+            applications: [
+                { uuid: 'app-001', name: 'WebApp-3Tier-prod', blueprint: 'WebApp-3Tier', status: 'running', services: [{ name: 'WebServer' }, { name: 'AppServer' }, { name: 'Database' }], project: 'Engineering', created_at: '2026-03-29' },
+                { uuid: 'app-002', name: 'Dev-Sandbox-jdoe', blueprint: 'Dev-Sandbox', status: 'running', services: [{ name: 'DevBox' }], project: 'Engineering', created_at: '2026-04-01' },
+            ],
+            runbooks: [
+                { uuid: 'rb-001', name: 'Cluster-Health-Check', type: 'Operational', status: 'active', run_count: 15, last_run: '2026-04-01T12:00:00Z' },
+                { uuid: 'rb-002', name: 'VM-Snapshot-Cleanup', type: 'Remediation', status: 'active', run_count: 8, last_run: '2026-03-30T06:00:00Z' },
+            ],
+            audit_log: [],
         };
     }
 }

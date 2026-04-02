@@ -128,6 +128,7 @@ class MainForm : Form
             Width = 280,
             BackColor = SynthwaveColors.DarkPanel,
             Padding = new Padding(12, 12, 12, 12),
+            AutoScroll = true,
         };
         _sidePanel.Paint += SidePanel_Paint;
 
@@ -170,7 +171,7 @@ class MainForm : Form
 
         var viewSectionLabel = MakeSectionLabel("─── VIEW ───");
         _blueprintBtn = MakeFlatButton("  📋 Blueprint Coverage", SynthwaveColors.NeonPurple);
-        _blueprintBtn.Width = 252;
+        _blueprintBtn.Dock = DockStyle.Top;
         _blueprintBtn.Height = 32;
 
         var statsSectionLabel = MakeSectionLabel("─── STATS ───");
@@ -223,19 +224,19 @@ class MainForm : Form
         };
 
         _reviewMistakesBtn = MakeFlatButton("  ❌ Review Mistakes", SynthwaveColors.StatusRed);
-        _reviewMistakesBtn.Width = 252;
+        _reviewMistakesBtn.Dock = DockStyle.Top;
         _reviewMistakesBtn.Height = 32;
 
         _startExamBtn = MakeFlatButton("  🎯 Start Exam", SynthwaveColors.NeonMagenta);
-        _startExamBtn.Width = 252;
+        _startExamBtn.Dock = DockStyle.Top;
         _startExamBtn.Height = 32;
 
         _exportPdfBtn = MakeFlatButton("  📄 Export to PDF", SynthwaveColors.NeonCyan);
-        _exportPdfBtn.Width = 252;
+        _exportPdfBtn.Dock = DockStyle.Top;
         _exportPdfBtn.Height = 32;
 
         _labSimBtn = MakeFlatButton("  🖥️ Lab Simulator", SynthwaveColors.StatusGreen);
-        _labSimBtn.Width = 252;
+        _labSimBtn.Dock = DockStyle.Top;
         _labSimBtn.Height = 32;
 
         _wrongCountLabel = new Label
@@ -257,10 +258,10 @@ class MainForm : Form
         _sidePanel.Controls.Add(_statsLabel);
         _sidePanel.Controls.Add(statsSectionLabel);
         _sidePanel.Controls.Add(_startExamBtn);
-        _sidePanel.Controls.Add(_labSimBtn);
         _sidePanel.Controls.Add(_exportPdfBtn);
         _sidePanel.Controls.Add(_reviewMistakesBtn);
         _sidePanel.Controls.Add(_blueprintBtn);
+        _sidePanel.Controls.Add(_labSimBtn);
         _sidePanel.Controls.Add(viewSectionLabel);
         _sidePanel.Controls.Add(_randomizeCheckBox);
         _sidePanel.Controls.Add(_testModeRadio);

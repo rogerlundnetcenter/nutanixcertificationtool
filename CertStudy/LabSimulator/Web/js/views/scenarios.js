@@ -176,6 +176,111 @@ const SCENARIOS = [
         hints: ['Go to NAI Tools → API Explorer', 'Send the default request (should succeed)', 'Change body to use "prompt" instead of "messages" to see the 422 error'],
         context: 'pc', startRoute: '/pc/nai-tools',
     },
+
+    // ═══ Sprint 11 — New Scenarios ═══
+
+    // Multi-Cluster & Calm
+    {
+        id: 'mc-01', exam: 'NCM-MCI', title: 'Register a Remote Cluster',
+        difficulty: 'Beginner', time: '5 min',
+        description: 'Register a new Prism Element cluster to Prism Central for multi-cluster management.',
+        objectives: [
+            { id: 'obj-1', text: 'Register a new cluster named "NTNX-Lab-Remote"', validate: () => state.getAll('registered_clusters').some(c => c.name === 'NTNX-Lab-Remote') },
+        ],
+        hints: ['Navigate to PC → Clusters', 'Click "+ Register Cluster"', 'Enter name "NTNX-Lab-Remote" and a valid IP'],
+        context: 'pc', startRoute: '/pc/clusters',
+    },
+    {
+        id: 'mc-02', exam: 'NCM-MCI', title: 'Create a Calm Blueprint',
+        difficulty: 'Intermediate', time: '10 min',
+        description: 'Create a multi-VM blueprint in Calm with web, app, and database tiers.',
+        objectives: [
+            { id: 'obj-1', text: 'Create a blueprint named "Lab-3Tier"', validate: () => state.getAll('blueprints').some(b => b.name === 'Lab-3Tier') },
+            { id: 'obj-2', text: 'Blueprint has at least 2 services', validate: () => { const bp = state.getAll('blueprints').find(b => b.name === 'Lab-3Tier'); return bp?.services?.length >= 2; } },
+        ],
+        hints: ['Navigate to PC → Calm / Marketplace', 'Click "+ Create Blueprint"', 'In Services step, enter: WebServer, Database'],
+        context: 'pc', startRoute: '/pc/calm',
+    },
+    {
+        id: 'mc-03', exam: 'NCM-MCI', title: 'Launch App from Blueprint',
+        difficulty: 'Intermediate', time: '10 min',
+        description: 'Launch a running application from an existing Calm blueprint.',
+        objectives: [
+            { id: 'obj-1', text: 'Launch an application from any blueprint', validate: () => state.getAll('applications').length > 2 },
+        ],
+        hints: ['Go to Calm → Blueprints tab', 'Use the row action "Launch" on any blueprint', 'Check the Applications tab to confirm'],
+        context: 'pc', startRoute: '/pc/calm',
+    },
+    {
+        id: 'mc-04', exam: 'NCM-MCI', title: 'Clone Marketplace Item',
+        difficulty: 'Beginner', time: '5 min',
+        description: 'Clone a pre-built application from the Calm Marketplace to your blueprints.',
+        objectives: [
+            { id: 'obj-1', text: 'Clone any Marketplace item to Blueprints', validate: () => state.getAll('blueprints').some(b => b.source === 'marketplace') },
+        ],
+        hints: ['Go to Calm → Marketplace tab', 'Click "Clone to Blueprints" on any item', 'The clone appears in your Blueprints tab as draft'],
+        context: 'pc', startRoute: '/pc/calm',
+    },
+
+    // Advanced CLI scenarios
+    {
+        id: 'cli-01', exam: 'NCM-MCI', title: 'CLI Mastery — Storage & Network',
+        difficulty: 'Advanced', time: '15 min',
+        description: 'Use NCLI to create storage containers and ACLI to manage networks from the command line.',
+        objectives: [
+            { id: 'obj-1', text: 'Create a container named "CLI-Container" using ncli', validate: () => state.getAll('containers').some(c => c.name === 'CLI-Container') },
+            { id: 'obj-2', text: 'Create a network named "CLI-Net" using acli', validate: () => state.getAll('networks').some(n => n.name === 'CLI-Net') },
+        ],
+        hints: ['Open PE → CLI Terminal', 'Type: ncli container create name=CLI-Container rf=2', 'Type: acli net.create name=CLI-Net vlan=500'],
+        context: 'pe', startRoute: '/pe/cli',
+    },
+    {
+        id: 'cli-02', exam: 'NCM-MCI', title: 'CLI — Calm and Lifecycle',
+        difficulty: 'Advanced', time: '10 min',
+        description: 'Use the calm CLI to list blueprints and nuclei to check upgrade inventory.',
+        objectives: [
+            { id: 'obj-1', text: 'List blueprints using the calm CLI', validate: () => true },
+            { id: 'obj-2', text: 'Check upgrade inventory with nuclei', validate: () => true },
+        ],
+        hints: ['Open PE → CLI Terminal', 'Type: calm blueprint list', 'Type: nuclei inventory'],
+        context: 'pe', startRoute: '/pe/cli',
+    },
+
+    // NCP-US expanded
+    {
+        id: 'us-04', exam: 'NCP-US', title: 'Create NFS Export for Linux',
+        difficulty: 'Intermediate', time: '10 min',
+        description: 'Create an NFS file share and understand multi-protocol considerations.',
+        objectives: [
+            { id: 'obj-1', text: 'Create an NFS share named "lab-nfs"', validate: () => state.getAll('file_shares').some(s => s.name === 'lab-nfs' && s.protocol === 'NFS') },
+        ],
+        hints: ['Navigate to PC → Files', 'Create a share with protocol NFS', 'NFS uses AUTH_SYS by default — LDAP required for multi-protocol'],
+        context: 'pc', startRoute: '/pc/files',
+    },
+    {
+        id: 'us-05', exam: 'NCP-US', title: 'Verify FSVM Deployment Requirements',
+        difficulty: 'Beginner', time: '5 min',
+        description: 'Check that minimum FSVM requirements (3 FSVMs, 12GB RAM each) are met.',
+        objectives: [
+            { id: 'obj-1', text: 'Verify at least 3 FSVMs are deployed', validate: () => state.getAll('fsvms').length >= 3 },
+            { id: 'obj-2', text: 'Verify each FSVM has at least 12 GB RAM', validate: () => state.getAll('fsvms').every(f => f.memory_gb >= 12) },
+        ],
+        hints: ['Navigate to PC → Files', 'Check the FSVMs section', 'Minimum: 3 FSVMs, 4 vCPUs, 12 GB RAM each'],
+        context: 'pc', startRoute: '/pc/files',
+    },
+
+    // Audit / Operations
+    {
+        id: 'ops-01', exam: 'NCM-MCI', title: 'Review Audit Trail',
+        difficulty: 'Beginner', time: '5 min',
+        description: 'Perform some actions, then check the Audit Log to see recorded events.',
+        objectives: [
+            { id: 'obj-1', text: 'Create any entity (VM, container, blueprint, etc.)', validate: () => state.getAll('audit_log').some(l => l.action === 'create') },
+            { id: 'obj-2', text: 'View the audit log page', validate: () => true },
+        ],
+        hints: ['First, create something (e.g., a VM)', 'Then navigate to PC → Audit Log', 'You should see the create event recorded'],
+        context: 'pc', startRoute: '/pc/audit',
+    },
 ];
 
 export class ScenariosView extends BaseView {

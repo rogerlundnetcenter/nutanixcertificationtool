@@ -28,6 +28,16 @@ export class CLIService {
             'ovs-ofctl': () => this.#ovsOfctl(args),
             'allssh': () => this.#allssh(args),
             'curl': () => this.#curl(args),
+            'nuclei': () => this.#nuclei(args),
+            'calm': () => this.#calm(args),
+            'upgrade_check': () => this.#upgradeCheck(args),
+            'host_disks_check': () => this.#hostDisksCheck(args),
+            'links': () => this.#links(),
+            'df': () => this.#df(),
+            'uptime': () => this.#uptime(),
+            'whoami': () => 'nutanix',
+            'hostname': () => state.hosts[0]?.name || 'NTNX-CVM',
+            'date': () => new Date().toString(),
             'help': () => this.#help(),
             'clear': () => '__CLEAR__',
         };
@@ -75,6 +85,16 @@ export class CLIService {
   ovs-ofctl      OVS flow tables
   allssh         Run command on all CVMs
   curl           HTTP client (API calls)
+  nuclei         LCM / Foundation lifecycle checks
+  calm           Calm automation CLI (blueprint, app management)
+  upgrade_check  AOS / AHV upgrade compatibility check
+  host_disks_check   Physical disk inventory
+  links          Network interface status
+  df             Disk usage summary
+  uptime         System uptime
+  whoami         Current user
+  hostname       CVM hostname
+  date           Current date/time
   help           This help message
   clear          Clear terminal
 
@@ -82,7 +102,10 @@ Usage examples:
   acli vm.list
   ncli cluster info
   ncc health_checks run_all
-  acli vm.create name=MyVM memory=4G num_vcpus=2`;
+  acli vm.create name=MyVM memory=4G num_vcpus=2
+  calm blueprint list
+  nuclei inventory
+  curl -k https://10.42.100.37:9440/api/nutanix/v3/vms/list -X POST -d '{}'`;
     }
 
     // ── ACLI ──
@@ -375,6 +398,148 @@ Usage examples:
             return JSON.stringify({ entities: state.networks.map(n => ({ metadata: { uuid: n.uuid }, spec: { name: n.name, resources: { vlan_id: n.vlan_id } } })), metadata: { total_matches: state.networks.length } }, null, 2);
         }
         return `{"error": "Unsupported API endpoint. Try /api/nutanix/v3/vms/list or /v3/subnets/list with POST"}`;
+    }
+
+    // ── NUCLEI (LCM / Foundation) ──
+    #nuclei(args) {
+        const sub = args[0]?.toLowerCase();
+        if (sub === 'inventory') {
+            const c = state.cluster;
+            return `LCM Inventory:
+  AOS:               ${c.version} (latest: 6.11.0)
+  AHV:               ${c.hypervisor} (latest: 20230302.20001)
+  NCC:               4.7.0 (latest: 4.7.1)
+  Foundation:        5.7.1 (latest: 5.8.0)
+  Firmware Pack:     2.7 (latest: 2.8)
+  Prism Central:     pc.2024.3 (latest: pc.2024.4)
+
+  Upgrades available: 4`;
+        }
+        if (sub === 'update' || sub === 'upgrade') {
+            return 'Performing pre-check...\n[PASS] Cluster health OK\n[PASS] Space check OK\n[PASS] Compatibility check OK\nUpdate plan ready. Use LCM in Prism to apply. (Simulated)';
+        }
+        return 'Usage: nuclei <inventory|update>';
+    }
+
+    // ── CALM CLI ──
+    #calm(args) {
+        const entity = args[0]?.toLowerCase();
+        const action = args[1]?.toLowerCase();
+
+        if (entity === 'blueprint' || entity === 'bp') {
+            if (action === 'list' || action === 'ls') {
+                const bps = state.getAll('blueprints');
+                if (bps.length === 0) return 'No blueprints found.';
+                const header = 'Name                          Type          Status     Services';
+                const sep = '─'.repeat(70);
+                const rows = bps.map(b => `${(b.name || '').padEnd(30)}${(b.type || '').padEnd(14)}${(b.status || '').padEnd(11)}${b.services?.length || 0}`);
+                return [header, sep, ...rows].join('\n');
+            }
+            if (action === 'create') {
+                const params = this.#parseKV(args.slice(2));
+                if (!params.name) return 'Usage: calm blueprint create name=<name>';
+                state.create('blueprints', { name: params.name, type: params.type || 'Single-VM', status: 'draft', services: [], project: params.project || '' });
+                return `Blueprint '${params.name}' created (draft).`;
+            }
+            return 'Usage: calm blueprint <list|create>';
+        }
+
+        if (entity === 'app' || entity === 'application') {
+            if (action === 'list' || action === 'ls') {
+                const apps = state.getAll('applications');
+                if (apps.length === 0) return 'No applications found.';
+                const header = 'Name                          Blueprint               Status';
+                const sep = '─'.repeat(70);
+                const rows = apps.map(a => `${(a.name || '').padEnd(30)}${(a.blueprint || '').padEnd(24)}${a.status || ''}`);
+                return [header, sep, ...rows].join('\n');
+            }
+            return 'Usage: calm app <list>';
+        }
+
+        if (entity === 'runbook' || entity === 'rb') {
+            if (action === 'list' || action === 'ls') {
+                const rbs = state.getAll('runbooks');
+                if (rbs.length === 0) return 'No runbooks found.';
+                const header = 'Name                          Type            Status    Runs';
+                const sep = '─'.repeat(65);
+                const rows = rbs.map(r => `${(r.name || '').padEnd(30)}${(r.type || '').padEnd(16)}${(r.status || '').padEnd(10)}${r.run_count || 0}`);
+                return [header, sep, ...rows].join('\n');
+            }
+            return 'Usage: calm runbook <list>';
+        }
+
+        return 'Usage: calm <blueprint|app|runbook> <list|create>';
+    }
+
+    // ── UPGRADE CHECK ──
+    #upgradeCheck(args) {
+        const c = state.cluster;
+        return `AOS Upgrade Compatibility Check
+─────────────────────────────
+Current Version:  ${c.version}
+Target Version:   AOS 6.11.0
+Hypervisor:       ${c.hypervisor}
+Node Count:       ${c.numNodes}
+
+Pre-Checks:
+  [PASS] Minimum NCC version (4.6.0+)
+  [PASS] Cluster health (all nodes healthy)
+  [PASS] Metadata ring healthy
+  [PASS] No running LCM operations
+  [PASS] Sufficient free space (>10% required)
+  [PASS] Compatible hypervisor version
+  [WARN] Non-AHV hosts cannot do 1-click AHV upgrade
+
+Result: COMPATIBLE — upgrade may proceed via LCM
+Note: Always run NCC before upgrading (exam tip!)`;
+    }
+
+    // ── HOST DISKS CHECK ──
+    #hostDisksCheck(args) {
+        const hosts = state.hosts;
+        let output = 'Physical Disk Inventory\n' + '─'.repeat(70) + '\n';
+        hosts.forEach(h => {
+            output += `\n  Host: ${h.name} (${h.ip})\n`;
+            output += `    SSD Tier:  ${h.ssd_tb} TB (${Math.round(h.ssd_tb * 1024)} GB) — Healthy\n`;
+            output += `    HDD Tier:  ${h.hdd_tb} TB — Healthy\n`;
+            output += `    Total Raw: ${(h.ssd_tb + h.hdd_tb).toFixed(1)} TB\n`;
+        });
+        const totalRaw = hosts.reduce((s, h) => s + h.ssd_tb + h.hdd_tb, 0);
+        output += `\n  Cluster Total Raw: ${totalRaw.toFixed(1)} TB`;
+        output += `\n  Usable (RF${state.cluster.rf}):   ${(totalRaw / state.cluster.rf).toFixed(1)} TB`;
+        return output;
+    }
+
+    // ── LINKS (network interfaces) ──
+    #links() {
+        return `eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 state UP
+    link/ether 50:6b:4b:xx:xx:xx
+    inet 10.42.100.29/24 brd 10.42.100.255 scope global eth0
+eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 state UP
+    link/ether 50:6b:4b:xx:xx:yy
+    inet 10.42.100.129/24 brd 10.42.100.255 scope global eth1
+eth2: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 9000 state DOWN
+    link/ether 50:6b:4b:xx:xx:zz
+vnet0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 state UP
+    link/ether fe:xx:xx:xx:xx:01`;
+    }
+
+    // ── DF (disk usage) ──
+    #df() {
+        const ctrs = state.getAll('containers');
+        let output = 'Filesystem             Size    Used    Avail   Use%  Mounted on\n' + '─'.repeat(70) + '\n';
+        ctrs.forEach(c => {
+            const avail = (c.capacity_tb - c.used_tb).toFixed(1);
+            const pct = Math.round((c.used_tb / c.capacity_tb) * 100);
+            output += `/dev/ntnx/${c.name.padEnd(20)} ${c.capacity_tb.toFixed(0).padStart(4)}T   ${c.used_tb.toFixed(1).padStart(5)}T   ${avail.padStart(5)}T   ${String(pct).padStart(3)}%  /mnt/${c.name}\n`;
+        });
+        return output.trimEnd();
+    }
+
+    // ── UPTIME ──
+    #uptime() {
+        const days = Math.floor(Math.random() * 30) + 15;
+        return ` ${new Date().toLocaleTimeString()} up ${days} days, 14:23, 1 user, load average: 0.42, 0.38, 0.31`;
     }
 
     #parseKV(args) {
