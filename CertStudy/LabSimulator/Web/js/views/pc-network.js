@@ -115,7 +115,7 @@ export class PcNetworkView extends BaseView {
             searchKeys: ['name', 'cidr'],
             selectable: true,
             actions: [
-                { label: '🗑️ Delete', variant: 'danger', onClick: (sel) => this.#deleteItems('vpcs', sel) },
+                { label: '🗑️ Delete', variant: 'danger', onClick: (item) => this.#deleteItems('vpcs', [item]) },
             ],
         });
         container.appendChild(this.#table.render());
@@ -139,7 +139,7 @@ export class PcNetworkView extends BaseView {
             searchKeys: ['name', 'cidr', 'type'],
             selectable: true,
             actions: [
-                { label: '🗑️ Delete', variant: 'danger', onClick: (sel) => this.#deleteItems('subnets', sel) },
+                { label: '🗑️ Delete', variant: 'danger', onClick: (item) => this.#deleteItems('subnets', [item]) },
             ],
         });
         container.appendChild(this.#table.render());
@@ -159,7 +159,7 @@ export class PcNetworkView extends BaseView {
             searchKeys: ['ip', 'vpc_name', 'assigned_to'],
             selectable: true,
             actions: [
-                { label: '🗑️ Release', variant: 'danger', onClick: (sel) => this.#deleteItems('floating_ips', sel) },
+                { label: '🗑️ Release', variant: 'danger', onClick: (item) => this.#deleteItems('floating_ips', [item]) },
             ],
         });
         container.appendChild(this.#table.render());
@@ -216,26 +216,52 @@ export class PcNetworkView extends BaseView {
     }
 
     #createVpc() {
+        const networks = state.networks;
         const wizard = new Wizard({
             title: 'Create VPC',
+            initialData: { name: '', cidr: '', external_subnet: networks[0]?.name || '', dns: '' },
             steps: [
-                { title: 'VPC Details', fields: [
-                    { name: 'name', label: 'VPC Name', type: 'text', required: true, placeholder: 'e.g. Production-VPC' },
-                    { name: 'cidr', label: 'CIDR Block', type: 'text', required: true, placeholder: '172.16.0.0/16' },
-                    { name: 'external_subnet', label: 'External Subnet', type: 'select', options: state.networks.map(n => n.name), required: true },
-                    { name: 'dns', label: 'DNS Servers (comma-separated)', type: 'text', placeholder: '10.42.100.10' },
-                ]},
+                {
+                    label: 'VPC Details',
+                    render: (data) => `
+                        <div class="form-group">
+                            <label class="form-label">VPC Name</label>
+                            <input class="form-input" data-field="name" value="${data.name}" placeholder="e.g. Production-VPC" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">CIDR Block</label>
+                            <input class="form-input" data-field="cidr" value="${data.cidr}" placeholder="172.16.0.0/16" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">External Subnet</label>
+                            <select class="form-input" data-field="external_subnet">
+                                ${networks.map(n => `<option value="${n.name}" ${data.external_subnet === n.name ? 'selected' : ''}>${n.name}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">DNS Servers (comma-separated)</label>
+                            <input class="form-input" data-field="dns" value="${data.dns}" placeholder="10.42.100.10" />
+                        </div>
+                    `,
+                    validate: (data) => {
+                        const errors = [];
+                        if (!data.name?.trim()) errors.push('VPC name is required');
+                        if (!data.cidr?.trim()) errors.push('CIDR block is required');
+                        if (!data.external_subnet) errors.push('External subnet is required');
+                        return errors;
+                    },
+                },
             ],
             onComplete: async (data) => {
                 await state.create('vpcs', {
-                    name: data.name,
-                    cidr: data.cidr,
+                    name: data.name.trim(),
+                    cidr: data.cidr.trim(),
                     external_subnet: data.external_subnet,
                     dns_servers: data.dns ? data.dns.split(',').map(s => s.trim()) : [],
                     status: 'active',
                     routes: [
                         { destination: '0.0.0.0/0', target: 'External Gateway', type: 'default' },
-                        { destination: data.cidr, target: 'Local', type: 'local' },
+                        { destination: data.cidr.trim(), target: 'Local', type: 'local' },
                     ],
                 });
                 toast(`VPC "${data.name}" created.`, 'success');
@@ -250,25 +276,74 @@ export class PcNetworkView extends BaseView {
 
         const wizard = new Wizard({
             title: 'Create Subnet',
+            initialData: { name: '', vpc_uuid: vpcs[0]?.uuid || '', type: 'Overlay', cidr: '', gateway: '', pool_start: '', pool_end: '', nat: 'Yes' },
             steps: [
-                { title: 'Subnet Details', fields: [
-                    { name: 'name', label: 'Subnet Name', type: 'text', required: true, placeholder: 'e.g. App-Tier-Subnet' },
-                    { name: 'vpc_uuid', label: 'VPC', type: 'select', options: vpcs.map(v => ({ label: v.name, value: v.uuid })), required: true },
-                    { name: 'type', label: 'Type', type: 'select', options: ['Overlay', 'VLAN'], required: true },
-                    { name: 'cidr', label: 'CIDR', type: 'text', required: true, placeholder: '172.16.1.0/24' },
-                    { name: 'gateway', label: 'Gateway', type: 'text', required: true, placeholder: '172.16.1.1' },
-                    { name: 'pool_start', label: 'IP Pool Start', type: 'text', placeholder: '172.16.1.10' },
-                    { name: 'pool_end', label: 'IP Pool End', type: 'text', placeholder: '172.16.1.250' },
-                    { name: 'nat', label: 'Enable NAT', type: 'select', options: ['Yes', 'No'] },
-                ]},
+                {
+                    label: 'Subnet Details',
+                    render: (data) => `
+                        <div class="form-group">
+                            <label class="form-label">Subnet Name</label>
+                            <input class="form-input" data-field="name" value="${data.name}" placeholder="e.g. App-Tier-Subnet" />
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                            <div class="form-group">
+                                <label class="form-label">VPC</label>
+                                <select class="form-input" data-field="vpc_uuid">
+                                    ${vpcs.map(v => `<option value="${v.uuid}" ${data.vpc_uuid === v.uuid ? 'selected' : ''}>${v.name}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Type</label>
+                                <select class="form-input" data-field="type">
+                                    <option ${data.type === 'Overlay' ? 'selected' : ''}>Overlay</option>
+                                    <option ${data.type === 'VLAN' ? 'selected' : ''}>VLAN</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                            <div class="form-group">
+                                <label class="form-label">CIDR</label>
+                                <input class="form-input" data-field="cidr" value="${data.cidr}" placeholder="172.16.1.0/24" />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Gateway</label>
+                                <input class="form-input" data-field="gateway" value="${data.gateway}" placeholder="172.16.1.1" />
+                            </div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
+                            <div class="form-group">
+                                <label class="form-label">IP Pool Start</label>
+                                <input class="form-input" data-field="pool_start" value="${data.pool_start}" placeholder="172.16.1.10" />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">IP Pool End</label>
+                                <input class="form-input" data-field="pool_end" value="${data.pool_end}" placeholder="172.16.1.250" />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Enable NAT</label>
+                                <select class="form-input" data-field="nat">
+                                    <option ${data.nat === 'Yes' ? 'selected' : ''}>Yes</option>
+                                    <option ${data.nat === 'No' ? 'selected' : ''}>No</option>
+                                </select>
+                            </div>
+                        </div>
+                    `,
+                    validate: (data) => {
+                        const errors = [];
+                        if (!data.name?.trim()) errors.push('Subnet name is required');
+                        if (!data.cidr?.trim()) errors.push('CIDR is required');
+                        if (!data.gateway?.trim()) errors.push('Gateway is required');
+                        return errors;
+                    },
+                },
             ],
             onComplete: async (data) => {
                 await state.create('subnets', {
-                    name: data.name,
+                    name: data.name.trim(),
                     vpc_uuid: data.vpc_uuid,
                     type: data.type,
-                    cidr: data.cidr,
-                    gateway: data.gateway,
+                    cidr: data.cidr.trim(),
+                    gateway: data.gateway.trim(),
                     pool_start: data.pool_start || '',
                     pool_end: data.pool_end || '',
                     nat: data.nat === 'Yes',
@@ -285,10 +360,20 @@ export class PcNetworkView extends BaseView {
 
         const wizard = new Wizard({
             title: 'Allocate Floating IP',
+            initialData: { vpc_uuid: vpcs[0]?.uuid || '' },
             steps: [
-                { title: 'Details', fields: [
-                    { name: 'vpc_uuid', label: 'VPC', type: 'select', options: vpcs.map(v => ({ label: v.name, value: v.uuid })), required: true },
-                ]},
+                {
+                    label: 'Select VPC',
+                    render: (data) => `
+                        <div class="form-group">
+                            <label class="form-label">VPC</label>
+                            <select class="form-input" data-field="vpc_uuid">
+                                ${vpcs.map(v => `<option value="${v.uuid}" ${data.vpc_uuid === v.uuid ? 'selected' : ''}>${v.name}</option>`).join('')}
+                            </select>
+                        </div>
+                        <p class="text-secondary text-sm">A random floating IP will be allocated from the VPC's address space.</p>
+                    `,
+                },
             ],
             onComplete: async (data) => {
                 const vpc = vpcs.find(v => v.uuid === data.vpc_uuid);
@@ -309,7 +394,7 @@ export class PcNetworkView extends BaseView {
 
     async #deleteItems(collection, selected) {
         if (!selected || selected.length === 0) { toast('Select items first.', 'warning'); return; }
-        const ok = await confirm(`Delete ${selected.length} ${collection} item(s)?`);
+        const ok = await confirm({ title: 'Delete Items', message: `Delete ${selected.length} ${collection} item(s)?`, confirmLabel: 'Delete', danger: true });
         if (!ok) return;
         for (const item of selected) { await state.remove(collection, item.uuid); }
         toast(`Deleted ${selected.length} item(s).`, 'success');

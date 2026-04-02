@@ -96,8 +96,8 @@ export class PcProjectsView extends BaseView {
             searchKeys: ['name', 'description'],
             selectable: true,
             actions: [
-                { label: '👁️ View Details', onClick: (sel) => sel.length === 1 ? this.#viewProject(sel[0]) : toast('Select one project.', 'warning') },
-                { label: '🗑️ Delete', variant: 'danger', onClick: (sel) => this.#deleteProjects(sel) },
+                { label: '👁️ View Details', onClick: (item) => this.#viewProject(item) },
+                { label: '🗑️ Delete', variant: 'danger', onClick: (item) => this.#deleteProjects([item]) },
             ],
             emptyMessage: 'No projects configured. Click "+ Create Project" to add one.',
         });
@@ -204,19 +204,56 @@ export class PcProjectsView extends BaseView {
     #createProject() {
         const wizard = new Wizard({
             title: 'Create Project',
+            initialData: { name: '', description: '', vcpu_quota: '', memory_quota_gb: '', storage_quota_gb: '', admin_user: '' },
             steps: [
-                { title: 'Project Details', fields: [
-                    { name: 'name', label: 'Project Name', type: 'text', required: true, placeholder: 'e.g. Engineering' },
-                    { name: 'description', label: 'Description', type: 'text', placeholder: 'Team project description' },
-                ]},
-                { title: 'Resource Quotas', fields: [
-                    { name: 'vcpu_quota', label: 'vCPU Quota', type: 'number', placeholder: '100' },
-                    { name: 'memory_quota_gb', label: 'Memory Quota (GB)', type: 'number', placeholder: '256' },
-                    { name: 'storage_quota_gb', label: 'Storage Quota (GB)', type: 'number', placeholder: '1000' },
-                ]},
-                { title: 'Users', fields: [
-                    { name: 'admin_user', label: 'Project Admin Username', type: 'text', placeholder: 'admin' },
-                ]},
+                {
+                    label: 'Project Details',
+                    render: (data) => `
+                        <div class="form-group">
+                            <label class="form-label">Project Name</label>
+                            <input class="form-input" data-field="name" value="${data.name}" placeholder="e.g. Engineering" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Description</label>
+                            <input class="form-input" data-field="description" value="${data.description}" placeholder="Team project description" />
+                        </div>
+                    `,
+                    validate: (data) => {
+                        const errors = [];
+                        if (!data.name?.trim()) errors.push('Project name is required');
+                        return errors;
+                    },
+                },
+                {
+                    label: 'Resource Quotas',
+                    render: (data) => `
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
+                            <div class="form-group">
+                                <label class="form-label">vCPU Quota</label>
+                                <input class="form-input" data-field="vcpu_quota" type="number" value="${data.vcpu_quota}" placeholder="100" />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Memory Quota (GB)</label>
+                                <input class="form-input" data-field="memory_quota_gb" type="number" value="${data.memory_quota_gb}" placeholder="256" />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Storage Quota (GB)</label>
+                                <input class="form-input" data-field="storage_quota_gb" type="number" value="${data.storage_quota_gb}" placeholder="1000" />
+                            </div>
+                        </div>
+                        <p class="text-secondary text-sm">Leave blank for unlimited quota.</p>
+                    `,
+                },
+                {
+                    label: 'Users',
+                    render: (data) => `
+                        <div class="form-group">
+                            <label class="form-label">Project Admin Username</label>
+                            <input class="form-input" data-field="admin_user" value="${data.admin_user}" placeholder="admin" />
+                        </div>
+                        <p class="text-secondary text-sm">This user will be assigned the Project Admin role.</p>
+                    `,
+                },
             ],
             onComplete: async (data) => {
                 const users = data.admin_user ? [{ username: data.admin_user, role: 'Project Admin' }] : [];
@@ -241,7 +278,7 @@ export class PcProjectsView extends BaseView {
 
     async #deleteProjects(selected) {
         if (!selected || selected.length === 0) { toast('Select projects first.', 'warning'); return; }
-        const ok = await confirm(`Delete ${selected.length} project(s)? This cannot be undone.`);
+        const ok = await confirm({ title: 'Delete Projects', message: `Delete ${selected.length} project(s)? This cannot be undone.`, confirmLabel: 'Delete', danger: true });
         if (!ok) return;
         for (const p of selected) { await state.remove('projects', p.uuid); }
         toast(`Deleted ${selected.length} project(s).`, 'success');

@@ -119,7 +119,7 @@ export class PcLcmView extends BaseView {
             searchKeys: ['name', 'entity', 'category'],
             selectable: true,
             actions: [
-                { label: '⬆️ Update Selected', onClick: (sel) => this.#updateComponents(sel) },
+                { label: '⬆️ Update Selected', onClick: (item) => this.#updateComponents([item]) },
             ],
             emptyMessage: 'No LCM inventory. Click "Check for Updates" to scan.',
         });
@@ -146,7 +146,7 @@ export class PcLcmView extends BaseView {
             searchKeys: ['name', 'entity'],
             selectable: true,
             actions: [
-                { label: '⬆️ Update Selected', onClick: (sel) => this.#updateComponents(sel) },
+                { label: '⬆️ Update Selected', onClick: (item) => this.#updateComponents([item]) },
                 { label: '⬆️ Update All', onClick: () => this.#updateComponents(items) },
             ],
         });
@@ -203,7 +203,7 @@ export class PcLcmView extends BaseView {
         const updatable = selected.filter(i => i.update_available);
         if (updatable.length === 0) { toast('Selected components are already up to date.', 'info'); return; }
 
-        const ok = await confirm(`Update ${updatable.length} component(s)? This will simulate a rolling update.`);
+        const ok = await confirm({ title: 'Update Components', message: `Update ${updatable.length} component(s)? This will simulate a rolling update.`, confirmLabel: 'Update' });
         if (!ok) return;
 
         toast(`Updating ${updatable.length} component(s)...`, 'info');

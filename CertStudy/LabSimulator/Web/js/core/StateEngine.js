@@ -312,7 +312,7 @@ class StateEngine {
                 { uuid: 'ap-002', name: 'Storage-Warning-SNMP', entity_type: 'Storage Container', severity_filter: ['warning', 'critical'], action: 'snmp', enabled: true },
             ],
             projects: [
-                { uuid: 'proj-001', name: 'Engineering', description: 'Engineering team project', vcpu_quota: 100, memory_quota_gb: 256, storage_quota_gb: 2000, vcpu_used: 24, memory_used_gb: 68, storage_used_gb: 430, vm_count: 6, users: [{ username: 'admin', role: 'Project Admin' }, { username: 'jdoe', role: 'Developer' }], infrastructure: { clusters: ['NTNX-POC-Cluster-01'], networks: ['Production-200'], categories: [{ key: 'Environment', value: 'Development' }], vpcs: ['Dev-VPC'] } },
+                { uuid: 'proj-001', name: 'Engineering', description: 'Engineering team project', vcpu_quota: 100, memory_quota_gb: 256, storage_quota_gb: 2000, vcpu_used: 24, memory_used_gb: 68, storage_used_gb: 430, vm_count: 6, users: [{ username: 'admin', role: 'Project Admin' }, { username: 'jdoe', role: 'Developer' }], infrastructure: { clusters: ['NTNX-POC-Cluster-01'], networks: ['Production-200'], categories: [{ key: 'Environment', value: 'Development' }], vpcs: ['vpc-002'] } },
                 { uuid: 'proj-002', name: 'Data Team', description: 'Data engineering and analytics', vcpu_quota: 64, memory_quota_gb: 128, storage_quota_gb: 1000, vcpu_used: 12, memory_used_gb: 32, storage_used_gb: 280, vm_count: 3, users: [{ username: 'operator', role: 'Project Admin' }], infrastructure: { clusters: ['All'], networks: ['All'], categories: [], vpcs: [] } },
             ],
         };

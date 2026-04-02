@@ -568,7 +568,7 @@ vnet0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 state UP
     }
 
     // ── ALERT ──
-    #alertCmd(args) {
+    async #alertCmd(args) {
         const sub = args[0]?.toLowerCase();
         if (!sub || sub === 'list') {
             const alerts = state.getAll('alerts');
@@ -586,7 +586,7 @@ vnet0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 state UP
             if (!id) return 'Usage: alert resolve <uuid>';
             const alert = state.getById('alerts', id);
             if (!alert) return `Alert ${id} not found.`;
-            state.update('alerts', id, { resolved: true, resolved_at: new Date().toISOString() });
+            await state.update('alerts', id, { resolved: true, resolved_at: new Date().toISOString() });
             return `Alert ${id} resolved.`;
         }
         return 'Usage: alert [list|resolve <uuid>]';

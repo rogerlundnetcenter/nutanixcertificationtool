@@ -120,8 +120,8 @@ export class PcAlertsView extends BaseView {
             searchKeys: ['title', 'entity', 'severity'],
             selectable: true,
             actions: [
-                { label: '✅ Resolve', onClick: (sel) => this.#resolveAlerts(sel) },
-                { label: '🔄 Acknowledge', onClick: (sel) => this.#acknowledgeAlerts(sel) },
+                { label: '✅ Resolve', onClick: (item) => this.#resolveAlerts([item]) },
+                { label: '🔄 Acknowledge', onClick: (item) => this.#acknowledgeAlerts([item]) },
             ],
         });
         container.appendChild(this.#table.render());
@@ -142,7 +142,7 @@ export class PcAlertsView extends BaseView {
             searchKeys: ['name', 'entity_type'],
             selectable: true,
             actions: [
-                { label: '🗑️ Delete', variant: 'danger', onClick: (sel) => this.#deletePolicies(sel) },
+                { label: '🗑️ Delete', variant: 'danger', onClick: (item) => this.#deletePolicies([item]) },
             ],
             emptyMessage: 'No alert policies configured.',
         });
@@ -213,13 +213,42 @@ export class PcAlertsView extends BaseView {
     #createPolicy() {
         const wizard = new Wizard({
             title: 'Create Alert Policy',
+            initialData: { name: '', entity_type: 'VM', severity: 'Critical Only', action: 'Email' },
             steps: [
-                { title: 'Policy Details', fields: [
-                    { name: 'name', label: 'Policy Name', type: 'text', required: true, placeholder: 'e.g. Critical-Alerts-Email' },
-                    { name: 'entity_type', label: 'Entity Type', type: 'select', options: ['VM', 'Host', 'Cluster', 'Storage Container', 'Network', 'All'], required: true },
-                    { name: 'severity', label: 'Severity Filter', type: 'select', options: ['Critical Only', 'Warning & Critical', 'All'], required: true },
-                    { name: 'action', label: 'Action', type: 'select', options: ['Email', 'SNMP Trap', 'Syslog', 'Webhook'], required: true },
-                ]},
+                {
+                    label: 'Policy Details',
+                    render: (data) => `
+                        <div class="form-group">
+                            <label class="form-label">Policy Name</label>
+                            <input class="form-input" data-field="name" value="${data.name}" placeholder="e.g. Critical-Alerts-Email" />
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                            <div class="form-group">
+                                <label class="form-label">Entity Type</label>
+                                <select class="form-input" data-field="entity_type">
+                                    ${['VM', 'Host', 'Cluster', 'Storage Container', 'Network', 'All'].map(o => `<option ${data.entity_type === o ? 'selected' : ''}>${o}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Severity Filter</label>
+                                <select class="form-input" data-field="severity">
+                                    ${['Critical Only', 'Warning & Critical', 'All'].map(o => `<option ${data.severity === o ? 'selected' : ''}>${o}</option>`).join('')}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Action</label>
+                            <select class="form-input" data-field="action">
+                                ${['Email', 'SNMP Trap', 'Syslog', 'Webhook'].map(o => `<option ${data.action === o ? 'selected' : ''}>${o}</option>`).join('')}
+                            </select>
+                        </div>
+                    `,
+                    validate: (data) => {
+                        const errors = [];
+                        if (!data.name?.trim()) errors.push('Policy name is required');
+                        return errors;
+                    },
+                },
             ],
             onComplete: async (data) => {
                 const sevMap = { 'Critical Only': ['critical'], 'Warning & Critical': ['warning', 'critical'], 'All': ['info', 'warning', 'critical'] };
@@ -258,7 +287,7 @@ export class PcAlertsView extends BaseView {
 
     async #deletePolicies(selected) {
         if (!selected || selected.length === 0) { toast('Select policies first.', 'warning'); return; }
-        const ok = await confirm(`Delete ${selected.length} alert policy(ies)?`);
+        const ok = await confirm({ title: 'Delete Policies', message: `Delete ${selected.length} alert policy(ies)?`, confirmLabel: 'Delete', danger: true });
         if (!ok) return;
         for (const p of selected) { await state.remove('alert_policies', p.uuid); }
         toast(`Deleted ${selected.length} policy(ies).`, 'success');
