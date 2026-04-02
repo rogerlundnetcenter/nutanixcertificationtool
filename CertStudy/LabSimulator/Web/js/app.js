@@ -7,6 +7,11 @@ import { PeVmsView } from './views/pe-vms.js';
 import { PeStorageView } from './views/pe-storage.js';
 import { PeNetworkView } from './views/pe-network.js';
 import { PeImagesView } from './views/pe-images.js';
+import { PeProtectionView } from './views/pe-protection.js';
+import { PeHardwareView } from './views/pe-hardware.js';
+import { PeHealthView } from './views/pe-health.js';
+import { PeSettingsView } from './views/pe-settings.js';
+import { PeCliView } from './views/pe-cli.js';
 import { PlaceholderView } from './views/PlaceholderView.js';
 
 /**
@@ -44,10 +49,11 @@ class App {
         router.register('/pe/storage', PeStorageView);
         router.register('/pe/network', PeNetworkView);
         router.register('/pe/images', PeImagesView);
-        router.register('/pe/protection', this.#placeholder('Data Protection', 'pe'));
-        router.register('/pe/hardware', this.#placeholder('Hardware', 'pe'));
-        router.register('/pe/health', this.#placeholder('Health', 'pe'));
-        router.register('/pe/settings', this.#placeholder('Settings', 'pe'));
+        router.register('/pe/protection', PeProtectionView);
+        router.register('/pe/hardware', PeHardwareView);
+        router.register('/pe/health', PeHealthView);
+        router.register('/pe/settings', PeSettingsView);
+        router.register('/pe/cli', PeCliView);
 
         // PC routes
         router.register('/pc/dashboard', this.#placeholder('PC Dashboard', 'pc'));
