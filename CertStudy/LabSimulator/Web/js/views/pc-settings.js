@@ -30,6 +30,7 @@ export class PcSettingsView extends BaseView {
             <button class="tab" data-tab="ssl">SSL Certificate</button>
             <button class="tab" data-tab="pulse">Pulse</button>
             <button class="tab" data-tab="scma">SCMA</button>
+            <button class="tab" data-tab="data">Data Management</button>
         `;
         el.appendChild(tabs);
 
@@ -51,6 +52,8 @@ export class PcSettingsView extends BaseView {
                 this.#renderTab(this.#activeTab);
             });
         });
+
+        this.#wireDataTab();
     }
 
     destroy() { this.#unsubs.forEach(fn => fn()); }
@@ -73,6 +76,7 @@ export class PcSettingsView extends BaseView {
             case 'ssl': card.innerHTML = this.#sslTab(cfg); break;
             case 'pulse': card.innerHTML = this.#pulseTab(cfg); break;
             case 'scma': card.innerHTML = this.#scmaTab(cfg); break;
+            case 'data': card.innerHTML = this.#dataTab(); break;
         }
         c.appendChild(card);
 
@@ -267,5 +271,64 @@ export class PcSettingsView extends BaseView {
             await state.create('pc_settings', { ...this.#defaults(), ...updates });
         }
         toast('Settings saved successfully.', 'success');
+    }
+
+    #dataTab() {
+        return `<div class="card-header">Data Management</div><div class="card-body">
+            <p class="text-secondary text-sm" style="margin-bottom:var(--space-lg);">Export the full simulator state for backup, or import a previously exported state file.</p>
+            <div style="display:flex;gap:var(--space-md);margin-bottom:var(--space-xl);">
+                <button class="btn btn-primary" id="btn-export-state">📥 Export State</button>
+                <button class="btn btn-secondary" id="btn-import-state">📤 Import State</button>
+                <input type="file" id="import-file" accept=".json" style="display:none;" />
+            </div>
+            <div class="card" style="background:var(--surface-tertiary);">
+                <div class="card-body">
+                    <div style="font-weight:600;margin-bottom:8px;">⚠️ Reset State</div>
+                    <p class="text-secondary text-sm" style="margin-bottom:var(--space-md);">Reset all simulator data back to the default seed state. This cannot be undone.</p>
+                    <button class="btn btn-danger" id="btn-reset-state">🗑️ Reset to Default</button>
+                </div>
+            </div>
+        </div>`;
+    }
+
+    #wireDataTab() {
+        const exportBtn = document.getElementById('btn-export-state');
+        const importBtn = document.getElementById('btn-import-state');
+        const importFile = document.getElementById('import-file');
+        const resetBtn = document.getElementById('btn-reset-state');
+
+        exportBtn?.addEventListener('click', () => {
+            const json = state.exportState();
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `nutanix-lab-state-${new Date().toISOString().slice(0, 10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            toast('State exported successfully.', 'success');
+        });
+
+        importBtn?.addEventListener('click', () => importFile?.click());
+
+        importFile?.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            try {
+                const text = await file.text();
+                await state.importState(text);
+                toast('State imported successfully. Refreshing...', 'success');
+                setTimeout(() => location.reload(), 1000);
+            } catch (err) {
+                toast(`Import failed: ${err.message}`, 'warning');
+            }
+        });
+
+        resetBtn?.addEventListener('click', async () => {
+            if (!window.confirm('Reset ALL simulator data to defaults? This cannot be undone.')) return;
+            await state.reset();
+            toast('State reset to defaults. Refreshing...', 'success');
+            setTimeout(() => location.reload(), 1000);
+        });
     }
 }

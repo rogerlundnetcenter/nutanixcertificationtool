@@ -114,6 +114,21 @@ class StateEngine {
         bus.emit('state:ready', this.#state);
     }
 
+    // ── State Export / Import ──
+
+    exportState() {
+        return JSON.stringify(this.#state, null, 2);
+    }
+
+    async importState(json) {
+        const data = JSON.parse(json);
+        if (!data.cluster) throw new Error('Invalid state: missing cluster');
+        this.#state = data;
+        await this.#persist();
+        bus.emit('state:reset');
+        bus.emit('state:ready', this.#state);
+    }
+
     // ── Persistence ──
 
     async #persist() {
@@ -314,6 +329,61 @@ class StateEngine {
             projects: [
                 { uuid: 'proj-001', name: 'Engineering', description: 'Engineering team project', vcpu_quota: 100, memory_quota_gb: 256, storage_quota_gb: 2000, vcpu_used: 24, memory_used_gb: 68, storage_used_gb: 430, vm_count: 6, users: [{ username: 'admin', role: 'Project Admin' }, { username: 'jdoe', role: 'Developer' }], infrastructure: { clusters: ['NTNX-POC-Cluster-01'], networks: ['Production-200'], categories: [{ key: 'Environment', value: 'Development' }], vpcs: ['vpc-002'] } },
                 { uuid: 'proj-002', name: 'Data Team', description: 'Data engineering and analytics', vcpu_quota: 64, memory_quota_gb: 128, storage_quota_gb: 1000, vcpu_used: 12, memory_used_gb: 32, storage_used_gb: 280, vm_count: 3, users: [{ username: 'operator', role: 'Project Admin' }], infrastructure: { clusters: ['All'], networks: ['All'], categories: [], vpcs: [] } },
+            ],
+            // Sprint 13 — New collections
+            pe_reports: [
+                { uuid: 'rpt-001', name: 'Weekly Capacity Summary', type: 'Capacity', generated_at: '2026-04-01T08:00:00Z', size_kb: 245, status: 'ready', format: 'PDF' },
+                { uuid: 'rpt-002', name: 'Monthly Performance Report', type: 'Performance', generated_at: '2026-03-31T06:00:00Z', size_kb: 512, status: 'ready', format: 'PDF' },
+                { uuid: 'rpt-003', name: 'Configuration Audit', type: 'Configuration', generated_at: '2026-04-01T09:30:00Z', size_kb: 180, status: 'ready', format: 'CSV' },
+                { uuid: 'rpt-004', name: 'VM Inventory Export', type: 'Custom', generated_at: '2026-03-28T14:00:00Z', size_kb: 98, status: 'ready', format: 'CSV' },
+                { uuid: 'rpt-005', name: 'Storage Trend Analysis', type: 'Capacity', generated_at: null, size_kb: 0, status: 'generating', format: 'PDF' },
+            ],
+            scheduled_reports: [
+                { uuid: 'sr-001', name: 'Weekly Capacity Summary', schedule: 'Weekly', next_run: '2026-04-07T08:00:00Z', recipients: 'admin@ntnxlab.local', enabled: true },
+                { uuid: 'sr-002', name: 'Monthly Performance Report', schedule: 'Monthly', next_run: '2026-05-01T06:00:00Z', recipients: 'admin@ntnxlab.local, ops@ntnxlab.local', enabled: true },
+                { uuid: 'sr-003', name: 'Daily Health Check', schedule: 'Daily', next_run: '2026-04-02T06:00:00Z', recipients: 'admin@ntnxlab.local', enabled: false },
+            ],
+            capacity_data: [
+                { uuid: 'cap-001', resource: 'cpu', current_pct: 62, runway_days: 145, trend: [45, 48, 51, 55, 58, 60, 62], top_consumers: [{ name: 'VM-DB-Prod-01', usage: 18 }, { name: 'VM-App-Server-02', usage: 14 }, { name: 'VM-Web-Cluster', usage: 12 }] },
+                { uuid: 'cap-002', resource: 'memory', current_pct: 74, runway_days: 88, trend: [58, 62, 65, 68, 70, 72, 74], top_consumers: [{ name: 'VM-DB-Prod-01', usage: 32 }, { name: 'VM-Analytics-01', usage: 24 }, { name: 'VM-Web-Cluster', usage: 16 }] },
+                { uuid: 'cap-003', resource: 'storage', current_pct: 55, runway_days: 210, trend: [40, 42, 45, 48, 50, 53, 55], top_consumers: [{ name: 'Default-Container', usage: 2400 }, { name: 'Backup-Container', usage: 1800 }, { name: 'Prod-Container', usage: 1200 }] },
+            ],
+            insights: [
+                { uuid: 'ins-001', category: 'critical', title: 'Memory pressure on VM-DB-Prod-01', description: 'VM-DB-Prod-01 has been above 90% memory utilization for 72 hours. Consider adding memory or migrating workloads.', impact: 'Performance degradation risk', status: 'active', detected_at: '2026-04-01T10:00:00Z' },
+                { uuid: 'ins-002', category: 'optimization', title: 'Oversized VM detected: VM-Test-Idle', description: 'VM-Test-Idle has averaged <5% CPU and <10% memory for 30 days. Consider right-sizing to 2 vCPU / 4 GB.', impact: 'Save 6 vCPU, 12 GB memory', status: 'active', detected_at: '2026-04-01T08:00:00Z' },
+                { uuid: 'ins-003', category: 'optimization', title: 'Storage container thin-provisioned heavily', description: 'Default-Container is 3.2x overprovisioned. Monitor closely or add capacity.', impact: 'Data availability risk if usage spikes', status: 'active', detected_at: '2026-03-30T14:00:00Z' },
+                { uuid: 'ins-004', category: 'info', title: 'AOS update available', description: 'AOS 6.11.0 is available. Review release notes for security fixes and new features.', impact: 'Security and feature improvements', status: 'active', detected_at: '2026-04-01T06:00:00Z' },
+                { uuid: 'ins-005', category: 'critical', title: 'Anomaly: Unusual IOPS spike on SSD tier', description: 'SSD tier IOPS jumped 340% between 02:00-04:00. Correlates with backup job. Consider staggering backup schedules.', impact: 'May cause latency for production workloads', status: 'active', detected_at: '2026-04-01T04:30:00Z' },
+            ],
+            anomalies: [
+                { uuid: 'anom-001', entity: 'NTNX-A-CVM', metric: 'IOPS', expected: 1200, actual: 5280, deviation_pct: 340, detected_at: '2026-04-01T03:15:00Z', status: 'active' },
+                { uuid: 'anom-002', entity: 'VM-DB-Prod-01', metric: 'Memory Usage', expected: 75, actual: 94, deviation_pct: 25, detected_at: '2026-04-01T10:00:00Z', status: 'active' },
+                { uuid: 'anom-003', entity: 'Default-Container', metric: 'Write Latency', expected: 1.2, actual: 4.8, deviation_pct: 300, detected_at: '2026-03-31T22:00:00Z', status: 'acknowledged' },
+            ],
+            ai_models: [
+                { uuid: 'aim-001', name: 'Llama-3.1-8B', framework: 'vLLM', version: '3.1', size_gb: 16, status: 'deployed', quantization: 'FP16', updated_at: '2026-03-28T10:00:00Z' },
+                { uuid: 'aim-002', name: 'Mistral-7B-Instruct', framework: 'vLLM', version: '0.3', size_gb: 14, status: 'deployed', quantization: 'FP16', updated_at: '2026-03-25T08:00:00Z' },
+                { uuid: 'aim-003', name: 'Stable-Diffusion-XL', framework: 'PyTorch', version: '1.0', size_gb: 6.9, status: 'available', quantization: 'FP16', updated_at: '2026-03-20T12:00:00Z' },
+                { uuid: 'aim-004', name: 'BERT-Large-Uncased', framework: 'ONNX', version: '1.0', size_gb: 1.3, status: 'available', quantization: 'INT8', updated_at: '2026-03-15T09:00:00Z' },
+                { uuid: 'aim-005', name: 'Whisper-Large-v3', framework: 'PyTorch', version: '3.0', size_gb: 3.1, status: 'downloading', quantization: 'FP16', updated_at: '2026-04-01T14:00:00Z' },
+            ],
+            ai_endpoint_metrics: [
+                { uuid: 'aem-001', endpoint: 'llama-chat', model: 'Llama-3.1-8B', replicas: 2, requests_min: 45, avg_latency_ms: 320, p99_latency_ms: 890, gpu_util_pct: 78, status: 'healthy', error_rate: 0.2 },
+                { uuid: 'aem-002', endpoint: 'mistral-code', model: 'Mistral-7B-Instruct', replicas: 1, requests_min: 22, avg_latency_ms: 180, p99_latency_ms: 450, gpu_util_pct: 55, status: 'healthy', error_rate: 0.1 },
+                { uuid: 'aem-003', endpoint: 'sdxl-images', model: 'Stable-Diffusion-XL', replicas: 1, requests_min: 8, avg_latency_ms: 2400, p99_latency_ms: 5200, gpu_util_pct: 92, status: 'degraded', error_rate: 3.5 },
+            ],
+            nc2_metrics: [
+                { uuid: 'nc2m-001', cluster: 'NC2-AWS-Prod', provider: 'AWS', cpu_pct: 58, memory_pct: 65, storage_pct: 42, iops: 8500, latency_ms: 1.8, throughput_mbs: 420, uptime_pct: 99.95, hourly_rate: 12.50, instance_type: 'i3.metal' },
+                { uuid: 'nc2m-002', cluster: 'NC2-Azure-DR', provider: 'Azure', cpu_pct: 22, memory_pct: 30, storage_pct: 18, iops: 3200, latency_ms: 2.1, throughput_mbs: 280, uptime_pct: 99.90, hourly_rate: 11.80, instance_type: 'Standard_L8s_v3' },
+            ],
+            nc2_scaling_history: [
+                { uuid: 'nc2sh-001', cluster: 'NC2-AWS-Prod', action: 'scale_up', from_nodes: 3, to_nodes: 4, initiated_by: 'admin', status: 'completed', timestamp: '2026-03-20T10:00:00Z' },
+                { uuid: 'nc2sh-002', cluster: 'NC2-Azure-DR', action: 'scale_up', from_nodes: 2, to_nodes: 3, initiated_by: 'auto-scale', status: 'completed', timestamp: '2026-03-25T14:30:00Z' },
+                { uuid: 'nc2sh-003', cluster: 'NC2-AWS-Prod', action: 'scale_down', from_nodes: 4, to_nodes: 3, initiated_by: 'admin', status: 'completed', timestamp: '2026-03-28T08:00:00Z' },
+            ],
+            nc2_autoscale_policies: [
+                { uuid: 'nc2asp-001', name: 'CPU-Scale-AWS', cluster: 'NC2-AWS-Prod', metric: 'CPU', threshold_pct: 80, action: 'add_node', cooldown_min: 30, enabled: true },
+                { uuid: 'nc2asp-002', name: 'Memory-Scale-Azure', cluster: 'NC2-Azure-DR', metric: 'Memory', threshold_pct: 85, action: 'add_node', cooldown_min: 45, enabled: false },
             ],
         };
     }

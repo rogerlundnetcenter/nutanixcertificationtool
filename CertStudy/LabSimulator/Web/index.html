@@ -25,6 +25,7 @@
                 <div class="search-box">
                     <input type="text" placeholder="Search..." />
                 </div>
+                <button id="theme-toggle-btn" title="Toggle dark/light mode" style="background:none;border:1px solid var(--border-light);border-radius:6px;padding:4px 8px;cursor:pointer;font-size:16px;color:var(--text-primary);">🌙</button>
                 <span style="font-size: var(--font-size-sm);">admin</span>
             </div>
         </header>
@@ -67,6 +68,7 @@
                     <a class="nav-item" data-route="/pc/planning"><span class="icon">📈</span> Planning</a>
                     <a class="nav-item" data-route="/pc/xplay"><span class="icon">🎭</span> X-Play</a>
                     <a class="nav-item" data-route="/pc/reports"><span class="icon">📋</span> Reports</a>
+                    <a class="nav-item" data-route="/pc/insights"><span class="icon">💡</span> Insights</a>
                 </div>
                 <div class="nav-section">
                     <div class="nav-section-title">Admin</div>
@@ -89,12 +91,16 @@
                     <a class="nav-item" data-route="/pc/nc2-console"><span class="icon">☁️</span> NC2 Console</a>
                     <a class="nav-item" data-route="/pc/nc2-deploy"><span class="icon">🚀</span> Deploy Cluster</a>
                     <a class="nav-item" data-route="/pc/nc2-networking"><span class="icon">🌐</span> Networking</a>
+                    <a class="nav-item" data-route="/pc/nc2-monitoring"><span class="icon">📡</span> Monitoring</a>
+                    <a class="nav-item" data-route="/pc/nc2-scaling"><span class="icon">📐</span> Scaling</a>
                 </div>
                 <div class="nav-section">
                     <div class="nav-section-title">AI Infrastructure</div>
                     <a class="nav-item" data-route="/pc/gpu"><span class="icon">🎮</span> GPU Config</a>
                     <a class="nav-item" data-route="/pc/nai"><span class="icon">🤖</span> NAI Endpoints</a>
                     <a class="nav-item" data-route="/pc/nai-tools"><span class="icon">🧪</span> NAI Tools</a>
+                    <a class="nav-item" data-route="/pc/ai-models"><span class="icon">🧠</span> AI Models</a>
+                    <a class="nav-item" data-route="/pc/ai-monitoring"><span class="icon">📊</span> AI Monitoring</a>
                 </div>
                 <div class="nav-section">
                     <div class="nav-section-title">Lab</div>
@@ -134,6 +140,8 @@
                     <a class="nav-item" data-route="/pe/settings"><span class="icon">⚙️</span> Settings</a>
                     <a class="nav-item" data-route="/pe/cli"><span class="icon">💻</span> CLI Terminal</a>
                     <a class="nav-item" data-route="/pe/services"><span class="icon">📡</span> Service Diagnostics</a>
+                    <a class="nav-item" data-route="/pe/reports"><span class="icon">📋</span> Reports</a>
+                    <a class="nav-item" data-route="/pe/capacity"><span class="icon">📈</span> Capacity Planning</a>
                 </div>
             </nav>
 

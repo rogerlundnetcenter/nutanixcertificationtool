@@ -369,6 +369,139 @@ const SCENARIOS = [
         hints: ['Go to PC → Settings', 'Switch to the SCMA tab', 'Toggle SCMA on and click Save'],
         context: 'pc', startRoute: '/pc/pc-settings',
     },
+    // Sprint 13 — NCP-US scenarios (4)
+    {
+        id: 'us-repl-01', exam: 'NCP-US', title: 'Configure File Server Replication',
+        difficulty: 'Intermediate', time: '10 min',
+        description: 'Set up a Files share and configure replication to a remote site for disaster recovery.',
+        objectives: [
+            { id: 'obj-1', text: 'Create a Files share named "Lab-Shared"', validate: () => state.getAll('file_shares').some(s => s.name === 'Lab-Shared') },
+            { id: 'obj-2', text: 'Navigate to Files view and verify the share appears', validate: () => state.getAll('file_shares').length > 0 },
+        ],
+        hints: ['Navigate to PC → Files', 'Click "+ Create Share"', 'Set name to "Lab-Shared" and select a protocol'],
+        context: 'pc', startRoute: '/pc/files',
+    },
+    {
+        id: 'us-bucket-01', exam: 'NCP-US', title: 'Create an Object Store Bucket',
+        difficulty: 'Beginner', time: '8 min',
+        description: 'Create a new bucket in Objects with versioning and a lifecycle policy.',
+        objectives: [
+            { id: 'obj-1', text: 'Create a bucket named "lab-backups"', validate: () => state.getAll('buckets').some(b => b.name === 'lab-backups') },
+        ],
+        hints: ['Navigate to PC → Objects', 'Click "+ Create Bucket"', 'Enable versioning for data protection'],
+        context: 'pc', startRoute: '/pc/objects',
+    },
+    {
+        id: 'us-vol-01', exam: 'NCP-US', title: 'Volumes — iSCSI Target Migration',
+        difficulty: 'Advanced', time: '12 min',
+        description: 'Create a Volume Group for iSCSI storage and attach it to a VM client.',
+        objectives: [
+            { id: 'obj-1', text: 'Create a Volume Group named "Lab-VG"', validate: () => state.getAll('volume_groups').some(v => v.name === 'Lab-VG') },
+        ],
+        hints: ['Navigate to PC → Volumes', 'Click "+ Create Volume Group"', 'Add a disk and configure an iSCSI initiator IQN'],
+        context: 'pc', startRoute: '/pc/volumes',
+    },
+    {
+        id: 'us-analytics-01', exam: 'NCP-US', title: 'File Analytics — Audit Trail',
+        difficulty: 'Intermediate', time: '8 min',
+        description: 'Use File Analytics to review access patterns and audit file operations.',
+        objectives: [
+            { id: 'obj-1', text: 'Navigate to File Analytics and review dashboard', validate: () => true },
+        ],
+        hints: ['Navigate to PC → File Analytics', 'Review the capacity trends and top users'],
+        context: 'pc', startRoute: '/pc/analytics',
+    },
+    // Sprint 13 — NCP-CI scenarios (3)
+    {
+        id: 'ci-migrate-01', exam: 'NCP-CI', title: 'NC2 — Deploy Cloud Cluster',
+        difficulty: 'Advanced', time: '15 min',
+        description: 'Deploy a Nutanix Cloud Cluster on AWS and verify connectivity.',
+        objectives: [
+            { id: 'obj-1', text: 'Navigate to NC2 Deploy and review deployment options', validate: () => true },
+            { id: 'obj-2', text: 'Check NC2 Monitoring for cluster health', validate: () => true },
+        ],
+        hints: ['Navigate to NC2 → Deploy Cluster', 'Review cloud provider options', 'Check monitoring dashboards'],
+        context: 'pc', startRoute: '/pc/nc2-deploy',
+    },
+    {
+        id: 'ci-monitor-01', exam: 'NCP-CI', title: 'NC2 Monitoring & Cost Comparison',
+        difficulty: 'Intermediate', time: '10 min',
+        description: 'Compare performance and cost metrics between on-prem and cloud clusters.',
+        objectives: [
+            { id: 'obj-1', text: 'View NC2 monitoring metrics for both clusters', validate: () => true },
+            { id: 'obj-2', text: 'Review cost estimates on the NC2 monitoring page', validate: () => true },
+        ],
+        hints: ['Navigate to NC2 → Monitoring', 'Compare AWS vs Azure cluster metrics', 'Review hourly cost rates'],
+        context: 'pc', startRoute: '/pc/nc2-monitoring',
+    },
+    {
+        id: 'ci-scale-01', exam: 'NCP-CI', title: 'NC2 — Scale a Cloud Cluster',
+        difficulty: 'Advanced', time: '10 min',
+        description: 'Scale up an NC2 cluster by adding a node and configure an autoscale policy.',
+        objectives: [
+            { id: 'obj-1', text: 'View the scaling history for NC2 clusters', validate: () => true },
+            { id: 'obj-2', text: 'Review autoscale policies', validate: () => true },
+        ],
+        hints: ['Navigate to NC2 → Scaling', 'Review scaling history events', 'Check autoscale policy configurations'],
+        context: 'pc', startRoute: '/pc/nc2-scaling',
+    },
+    // Sprint 13 — NCP-AI scenarios (3)
+    {
+        id: 'ai-model-01', exam: 'NCP-AI', title: 'NAI Model Registry',
+        difficulty: 'Intermediate', time: '10 min',
+        description: 'Browse the NAI model registry, review available models, and deploy an endpoint.',
+        objectives: [
+            { id: 'obj-1', text: 'Navigate to AI Models and view available models', validate: () => true },
+            { id: 'obj-2', text: 'Check endpoint metrics for deployed models', validate: () => true },
+        ],
+        hints: ['Navigate to AI → Models', 'Review model frameworks and sizes', 'Check deployment status'],
+        context: 'pc', startRoute: '/pc/ai-models',
+    },
+    {
+        id: 'ai-monitor-01', exam: 'NCP-AI', title: 'NAI Endpoint Monitoring',
+        difficulty: 'Intermediate', time: '8 min',
+        description: 'Monitor NAI inference endpoints — check latency, throughput, GPU utilization, and error rates.',
+        objectives: [
+            { id: 'obj-1', text: 'View endpoint health and metrics', validate: () => true },
+            { id: 'obj-2', text: 'Identify degraded endpoints', validate: () => state.getAll('ai_endpoint_metrics').some(e => e.status === 'degraded') },
+        ],
+        hints: ['Navigate to AI → Monitoring', 'Look for endpoints with high error rates', 'Check GPU utilization percentages'],
+        context: 'pc', startRoute: '/pc/ai-monitoring',
+    },
+    {
+        id: 'ai-gpu-01', exam: 'NCP-AI', title: 'GPU OOM — Right-Size a Model',
+        difficulty: 'Advanced', time: '10 min',
+        description: 'Investigate a GPU out-of-memory condition and identify the model that needs quantization or scale-down.',
+        objectives: [
+            { id: 'obj-1', text: 'Find the endpoint with >90% GPU utilization', validate: () => state.getAll('ai_endpoint_metrics').some(e => e.gpu_util_pct > 90) },
+            { id: 'obj-2', text: 'Run nuclei ai.status in CLI to verify', validate: () => true },
+        ],
+        hints: ['Check AI Monitoring for high GPU usage', 'The SDXL image endpoint may be overloaded', 'Use CLI: nuclei ai.status'],
+        context: 'pc', startRoute: '/pc/ai-monitoring',
+    },
+    // Sprint 13 — NCM-MCI scenarios (2)
+    {
+        id: 'mci-capacity-01', exam: 'NCM-MCI', title: 'PE Capacity Planning & Runway',
+        difficulty: 'Intermediate', time: '10 min',
+        description: 'Review PE capacity planning to understand resource runway and identify top consumers.',
+        objectives: [
+            { id: 'obj-1', text: 'Navigate to PE Capacity Planning and review CPU runway', validate: () => true },
+            { id: 'obj-2', text: 'Identify the resource with shortest runway', validate: () => true },
+        ],
+        hints: ['Navigate to PE → Capacity Planning (hamburger menu)', 'Memory typically has the shortest runway', 'Review the top consumer tables'],
+        context: 'pe', startRoute: '/pe/capacity',
+    },
+    {
+        id: 'mci-insights-01', exam: 'NCM-MCI', title: 'PC Insights — Optimization Review',
+        difficulty: 'Intermediate', time: '8 min',
+        description: 'Review Prism Central insights for optimization recommendations and anomaly detection.',
+        objectives: [
+            { id: 'obj-1', text: 'Navigate to PC Insights and review active recommendations', validate: () => state.getAll('insights').filter(i => i.status === 'active').length > 0 },
+            { id: 'obj-2', text: 'Identify critical insights requiring immediate action', validate: () => state.getAll('insights').some(i => i.category === 'critical') },
+        ],
+        hints: ['Navigate to PC → Insights', 'Look for 🔴 critical items at the top', 'Review optimization suggestions for resource savings'],
+        context: 'pc', startRoute: '/pc/insights',
+    },
 ];
 
 export class ScenariosView extends BaseView {

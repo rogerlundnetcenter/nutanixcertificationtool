@@ -105,4 +105,56 @@
     /* ── Transitions ── */
     --transition-fast: 150ms ease;
     --transition-normal: 250ms ease;
+
+    /* ── Semantic aliases (used in views) ── */
+    --surface-secondary: var(--gray-50);
+    --surface-tertiary: var(--gray-100);
+    --border-subtle: var(--border-light);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Dark Theme — activated via [data-theme="dark"] on <html>
+   ═══════════════════════════════════════════════════════════ */
+
+[data-theme="dark"] {
+    --bg-page: #131520;
+    --bg-card: #1e2030;
+    --bg-header: #0d0f17;
+    --bg-sidebar: #161828;
+    --bg-sidebar-hover: #252840;
+    --bg-hamburger: #0d0f17;
+    --bg-input: #252840;
+    --bg-table-row-hover: #252840;
+    --bg-table-row-selected: #1a3a5c;
+    --bg-modal-overlay: rgba(0, 0, 0, 0.7);
+
+    --text-primary: #e0e2eb;
+    --text-secondary: #8b8fa5;
+    --text-inverse: #131520;
+    --text-link: #4db8ff;
+    --text-disabled: #4a4f63;
+
+    --border-light: #2a2d42;
+    --border-default: #353850;
+    --border-focus: #22a5f7;
+
+    --status-good-bg: #0d3520;
+    --status-warning-bg: #3d2e00;
+    --status-critical-bg: #3d1008;
+    --status-info-bg: #0d2a3d;
+
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+    --shadow-modal: 0 12px 40px rgba(0, 0, 0, 0.6);
+
+    --surface-secondary: #1e2030;
+    --surface-tertiary: #252840;
+    --border-subtle: #2a2d42;
+
+    --prism-blue-light: #1a3a5c;
+
+    --gray-50: #1e2030;
+    --gray-100: #252840;
+    --gray-200: #353850;
 }

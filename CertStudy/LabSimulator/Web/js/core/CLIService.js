@@ -75,10 +75,10 @@ export class CLIService {
     #help() {
         return `Available Nutanix CLI Tools:
 ──────────────────────────────
-  acli           AHV CLI (VM, network, image management)
-  ncli           Nutanix CLI (cluster, container, PD, security)
-  ncc            Nutanix Cluster Check (health checks)
-  genesis        Service management
+  acli           AHV CLI (VM, network, image, container management)
+  ncli           Nutanix CLI (cluster, container, PD, security, host)
+  ncc            Nutanix Cluster Check (health checks, targeted checks)
+  genesis        Service management (restart, service start/stop/restart)
   cluster        Cluster management utilities
   logbay         Log collection
   curator_cli    Storage curator (scans, dedup stats)
@@ -88,7 +88,7 @@ export class CLIService {
   ovs-ofctl      OVS flow tables
   allssh         Run command on all CVMs
   curl           HTTP client (API calls)
-  nuclei         LCM / Foundation lifecycle checks
+  nuclei         LCM / Foundation / NAI status
   calm           Calm automation CLI (blueprint, app management)
   upgrade_check  AOS / AHV upgrade compatibility check
   host_disks_check   Physical disk inventory
@@ -106,17 +106,23 @@ export class CLIService {
 
 Usage examples:
   acli vm.list
+  acli container.list
   ncli cluster info
+  ncli host add ip=10.42.100.50 hypervisor=ahv
+  ncli host list
+  ncli container stats name=Default-Container
   ncc health_checks run_all
+  ncc --target cvm
+  genesis service restart prism
+  nuclei ai.status
   acli vm.create name=MyVM memory=4G num_vcpus=2
   calm blueprint list
-  nuclei inventory
   curl -k https://10.42.100.37:9440/api/nutanix/v3/vms/list -X POST -d '{}'`;
     }
 
     // ── ACLI ──
     #acli(args) {
-        if (args.length === 0) return 'Usage: acli <command>\nCommands: vm.list, vm.create, vm.get, vm.on, vm.off, vm.delete, net.list, net.create, image.list';
+        if (args.length === 0) return 'Usage: acli <command>\nCommands: vm.list, vm.create, vm.get, vm.on, vm.off, vm.delete, net.list, net.create, image.list, container.list, container.stats';
         const sub = args[0]?.toLowerCase();
         const params = this.#parseKV(args.slice(1));
 
@@ -130,6 +136,8 @@ Usage examples:
             case 'net.list': return this.#acliNetList();
             case 'net.create': return this.#acliNetCreate(params);
             case 'image.list': return this.#acliImageList();
+            case 'container.list': return this.#ncliContainerList();
+            case 'container.stats': return this.#ncliContainerStats(params);
             default: return `acli: unknown command '${sub}'`;
         }
     }
@@ -235,7 +243,7 @@ Usage examples:
 
     // ── NCLI ──
     #ncli(args) {
-        if (args.length === 0) return 'Usage: ncli <entity> <action>\nEntities: cluster, container, protection-domain, security';
+        if (args.length === 0) return 'Usage: ncli <entity> <action>\nEntities: cluster, container, protection-domain, security, host';
         const entity = args[0]?.toLowerCase();
         const action = args[1]?.toLowerCase();
         const params = this.#parseKV(args.slice(2));
@@ -247,13 +255,19 @@ Usage examples:
             case 'container':
                 if (action === 'list' || action === 'ls') return this.#ncliContainerList();
                 if (action === 'create') return this.#ncliContainerCreate(params);
-                return `ncli container: unknown action '${action}'. Try: list, create`;
+                if (action === 'stats') return this.#ncliContainerStats(params);
+                return `ncli container: unknown action '${action}'. Try: list, create, stats`;
             case 'protection-domain':
             case 'pd':
                 if (action === 'list' || action === 'ls') return this.#ncliPDList();
                 return `ncli pd: unknown action '${action}'. Try: list`;
             case 'security':
                 return this.#ncliSecurity(action);
+            case 'host':
+                if (action === 'add') return this.#ncliHostAdd(params);
+                if (action === 'verify') return this.#ncliHostVerify(params);
+                if (action === 'list' || action === 'ls') return this.#ncliHostList();
+                return `ncli host: unknown action '${action}'. Try: add, verify, list`;
             default:
                 return `ncli: unknown entity '${entity}'`;
         }
@@ -306,6 +320,47 @@ Usage examples:
         return `ncli security: try 'ncli security list'`;
     }
 
+    #ncliHostAdd(params) {
+        const ip = params.ip || params._positional?.[0];
+        if (!ip) return 'Usage: ncli host add ip=<ip> hypervisor=<ahv|esx> username=<user>';
+        const hv = params.hypervisor || 'ahv';
+        return `Discovering host ${ip}...\n  Hypervisor: ${hv.toUpperCase()}\n  CPU: 32 cores\n  Memory: 256 GB\n  Pre-check: [PASS]\nHost ${ip} added to cluster successfully.\nRun 'ncli host verify ip=${ip}' to confirm.`;
+    }
+
+    #ncliHostVerify(params) {
+        const ip = params.ip || params._positional?.[0];
+        if (!ip) return 'Usage: ncli host verify ip=<ip>';
+        return `Verifying host ${ip}...\n  CVM connectivity: [PASS]\n  Hypervisor version: [PASS]\n  Time sync (NTP): [PASS]\n  Storage controller: [PASS]\n  Network reachability: [PASS]\nHost ${ip} verification: ALL CHECKS PASSED`;
+    }
+
+    #ncliHostList() {
+        const hosts = state.hosts;
+        if (hosts.length === 0) return 'No hosts found.';
+        const header = 'Name                     IP               CPU Cores  Memory     SSD      HDD';
+        const sep = '─'.repeat(80);
+        const rows = hosts.map(h => `${h.name.padEnd(25)}${h.ip.padEnd(17)}${String(h.cpu_cores || 16).padEnd(11)}${(h.memory_gb || 128) + ' GB'.padEnd(11)}${h.ssd_tb} TB   ${h.hdd_tb} TB`);
+        return [header, sep, ...rows].join('\n');
+    }
+
+    #ncliContainerStats(params) {
+        const name = params.name || params._positional?.[0];
+        const ctrs = state.containers;
+        const target = name ? ctrs.find(c => c.name === name) : ctrs[0];
+        if (!target) return name ? `Container '${name}' not found.` : 'No containers found.';
+        const pct = Math.round((target.used_tb / target.capacity_tb) * 100);
+        return `Container: ${target.name}
+  UUID: ${target.uuid}
+  Replication Factor: RF${target.rf}
+  Compression: ${target.compression}
+  Dedup: ${target.dedup}
+  Erasure Coding: ${target.erasure_coding ? 'Enabled' : 'Disabled'}
+  Capacity: ${target.capacity_tb} TB
+  Used: ${target.used_tb} TB (${pct}%)
+  Free: ${(target.capacity_tb - target.used_tb).toFixed(1)} TB
+  IOPS (avg): ${Math.floor(Math.random() * 5000 + 2000)}
+  Latency (avg): ${(Math.random() * 2 + 0.5).toFixed(1)} ms`;
+    }
+
     // ── NCC ──
     #ncc(args) {
         const sub = args[0]?.toLowerCase();
@@ -314,16 +369,41 @@ Usage examples:
             return checks.map(c => `[PASS] ${c}`).join('\n') + `\n\n✓ All ${checks.length} checks passed.`;
         }
         if (sub === 'health_checks') return 'Usage: ncc health_checks run_all';
-        return 'Usage: ncc health_checks run_all';
+        if (sub === '--target') {
+            const target = args[1] || '';
+            if (!target) return 'Usage: ncc --target <component>\nTargets: cvm, host, cluster, network, storage, disk, vm';
+            const checks = {
+                cvm: ['CVM Memory', 'CVM Disk Space', 'CVM Services', 'CVM Connectivity'],
+                host: ['Host BMC', 'Host Boot Drive', 'Host CPU', 'Host Memory'],
+                cluster: ['Cluster Quorum', 'Metadata Ring', 'Cassandra Health', 'Zookeeper'],
+                network: ['NIC Status', 'Bond Status', 'MTU Configuration', 'VLAN Config'],
+                storage: ['Container Health', 'Replication Status', 'Disk Balance', 'Curator Status'],
+                disk: ['SSD Health', 'HDD Health', 'Disk Firmware', 'SMART Data'],
+                vm: ['VM Health', 'Guest Tools', 'VM NIC', 'VM Disk'],
+            };
+            const targetChecks = checks[target.toLowerCase()] || [`${target} General Check`];
+            return `NCC Targeted Check: ${target}\n${'─'.repeat(40)}\n` + targetChecks.map(c => `[PASS] ${c}`).join('\n') + `\n\n✓ All ${targetChecks.length} ${target} checks passed.`;
+        }
+        return 'Usage: ncc health_checks run_all\n       ncc --target <component>';
     }
 
     // ── GENESIS ──
     #genesis(args) {
-        const sub = args.join(' ').toLowerCase();
+        const sub = args[0]?.toLowerCase();
+        const svc = args.length > 1 ? args.slice(1).join(' ') : '';
         if (sub === 'start') return `Error: 'genesis start' is not a valid command.\nHint: genesis is always running. Use 'genesis restart' instead.`;
         if (sub === 'restart') return 'genesis restarting... done.\nAll services restarted successfully.';
         if (sub === 'status') return 'genesis is running (PID 12345)\nAll cluster services: UP';
-        return `Usage: genesis <restart|status>\nNote: 'genesis start' does NOT exist (common exam trap!)`;
+        if (sub === 'service') {
+            const action = args[1]?.toLowerCase();
+            const svcName = args.slice(2).join(' ') || '';
+            if (!svcName) return 'Usage: genesis service <start|stop|restart> <service_name>\nServices: prism, stargate, cassandra, zookeeper, curator, acropolis, uhura, ergon, lazan, cerebro';
+            if (action === 'start') return `Starting service '${svcName}'...\n  PID: ${Math.floor(Math.random() * 90000 + 10000)}\n  Status: RUNNING\nService '${svcName}' started successfully.`;
+            if (action === 'stop') return `Stopping service '${svcName}'...\n  Status: STOPPED\nService '${svcName}' stopped.`;
+            if (action === 'restart') return `Restarting service '${svcName}'...\n  Stopping: OK\n  Starting: OK\n  PID: ${Math.floor(Math.random() * 90000 + 10000)}\nService '${svcName}' restarted successfully.`;
+            return `genesis service: unknown action '${action}'. Try: start, stop, restart`;
+        }
+        return `Usage: genesis <restart|status>\n       genesis service <start|stop|restart> <service_name>\nNote: 'genesis start' does NOT exist (common exam trap!)`;
     }
 
     // ── CLUSTER ──
@@ -424,7 +504,21 @@ Usage examples:
         if (sub === 'update' || sub === 'upgrade') {
             return 'Performing pre-check...\n[PASS] Cluster health OK\n[PASS] Space check OK\n[PASS] Compatibility check OK\nUpdate plan ready. Use LCM in Prism to apply. (Simulated)';
         }
-        return 'Usage: nuclei <inventory|update>';
+        if (sub === 'ai.status' || (sub === 'ai' && args[1]?.toLowerCase() === 'status')) {
+            const models = state.getAll('ai_models');
+            const endpoints = state.getAll('ai_endpoint_metrics');
+            let output = 'NAI (Nutanix AI) Status\n' + '═'.repeat(50) + '\n';
+            output += `Models registered: ${models.length}\n`;
+            output += `Endpoints active:  ${endpoints.length}\n\n`;
+            output += 'Model'.padEnd(25) + 'Framework'.padEnd(10) + 'Status\n' + '─'.repeat(50) + '\n';
+            models.forEach(m => { output += `${m.name.padEnd(25)}${m.framework.padEnd(10)}${m.status}\n`; });
+            if (endpoints.length) {
+                output += '\nEndpoint'.padEnd(20) + 'Req/min'.padEnd(10) + 'Latency'.padEnd(10) + 'GPU%'.padEnd(8) + 'Status\n' + '─'.repeat(55) + '\n';
+                endpoints.forEach(e => { output += `${e.endpoint.padEnd(20)}${String(e.requests_min).padEnd(10)}${e.avg_latency_ms + 'ms'.padEnd(10)}${e.gpu_util_pct + '%'.padEnd(8)}${e.status}\n`; });
+            }
+            return output;
+        }
+        return 'Usage: nuclei <inventory|update|ai.status>';
     }
 
     // ── CALM CLI ──

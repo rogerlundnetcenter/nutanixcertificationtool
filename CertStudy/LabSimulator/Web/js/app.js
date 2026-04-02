@@ -42,6 +42,14 @@ import { PcSettingsView } from './views/pc-settings.js';
 import { PcNetworkView } from './views/pc-network.js';
 import { PcAlertsView } from './views/pc-alerts.js';
 import { PcProjectsView } from './views/pc-projects.js';
+import { PeReportsView } from './views/pe-reports.js';
+import { PeCapacityView } from './views/pe-capacity.js';
+import { PcInsightsView } from './views/pc-insights.js';
+import { AiModelsView } from './views/ai-models.js';
+import { AiMonitoringView } from './views/ai-monitoring.js';
+import { CiMonitoringView } from './views/ci-monitoring.js';
+import { CiScalingView } from './views/ci-scaling.js';
+import { initTheme } from './components/ThemeToggle.js';
 
 /**
  * App — Bootstrap the Nutanix Lab Simulator.
@@ -53,6 +61,9 @@ class App {
     async init() {
         // Initialize state engine
         await state.init();
+
+        // Initialize theme
+        initTheme();
 
         // Set up routing
         router.setContainer(document.getElementById('view-container'));
@@ -127,6 +138,15 @@ class App {
         router.register('/pc/network', PcNetworkView);
         router.register('/pc/alerts', PcAlertsView);
         router.register('/pc/projects', PcProjectsView);
+
+        // Sprint 13 — New routes
+        router.register('/pe/reports', PeReportsView);
+        router.register('/pe/capacity', PeCapacityView);
+        router.register('/pc/insights', PcInsightsView);
+        router.register('/pc/ai-models', AiModelsView);
+        router.register('/pc/ai-monitoring', AiMonitoringView);
+        router.register('/pc/nc2-monitoring', CiMonitoringView);
+        router.register('/pc/nc2-scaling', CiScalingView);
     }
 
     #wireNavigation() {
