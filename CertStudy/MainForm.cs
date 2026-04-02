@@ -1,5 +1,6 @@
 using System.Drawing.Drawing2D;
 using CertStudy.Controls;
+using CertStudy.LabSimulator;
 using CertStudy.Models;
 using CertStudy.Services;
 
@@ -74,6 +75,7 @@ class MainForm : Form
     private Label _wrongCountLabel = null!;
     private Button _startExamBtn = null!;
     private Button _exportPdfBtn = null!;
+    private Button _labSimBtn = null!;
 
     private readonly List<Panel> _optionCards = new();
     private readonly List<Label> _optionLabels = new();
@@ -232,6 +234,10 @@ class MainForm : Form
         _exportPdfBtn.Width = 252;
         _exportPdfBtn.Height = 32;
 
+        _labSimBtn = MakeFlatButton("  🖥️ Lab Simulator", SynthwaveColors.StatusGreen);
+        _labSimBtn.Width = 252;
+        _labSimBtn.Height = 32;
+
         _wrongCountLabel = new Label
         {
             Dock = DockStyle.Top,
@@ -251,6 +257,7 @@ class MainForm : Form
         _sidePanel.Controls.Add(_statsLabel);
         _sidePanel.Controls.Add(statsSectionLabel);
         _sidePanel.Controls.Add(_startExamBtn);
+        _sidePanel.Controls.Add(_labSimBtn);
         _sidePanel.Controls.Add(_exportPdfBtn);
         _sidePanel.Controls.Add(_reviewMistakesBtn);
         _sidePanel.Controls.Add(_blueprintBtn);
@@ -517,6 +524,7 @@ class MainForm : Form
         _reviewMistakesBtn.Click += (_, _) => ReviewMistakes();
         _startExamBtn.Click += (_, _) => StartExamSim();
         _exportPdfBtn.Click += (_, _) => ExportToPdf();
+        _labSimBtn.Click += (_, _) => LabSimulatorLauncher.Launch(this);
         _studyModeRadio.CheckedChanged += (_, _) => SetMode(false);
         _testModeRadio.CheckedChanged += (_, _) =>
         {

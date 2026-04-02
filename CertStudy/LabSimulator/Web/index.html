@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutanix Lab Simulator</title>
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+    <div class="app-shell">
+        <!-- ═══ Top Header Bar ═══ -->
+        <header class="header-bar">
+            <button id="hamburger-btn" class="hamburger-btn" title="Menu">☰</button>
+            <span id="context-label" class="context-label">Prism Element</span>
+
+            <div class="context-switcher">
+                <select id="context-switcher" title="Switch context">
+                    <option value="pe">Prism Element</option>
+                    <option value="pc">Prism Central</option>
+                </select>
+            </div>
+
+            <div class="header-right">
+                <div class="search-box">
+                    <input type="text" placeholder="Search..." />
+                </div>
+                <span style="font-size: var(--font-size-sm);">admin</span>
+            </div>
+        </header>
+
+        <!-- ═══ Breadcrumb ═══ -->
+        <nav class="breadcrumb-bar">
+            <div id="breadcrumb">
+                <a href="#/pe/dashboard">Prism Element</a>
+                <span class="separator">›</span>
+                <span class="current">Dashboard</span>
+            </div>
+        </nav>
+
+        <!-- ═══ Main Content Area ═══ -->
+        <div class="main-content">
+            <!-- PC Sidebar (hidden when PE context) -->
+            <aside id="pc-sidebar" class="pc-sidebar">
+                <div class="nav-section">
+                    <div class="nav-section-title">Dashboard</div>
+                    <a class="nav-item" data-route="/pc/dashboard"><span class="icon">📊</span> Dashboard</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Compute & Storage</div>
+                    <a class="nav-item" data-route="/pc/vms"><span class="icon">🖥️</span> VMs</a>
+                    <a class="nav-item" data-route="/pc/categories"><span class="icon">🏷️</span> Categories</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Policies</div>
+                    <a class="nav-item" data-route="/pc/flow"><span class="icon">🔒</span> Flow Security</a>
+                    <a class="nav-item" data-route="/pc/leap"><span class="icon">🔄</span> Leap DR</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Operations</div>
+                    <a class="nav-item" data-route="/pc/planning"><span class="icon">📈</span> Planning</a>
+                </div>
+            </aside>
+
+            <!-- PE Hamburger Overlay -->
+            <div id="hamburger-backdrop" class="hamburger-backdrop"></div>
+            <nav id="hamburger-overlay" class="hamburger-overlay">
+                <div class="nav-group">
+                    <div class="nav-group-title">Home</div>
+                    <a class="nav-item" data-route="/pe/dashboard"><span class="icon">📊</span> Dashboard</a>
+                    <a class="nav-item" data-route="/pe/health"><span class="icon">💚</span> Health</a>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">Compute</div>
+                    <a class="nav-item" data-route="/pe/vms"><span class="icon">🖥️</span> VMs</a>
+                    <a class="nav-item" data-route="/pe/images"><span class="icon">💿</span> Images</a>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">Storage</div>
+                    <a class="nav-item" data-route="/pe/storage"><span class="icon">💾</span> Storage Containers</a>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">Network</div>
+                    <a class="nav-item" data-route="/pe/network"><span class="icon">🌐</span> Network Config</a>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">Data Protection</div>
+                    <a class="nav-item" data-route="/pe/protection"><span class="icon">🛡️</span> Protection Domains</a>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">Admin</div>
+                    <a class="nav-item" data-route="/pe/hardware"><span class="icon">🔧</span> Hardware</a>
+                    <a class="nav-item" data-route="/pe/settings"><span class="icon">⚙️</span> Settings</a>
+                </div>
+            </nav>
+
+            <!-- View Container -->
+            <main id="view-container" class="view-container"></main>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Boot Script -->
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
