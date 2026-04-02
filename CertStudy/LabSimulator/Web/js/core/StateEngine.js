@@ -164,6 +164,23 @@ class StateEngine {
                 { uuid: 'alert-001', severity: 'warning', title: 'Disk usage above 70%', entity: 'Gold-Container', created_at: '2026-04-01T18:30:00Z', resolved: false },
                 { uuid: 'alert-002', severity: 'info', title: 'NCC check completed', entity: 'Cluster', created_at: '2026-04-01T20:00:00Z', resolved: true },
             ],
+            categories: [
+                { uuid: 'cat-001', key: 'AppType', values: ['Web', 'Database', 'App', 'Infrastructure'] },
+                { uuid: 'cat-002', key: 'Environment', values: ['Production', 'Development', 'Testing', 'Staging'] },
+                { uuid: 'cat-003', key: 'AppTier', values: ['Web', 'App', 'DB'] },
+            ],
+            flow_policies: [
+                { uuid: 'flow-001', name: 'Quarantine-Default', type: 'quarantine', mode: 'applied', target_categories: [], source_categories: [], rules: [{ direction: 'inbound', action: 'deny', ports: [] }, { direction: 'outbound', action: 'deny', ports: [] }] },
+                { uuid: 'flow-002', name: 'Isolation-DMZ', type: 'isolation', mode: 'applied', target_categories: [{ key: 'Environment', value: 'Production' }], source_categories: [], rules: [{ direction: 'inbound', action: 'whitelist', ports: ['80', '443'] }] },
+                { uuid: 'flow-003', name: 'WebApp-Security', type: 'application', mode: 'monitor', target_categories: [{ key: 'AppType', value: 'Web' }], source_categories: [{ key: 'AppTier', value: 'Web' }], rules: [{ direction: 'inbound', action: 'whitelist', ports: ['80', '443', '22'] }] },
+            ],
+            protection_policies: [
+                { uuid: 'pp-001', name: 'Gold-RPO-1hr', rpo: '1_hour', remote_site: 'DR-Site-01', snapshot_type: 'crash_consistent', categories: [{ key: 'Environment', value: 'Production' }] },
+                { uuid: 'pp-002', name: 'Silver-RPO-24hr', rpo: '24_hours', remote_site: 'DR-Site-01', snapshot_type: 'crash_consistent', categories: [{ key: 'Environment', value: 'Development' }] },
+            ],
+            recovery_plans: [
+                { uuid: 'rp-001', name: 'WebTier-Recovery', boot_groups: [{ order: 1, vms: ['vm-010'], delay_seconds: 0 }, { order: 2, vms: ['vm-009'], delay_seconds: 60 }, { order: 3, vms: ['vm-006', 'vm-007'], delay_seconds: 120 }], network_mapping: { source: 'Production-200', target: 'DR-Prod-200' }, pre_script: null, post_script: '/scripts/validate-dns.sh', status: 'ready', last_test: '2026-03-15' },
+            ],
         };
     }
 }

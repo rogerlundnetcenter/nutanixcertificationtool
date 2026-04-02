@@ -12,6 +12,11 @@ import { PeHardwareView } from './views/pe-hardware.js';
 import { PeHealthView } from './views/pe-health.js';
 import { PeSettingsView } from './views/pe-settings.js';
 import { PeCliView } from './views/pe-cli.js';
+import { PcDashboardView } from './views/pc-dashboard.js';
+import { PcCategoriesView } from './views/pc-categories.js';
+import { PcFlowView } from './views/pc-flow.js';
+import { PcLeapView } from './views/pc-leap.js';
+import { PcPlanningView } from './views/pc-planning.js';
 import { PlaceholderView } from './views/PlaceholderView.js';
 
 /**
@@ -56,12 +61,12 @@ class App {
         router.register('/pe/cli', PeCliView);
 
         // PC routes
-        router.register('/pc/dashboard', this.#placeholder('PC Dashboard', 'pc'));
+        router.register('/pc/dashboard', PcDashboardView);
         router.register('/pc/vms', this.#placeholder('PC VMs', 'pc'));
-        router.register('/pc/categories', this.#placeholder('Categories', 'pc'));
-        router.register('/pc/flow', this.#placeholder('Flow Security', 'pc'));
-        router.register('/pc/leap', this.#placeholder('Leap DR', 'pc'));
-        router.register('/pc/planning', this.#placeholder('Planning', 'pc'));
+        router.register('/pc/categories', PcCategoriesView);
+        router.register('/pc/flow', PcFlowView);
+        router.register('/pc/leap', PcLeapView);
+        router.register('/pc/planning', PcPlanningView);
     }
 
     #placeholder(title, ctx) {
