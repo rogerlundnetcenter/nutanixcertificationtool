@@ -84,7 +84,7 @@ export class AiModelsView extends BaseView {
                     key: 'status', label: 'Status', sortable: true,
                     render: (v) => {
                         const colors = { deployed: 'var(--status-good)', available: 'var(--status-warning)', downloading: 'var(--prism-blue)' };
-                        return `<span class="badge" style="background:${colors[v] || 'var(--text-secondary)'};color:#fff;">${v || 'unknown'}</span>`;
+                        return `<span class="badge" style="background:${colors[v] || 'var(--text-secondary)'};color:var(--text-inverse);">${v || 'unknown'}</span>`;
                     }
                 },
                 { key: 'quantization', label: 'Quantization', sortable: false, render: (v) => v || 'None' },
@@ -130,6 +130,7 @@ export class AiModelsView extends BaseView {
     #openRegisterWizard() {
         const wizard = new Wizard({
             title: 'Register Model',
+            initialData: {},
             steps: [
                 {
                     label: 'Model Info',

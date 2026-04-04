@@ -2,6 +2,7 @@ import { BaseView } from './BaseView.js';
 import { state } from '../core/StateEngine.js';
 import { bus } from '../core/EventBus.js';
 import { toast } from '../components/Toast.js';
+import { confirm } from '../components/Confirm.js';
 
 /**
  * PC Settings — Tabbed config: NTP, DNS, SMTP, SSL, Pulse, SCMA.
@@ -325,7 +326,8 @@ export class PcSettingsView extends BaseView {
         });
 
         resetBtn?.addEventListener('click', async () => {
-            if (!window.confirm('Reset ALL simulator data to defaults? This cannot be undone.')) return;
+            const ok = await confirm({ title: 'Reset State', message: 'Reset ALL simulator data to defaults? This cannot be undone.', danger: true });
+            if (!ok) return;
             await state.reset();
             toast('State reset to defaults. Refreshing...', 'success');
             setTimeout(() => location.reload(), 1000);

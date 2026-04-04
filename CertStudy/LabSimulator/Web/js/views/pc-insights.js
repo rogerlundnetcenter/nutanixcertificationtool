@@ -91,7 +91,9 @@ export class PcInsightsView extends BaseView {
         });
 
         this.#unsubs.push(
-            bus.on('state:insights:changed', () => this.refresh())
+            bus.on('insights:created', () => this.refresh()),
+            bus.on('insights:updated', () => this.refresh()),
+            bus.on('insights:deleted', () => this.refresh())
         );
     }
 
@@ -177,7 +179,7 @@ export class PcInsightsView extends BaseView {
                 {
                     key: 'status', label: 'Status', render: (val) => {
                         const color = val === 'active' ? 'var(--status-critical)' : 'var(--status-warning)';
-                        return `<span class="badge" style="background:${color};color:#fff;">${val}</span>`;
+                        return `<span class="badge" style="background:${color};color:var(--text-inverse);">${val}</span>`;
                     }
                 }
             ],

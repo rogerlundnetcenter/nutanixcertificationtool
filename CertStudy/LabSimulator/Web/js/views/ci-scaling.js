@@ -121,7 +121,7 @@ export class CiScalingView extends BaseView {
                     key: 'status', label: 'Status', sortable: true,
                     render: (v) => {
                         const c = v === 'running' ? 'var(--status-good)' : 'var(--status-warning)';
-                        return `<span class="badge" style="background:${c};color:#fff;">${v}</span>`;
+                        return `<span class="badge" style="background:${c};color:var(--text-inverse);">${v}</span>`;
                     }
                 }
             ],
@@ -143,6 +143,7 @@ export class CiScalingView extends BaseView {
         const isUp = action === 'scale_up';
         const wizard = new Wizard({
             title: `${isUp ? 'Scale Up' : 'Scale Down'} — ${cluster.name}`,
+            initialData: {},
             steps: [
                 {
                     label: 'Scale Configuration',
@@ -210,7 +211,7 @@ export class CiScalingView extends BaseView {
                     key: 'action', label: 'Action', sortable: true,
                     render: (v) => {
                         const color = v === 'scale_up' ? 'var(--status-good)' : 'var(--status-warning)';
-                        return `<span class="badge" style="background:${color};color:#fff;">${v === 'scale_up' ? '↑ Scale Up' : '↓ Scale Down'}</span>`;
+                        return `<span class="badge" style="background:${color};color:var(--text-inverse);">${v === 'scale_up' ? '↑ Scale Up' : '↓ Scale Down'}</span>`;
                     }
                 },
                 { key: 'from_nodes', label: 'From Nodes', sortable: false },
@@ -220,7 +221,7 @@ export class CiScalingView extends BaseView {
                     key: 'status', label: 'Status', sortable: true,
                     render: (v) => {
                         const colors = { completed: 'var(--status-good)', in_progress: 'var(--prism-blue)', failed: 'var(--status-critical)' };
-                        return `<span class="badge" style="background:${colors[v] || 'var(--text-secondary)'};color:#fff;">${v}</span>`;
+                        return `<span class="badge" style="background:${colors[v] || 'var(--text-secondary)'};color:var(--text-inverse);">${v}</span>`;
                     }
                 },
                 { key: 'timestamp', label: 'Timestamp', sortable: true, render: (v) => v ? new Date(v).toLocaleString() : '—' }
@@ -270,7 +271,7 @@ export class CiScalingView extends BaseView {
                             <div class="card">
                                 <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
                                     <span style="font-weight:600;">${p.name}</span>
-                                    <span class="badge" style="background:${enabledColor};color:#fff;">${p.enabled ? 'Enabled' : 'Disabled'}</span>
+                                    <span class="badge" style="background:${enabledColor};color:var(--text-inverse);">${p.enabled ? 'Enabled' : 'Disabled'}</span>
                                 </div>
                                 <div class="card-body">
                                     <div class="form-group" style="margin-bottom:8px;">
@@ -316,6 +317,7 @@ export class CiScalingView extends BaseView {
         const clusters = this.#getClusters();
         const wizard = new Wizard({
             title: 'Create Auto-Scale Policy',
+            initialData: {},
             steps: [
                 {
                     label: 'Policy Configuration',

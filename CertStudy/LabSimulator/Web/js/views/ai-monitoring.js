@@ -107,7 +107,7 @@ export class AiMonitoringView extends BaseView {
                     key: 'status', label: 'Status', sortable: true,
                     render: (v) => {
                         const colors = { healthy: 'var(--status-good)', degraded: 'var(--status-warning)', down: 'var(--status-critical)' };
-                        return `<span class="badge" style="background:${colors[v] || 'var(--text-secondary)'};color:#fff;">${v || 'unknown'}</span>`;
+                        return `<span class="badge" style="background:${colors[v] || 'var(--text-secondary)'};color:var(--text-inverse);">${v || 'unknown'}</span>`;
                     }
                 }
             ],
@@ -215,7 +215,7 @@ export class AiMonitoringView extends BaseView {
                                     <div style="font-weight:600;">${a.message || a.entity || 'Alert'}</div>
                                     <div class="text-secondary text-sm">${a.entity || ''} · ${a.timestamp ? new Date(a.timestamp).toLocaleString() : ''}</div>
                                 </div>
-                                <span class="badge" style="background:${color};color:#fff;">${a.severity || 'info'}</span>
+                                <span class="badge" style="background:${color};color:var(--text-inverse);">${a.severity || 'info'}</span>
                             </div>
                         </div>
                     `;

@@ -109,7 +109,9 @@ export class PeCapacityView extends BaseView {
         this.root.querySelector('#refresh-analysis-btn')?.addEventListener('click', () => this.#refreshAnalysis());
 
         this.#unsubs.push(
-            bus.on('state:capacity_data:changed', () => this.refresh())
+            bus.on('capacity_data:created', () => this.refresh()),
+            bus.on('capacity_data:updated', () => this.refresh()),
+            bus.on('capacity_data:deleted', () => this.refresh())
         );
     }
 

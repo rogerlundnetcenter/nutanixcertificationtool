@@ -131,13 +131,13 @@ export class CiMonitoringView extends BaseView {
                         <div class="card">
                             <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
                                 <span style="font-weight:600;">${c.name}</span>
-                                <span class="badge" style="background:${providerColors[c.provider] || 'var(--prism-blue)'};color:#fff;">${c.provider}</span>
+                                <span class="badge" style="background:${providerColors[c.provider] || 'var(--prism-blue)'};color:var(--text-inverse);">${c.provider}</span>
                             </div>
                             <div class="card-body">
                                 <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
                                     <span class="text-secondary text-sm">Region: ${c.region}</span>
                                     <span class="text-secondary text-sm">Nodes: ${c.node_count}</span>
-                                    <span class="badge" style="background:${statusColor};color:#fff;">${c.status}</span>
+                                    <span class="badge" style="background:${statusColor};color:var(--text-inverse);">${c.status}</span>
                                 </div>
                                 ${this.#progressBar('CPU', h.cpu)}
                                 ${this.#progressBar('Memory', h.memory)}

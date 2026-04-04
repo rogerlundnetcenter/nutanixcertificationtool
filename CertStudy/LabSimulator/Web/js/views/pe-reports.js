@@ -84,7 +84,9 @@ export class PeReportsView extends BaseView {
         this.root.querySelector('#generate-report-btn')?.addEventListener('click', () => this.#openGenerateWizard());
 
         this.#unsubs.push(
-            bus.on('state:pe_reports:changed', () => this.refresh())
+            bus.on('pe_reports:created', () => this.refresh()),
+            bus.on('pe_reports:updated', () => this.refresh()),
+            bus.on('pe_reports:deleted', () => this.refresh())
         );
     }
 
@@ -124,7 +126,7 @@ export class PeReportsView extends BaseView {
                 },
                 {
                     label: 'Delete',
-                    variant: 'danger',
+                    danger: true,
                     onClick: (item) => this.#deleteReport(item)
                 }
             ]
@@ -186,6 +188,7 @@ export class PeReportsView extends BaseView {
     #openGenerateWizard() {
         const wizard = new Wizard({
             title: 'Generate Report',
+            initialData: {},
             steps: [
                 {
                     label: 'Report Details',
