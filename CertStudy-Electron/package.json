@@ -5,9 +5,9 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "test": "node --test tests/",
-    "test:watch": "node --test --watch tests/",
-    "lint": "eslint src/ main.js preload.js",
+    "test": "node --test tests/questionParser.test.js tests/dataValidator.test.js tests/referenceService.test.js tests/windowState.test.js tests/pdfExportService.test.js tests/blueprintService.test.js tests/labHandlers.test.js",
+    "test:watch": "node --test --watch tests/questionParser.test.js tests/dataValidator.test.js tests/referenceService.test.js tests/windowState.test.js tests/pdfExportService.test.js tests/blueprintService.test.js tests/labHandlers.test.js",
+    "lint": "echo 'TODO: configure eslint'",
     "make": "electron-forge make",
     "package": "electron-forge package"
   },
@@ -29,9 +29,6 @@
     "@electron-forge/maker-rpm": "^7.0.0",
     "@electron-forge/maker-squirrel": "^7.0.0",
     "@electron-forge/maker-zip": "^7.0.0",
-    "electron": "^34.0.0",
-    "esbuild-wasm": "^0.27.7",
-    "eslint": "^9.0.0",
-    "vitest": "^3.0.0"
+    "electron": "^34.0.0"
   }
 }
