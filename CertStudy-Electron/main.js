@@ -10,6 +10,77 @@ const {
 
 let mainWindow = null;
 
+// Application menu
+function buildMenu() {
+  const isMac = process.platform === 'darwin';
+  const template = [
+    ...(isMac ? [{ role: 'appMenu' }] : []),
+    {
+      label: 'File',
+      submenu: [
+        {
+          label: 'Choose Data Directory...',
+          accelerator: 'CmdOrCtrl+O',
+          click: async () => {
+            if (!mainWindow) return;
+            const { filePaths } = await dialog.showOpenDialog(mainWindow, {
+              properties: ['openDirectory'],
+              title: 'Select Question Data Directory',
+            });
+            if (filePaths[0]) {
+              const store = getStore();
+              store.set('dataDirectory', filePaths[0]);
+              mainWindow.reload();
+            }
+          },
+        },
+        { type: 'separator' },
+        isMac ? { role: 'close' } : { role: 'quit' },
+      ],
+    },
+    {
+      label: 'View',
+      submenu: [
+        { role: 'reload' },
+        { role: 'toggleDevTools' },
+        { type: 'separator' },
+        { role: 'resetZoom' },
+        { role: 'zoomIn' },
+        { role: 'zoomOut' },
+        { type: 'separator' },
+        { role: 'togglefullscreen' },
+      ],
+    },
+    {
+      label: 'Help',
+      submenu: [
+        {
+          label: 'About CertStudy',
+          click: () => {
+            dialog.showMessageBox(mainWindow, {
+              type: 'info',
+              title: 'About CertStudy',
+              message: 'CertStudy — Nutanix Certification Exam Prep',
+              detail: `Version: ${app.getVersion()}\nElectron: ${process.versions.electron}\nNode: ${process.versions.node}\nPlatform: ${process.platform}\n\n1,438 practice questions across 4 exams\nNCP-AI · NCP-US · NCP-CI · NCM-MCI`,
+            });
+          },
+        },
+        { type: 'separator' },
+        {
+          label: 'Nutanix Certification Portal',
+          click: () => shell.openExternal('https://www.nutanix.com/support-services/training-certification/certifications'),
+        },
+        {
+          label: 'Nutanix University',
+          click: () => shell.openExternal('https://www.nutanix.com/support-services/training-certification'),
+        },
+      ],
+    },
+  ];
+
+  Menu.setApplicationMenu(Menu.buildFromTemplate(template));
+}
+
 // Register custom protocol for lab simulator
 protocol.registerSchemesAsPrivileged([{
   scheme: 'certstudy-lab',
@@ -138,9 +209,12 @@ function setupIPC() {
     return canceled ? null : filePath;
   });
 
-  ipcMain.handle('fs:open-external', async (_event, filePath) => {
-    if (typeof filePath === 'string' && filePath.endsWith('.pdf')) {
-      await shell.openPath(filePath);
+  ipcMain.handle('fs:open-external', async (_event, target) => {
+    if (typeof target !== 'string') return;
+    if (target.startsWith('http://') || target.startsWith('https://')) {
+      await shell.openExternal(target);
+    } else if (target.endsWith('.pdf')) {
+      await shell.openPath(target);
     }
   });
 
@@ -163,6 +237,17 @@ function setupIPC() {
     chrome: process.versions.chrome,
     platform: process.platform,
   }));
+
+  // PDF export channels
+  ipcMain.handle('pdf:export-exam', async (_event, examName, questions, includeAnswers, outputPath) => {
+    const { exportExam } = require('./src/main/services/pdfExportService');
+    return exportExam(examName, questions, includeAnswers, outputPath);
+  });
+
+  ipcMain.handle('pdf:export-all', async (_event, exams, includeAnswers, outputPath) => {
+    const { exportAll } = require('./src/main/services/pdfExportService');
+    return exportAll(exams, includeAnswers, outputPath);
+  });
 
   // Lab bridge channels — delegated to labHandlers module
   setupLabIPC(ipcMain, () => mainWindow, app.getVersion());
@@ -236,6 +321,7 @@ process.on('unhandledRejection', (reason) => {
 });
 
 app.whenReady().then(() => {
+  buildMenu();
   setupLabProtocol();
   setupIPC();
   createWindow();

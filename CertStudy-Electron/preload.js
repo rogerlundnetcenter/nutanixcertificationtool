@@ -17,10 +17,10 @@ contextBridge.exposeInMainWorld('certStudy', {
   },
 
   pdf: {
-    exportExam: (examName, questions, includeAnswers) =>
-      ipcRenderer.invoke('pdf:export-exam', examName, questions, includeAnswers),
-    exportAll: (exams, includeAnswers) =>
-      ipcRenderer.invoke('pdf:export-all', exams, includeAnswers),
+    exportExam: (examName, questions, includeAnswers, outputPath) =>
+      ipcRenderer.invoke('pdf:export-exam', examName, questions, includeAnswers, outputPath),
+    exportAll: (exams, includeAnswers, outputPath) =>
+      ipcRenderer.invoke('pdf:export-all', exams, includeAnswers, outputPath),
   },
 
   fs: {
