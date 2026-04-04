@@ -1,5 +1,6 @@
-const { app, BrowserWindow, ipcMain, protocol, net, dialog, shell, Menu } = require('electron');
+const { app, BrowserWindow, ipcMain, protocol, net, dialog, shell, Menu, screen } = require('electron');
 const path = require('path');
+const { getWindowState, trackWindowState } = require('./src/main/windowState');
 
 let mainWindow = null;
 
@@ -16,9 +17,11 @@ protocol.registerSchemesAsPrivileged([{
 }]);
 
 function createWindow() {
-  mainWindow = new BrowserWindow({
-    width: 1280,
-    height: 800,
+  const state = getWindowState(getStore(), screen);
+
+  const windowOpts = {
+    width: state.width,
+    height: state.height,
     minWidth: 1200,
     minHeight: 700,
     title: 'CertStudy',
@@ -31,7 +34,20 @@ function createWindow() {
       webviewTag: false,
       allowRunningInsecureContent: false,
     },
-  });
+  };
+
+  if (state.x !== undefined && state.y !== undefined) {
+    windowOpts.x = state.x;
+    windowOpts.y = state.y;
+  } else {
+    windowOpts.center = true;
+  }
+
+  mainWindow = new BrowserWindow(windowOpts);
+
+  if (state.isMaximized) mainWindow.maximize();
+
+  trackWindowState(mainWindow, getStore());
 
   mainWindow.loadFile(path.join(__dirname, 'src', 'renderer', 'quiz', 'index.html'));
 
