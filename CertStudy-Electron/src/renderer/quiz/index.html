@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; script-src 'self';">
+  <title>CertStudy</title>
+  <link rel="stylesheet" href="css/synthwave-tokens.css">
+  <link rel="stylesheet" href="css/quiz.css">
+</head>
+<body>
+  <div id="app" class="quiz-app">
+    <!-- Tab Bar -->
+    <header class="tab-bar">
+      <div class="tab-bar__brand">🎯 CertStudy</div>
+      <nav class="tab-bar__tabs">
+        <button class="tab active" data-tab="quiz">Quiz</button>
+        <button class="tab" data-tab="lab">Lab Simulator</button>
+      </nav>
+      <div class="tab-bar__info">
+        <span id="version-label" class="version-label"></span>
+      </div>
+    </header>
+
+    <!-- Quiz View -->
+    <div id="quiz-root" class="quiz-root active">
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar__section">
+          <h3 class="sidebar__heading">Exams</h3>
+          <div id="exam-buttons" class="sidebar__buttons"></div>
+        </div>
+        <div class="sidebar__section">
+          <h3 class="sidebar__heading">Mode</h3>
+          <div class="sidebar__modes">
+            <label class="radio-label">
+              <input type="radio" name="mode" value="study" checked> Study
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="mode" value="test"> Test
+            </label>
+          </div>
+          <label class="checkbox-label">
+            <input type="checkbox" id="randomize-check" checked> Randomize answers
+          </label>
+        </div>
+        <div class="sidebar__section">
+          <h3 class="sidebar__heading">Stats</h3>
+          <div id="stats-panel" class="stats-panel">
+            <div class="stat-row"><span>Score:</span><span id="stat-score">0/0</span></div>
+            <div class="stat-row"><span>Percentage:</span><span id="stat-pct">—</span></div>
+            <div class="stat-row"><span>Streak:</span><span id="stat-streak">0</span></div>
+          </div>
+        </div>
+        <div class="sidebar__section sidebar__actions">
+          <button id="blueprint-btn" class="btn btn--outline">📋 Blueprint</button>
+          <button id="export-btn" class="btn btn--outline">📄 Export PDF</button>
+          <button id="lab-btn" class="btn btn--accent">🔬 Lab Simulator</button>
+          <button id="reset-btn" class="btn btn--ghost">↺ Reset</button>
+          <button id="review-btn" class="btn btn--ghost" disabled>📝 Review Mistakes</button>
+        </div>
+      </aside>
+
+      <main class="content">
+        <div class="content__header" id="content-header">
+          <h2 id="exam-title" class="content__title">Select an exam to begin</h2>
+          <div id="timer-display" class="timer" style="display:none">00:00</div>
+        </div>
+        <div id="progress-bar" class="progress-bar">
+          <div id="progress-fill" class="progress-bar__fill"></div>
+        </div>
+        <span id="progress-label" class="progress-label"></span>
+
+        <div id="question-panel" class="question-panel" style="display:none">
+          <div id="stem" class="stem"></div>
+          <div id="options-container" class="options-container"></div>
+          <div id="feedback" class="feedback"></div>
+          <div class="button-bar">
+            <button id="prev-btn" class="btn btn--outline" disabled>← Previous</button>
+            <button id="submit-btn" class="btn btn--primary">Submit</button>
+            <button id="next-btn" class="btn btn--outline" disabled>Next →</button>
+          </div>
+        </div>
+
+        <div id="explanation-panel" class="explanation-panel" style="display:none">
+          <h3 class="explanation-panel__header">Explanation</h3>
+          <div id="explanation-content" class="explanation-panel__body"></div>
+        </div>
+
+        <div id="blueprint-panel" class="blueprint-panel" style="display:none"></div>
+
+        <div id="empty-state" class="empty-state">
+          <div class="empty-state__icon">📚</div>
+          <h3>Welcome to CertStudy</h3>
+          <p>Select an exam from the sidebar to start studying.</p>
+        </div>
+      </main>
+    </div>
+
+    <!-- Lab Simulator (iframe, loaded on demand) -->
+    <iframe id="lab-frame" class="lab-frame" style="display:none" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+  <script src="js/quiz-app.js" type="module"></script>
+</body>
+</html>

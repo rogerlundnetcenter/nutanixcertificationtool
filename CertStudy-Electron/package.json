@@ -1,0 +1,31 @@
+{
+  "name": "certstudy-electron",
+  "version": "1.0.0-alpha.1",
+  "description": "Nutanix Certification Study Tool — Cross-platform Electron app",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src/ main.js preload.js",
+    "make": "electron-forge make",
+    "package": "electron-forge package"
+  },
+  "keywords": ["nutanix", "certification", "study", "electron"],
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "electron-store": "^10.0.0",
+    "pdfkit": "^0.15.0"
+  },
+  "devDependencies": {
+    "electron": "^34.0.0",
+    "@electron-forge/cli": "^7.0.0",
+    "@electron-forge/maker-deb": "^7.0.0",
+    "@electron-forge/maker-rpm": "^7.0.0",
+    "@electron-forge/maker-squirrel": "^7.0.0",
+    "@electron-forge/maker-zip": "^7.0.0",
+    "@electron-forge/maker-dmg": "^7.0.0",
+    "vitest": "^3.0.0",
+    "eslint": "^9.0.0"
+  }
+}
