@@ -1,6 +1,12 @@
 const { app, BrowserWindow, ipcMain, protocol, net, dialog, shell, Menu, screen } = require('electron');
 const path = require('path');
 const { getWindowState, trackWindowState } = require('./src/main/windowState');
+const {
+  resolveLabRoot,
+  createLabProtocolHandler,
+  setupLabIPC,
+  sendToLab,
+} = require('./src/main/ipc/labHandlers');
 
 let mainWindow = null;
 
@@ -62,19 +68,18 @@ function createWindow() {
 
 // Custom protocol handler for lab simulator content
 function setupLabProtocol() {
-  const labRoot = path.join(__dirname, 'src', 'renderer', 'lab');
+  const labRoot = resolveLabRoot(__dirname);
 
-  protocol.handle('certstudy-lab', (request) => {
-    const url = new URL(request.url);
-    const filePath = path.join(labRoot, decodeURIComponent(url.pathname));
+  if (!labRoot) {
+    console.warn('[LabProtocol] Lab simulator directory not found — protocol will return 404');
+    protocol.handle('certstudy-lab', () => {
+      return new Response('Lab simulator files not found', { status: 404 });
+    });
+    return;
+  }
 
-    // Security: prevent directory traversal
-    if (!filePath.startsWith(labRoot)) {
-      return new Response('Forbidden', { status: 403 });
-    }
-
-    return net.fetch(`file://${filePath}`);
-  });
+  console.log(`[LabProtocol] Serving lab files from: ${labRoot}`);
+  protocol.handle('certstudy-lab', createLabProtocolHandler(labRoot, net));
 }
 
 // Register IPC handlers
@@ -159,15 +164,8 @@ function setupIPC() {
     platform: process.platform,
   }));
 
-  // Lab bridge channels
-  ipcMain.handle('lab:message', async (_event, type, payload) => {
-    // Extensible handler registry for lab bridge messages
-    return { type: 'response', payload: { success: true, data: null } };
-  });
-
-  ipcMain.on('lab:notify', (_event, type, payload) => {
-    // Fire-and-forget lab notifications
-  });
+  // Lab bridge channels — delegated to labHandlers module
+  setupLabIPC(ipcMain, () => mainWindow, app.getVersion());
 }
 
 let _store = null;
