@@ -1,0 +1,193 @@
+/* ═══════════════════════════════════════════════════════════
+   CertStudy — Shared Animations
+   All animations use synthwave-tokens.css custom properties.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Fade In ── */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.anim-fade-in {
+  animation: fade-in var(--transition-normal) both;
+}
+
+/* ── Fade Out ── */
+@keyframes fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+.anim-fade-out {
+  animation: fade-out var(--transition-normal) both;
+}
+
+/* ── Slide Up (enter from below) ── */
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.anim-slide-up {
+  animation: slide-up var(--transition-normal) both;
+}
+
+/* ── Slide Down (exit downward) ── */
+@keyframes slide-down {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+.anim-slide-down {
+  animation: slide-down var(--transition-normal) both;
+}
+
+/* ── Slide In Right (toast entrance) ── */
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.anim-slide-in-right {
+  animation: slide-in-right 300ms ease both;
+}
+
+/* ── Slide Out Right (toast exit) ── */
+@keyframes slide-out-right {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+.anim-slide-out-right {
+  animation: slide-out-right 250ms ease both;
+}
+
+/* ── Scale In (modal / popover entrance) ── */
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.anim-scale-in {
+  animation: scale-in 200ms ease both;
+}
+
+/* ── Pulse (attention / live indicator) ── */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.5; }
+}
+
+.anim-pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* ── Shake (wrong answer / validation error) ── */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  15%      { transform: translateX(-6px); }
+  30%      { transform: translateX(5px); }
+  45%      { transform: translateX(-4px); }
+  60%      { transform: translateX(3px); }
+  75%      { transform: translateX(-2px); }
+}
+
+.anim-shake {
+  animation: shake 500ms ease both;
+}
+
+/* ── Neon Glow (magenta border pulse) ── */
+@keyframes glow-magenta {
+  0%, 100% { box-shadow: 0 0 6px var(--sw-glow-magenta); }
+  50%      { box-shadow: 0 0 18px var(--sw-glow-magenta), 0 0 36px rgba(255, 16, 240, 0.15); }
+}
+
+.anim-glow-magenta {
+  animation: glow-magenta 2.5s ease-in-out infinite;
+}
+
+/* ── Neon Glow (cyan border pulse) ── */
+@keyframes glow-cyan {
+  0%, 100% { box-shadow: 0 0 6px var(--sw-glow-cyan); }
+  50%      { box-shadow: 0 0 18px var(--sw-glow-cyan), 0 0 36px rgba(0, 255, 255, 0.12); }
+}
+
+.anim-glow-cyan {
+  animation: glow-cyan 2.5s ease-in-out infinite;
+}
+
+/* ── Neon Glow (purple border pulse) ── */
+@keyframes glow-purple {
+  0%, 100% { box-shadow: 0 0 6px var(--sw-glow-purple); }
+  50%      { box-shadow: 0 0 18px var(--sw-glow-purple), 0 0 36px rgba(180, 0, 255, 0.12); }
+}
+
+.anim-glow-purple {
+  animation: glow-purple 2.5s ease-in-out infinite;
+}
+
+/* ── Spin (loading indicator) ── */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.anim-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* ── Stagger delays (apply to children) ── */
+.anim-stagger > :nth-child(1)  { animation-delay: 0ms; }
+.anim-stagger > :nth-child(2)  { animation-delay: 50ms; }
+.anim-stagger > :nth-child(3)  { animation-delay: 100ms; }
+.anim-stagger > :nth-child(4)  { animation-delay: 150ms; }
+.anim-stagger > :nth-child(5)  { animation-delay: 200ms; }
+.anim-stagger > :nth-child(6)  { animation-delay: 250ms; }
+.anim-stagger > :nth-child(7)  { animation-delay: 300ms; }
+.anim-stagger > :nth-child(8)  { animation-delay: 350ms; }
+.anim-stagger > :nth-child(9)  { animation-delay: 400ms; }
+.anim-stagger > :nth-child(10) { animation-delay: 450ms; }
+
+/* ═══════════════════════════════════════════════════════════
+   Accessibility — prefers-reduced-motion
+   ═══════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,316 @@
+/* ═══════════════════════════════════════════════════════════
+   CertStudy — Blueprint / Exam Coverage Styles
+   Used for displaying exam objectives and tracking coverage.
+   BEM naming: .blueprint__element--modifier
+   All values reference synthwave-tokens.css custom properties.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Overall Summary Card ─────────────────────────────────── */
+.blueprint-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.blueprint-summary__stat {
+  background: var(--sw-dark-panel);
+  border: 1px solid var(--sw-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.blueprint-summary__label {
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--sw-text-dim);
+}
+
+.blueprint-summary__value {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--sw-neon-cyan);
+}
+
+.blueprint-summary__value--good {
+  color: var(--sw-status-green);
+}
+
+.blueprint-summary__value--warn {
+  color: var(--sw-status-amber);
+}
+
+.blueprint-summary__value--bad {
+  color: var(--sw-status-red);
+}
+
+/* Sub-label beneath the big number */
+.blueprint-summary__detail {
+  font-size: var(--font-size-xs);
+  color: var(--sw-text-dim);
+}
+
+/* ── Overall Coverage Bar ─────────────────────────────────── */
+.blueprint-coverage-bar {
+  height: 10px;
+  background: var(--sw-dark-panel);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: var(--space-lg);
+  border: 1px solid rgba(180, 0, 255, 0.15);
+}
+
+.blueprint-coverage-bar__fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width var(--transition-normal);
+  background: linear-gradient(90deg, var(--sw-neon-magenta), var(--sw-neon-cyan));
+  box-shadow: 0 0 8px var(--sw-glow-cyan);
+}
+
+/* ── Blueprint Table ──────────────────────────────────────── */
+.blueprint-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.blueprint-table th {
+  text-align: left;
+  padding: var(--space-sm) var(--space-md);
+  font-weight: 600;
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--sw-text-dim);
+  border-bottom: 2px solid var(--sw-border);
+  position: sticky;
+  top: 0;
+  background: var(--sw-deep-space);
+  z-index: 1;
+}
+
+.blueprint-table td {
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid rgba(180, 0, 255, 0.1);
+  color: var(--sw-text-primary);
+  vertical-align: middle;
+}
+
+/* ── Collapsible Section Row ──────────────────────────────── */
+.blueprint-section {
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--transition-fast);
+}
+
+.blueprint-section:hover {
+  background: var(--sw-card-hover);
+}
+
+.blueprint-section td {
+  padding: var(--space-sm) var(--space-md);
+  font-weight: 600;
+  color: var(--sw-text-primary);
+  border-bottom: 1px solid var(--sw-border);
+}
+
+.blueprint-section__toggle {
+  display: inline-block;
+  width: 16px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--sw-text-dim);
+  margin-right: var(--space-sm);
+  transition: transform var(--transition-fast);
+}
+
+.blueprint-section--expanded .blueprint-section__toggle {
+  transform: rotate(90deg);
+}
+
+.blueprint-section__name {
+  color: var(--sw-neon-cyan);
+}
+
+.blueprint-section__weight {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--sw-text-dim);
+}
+
+/* ── Section Coverage Mini-Bar ────────────────────────────── */
+.blueprint-section__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.blueprint-section__bar-track {
+  flex: 1;
+  height: 6px;
+  background: var(--sw-dark-panel);
+  border-radius: 3px;
+  overflow: hidden;
+  min-width: 80px;
+}
+
+.blueprint-section__bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width var(--transition-normal), background var(--transition-normal);
+}
+
+/* Coverage coloring thresholds */
+.blueprint-section__bar-fill--high {
+  background: var(--sw-status-green);
+  box-shadow: 0 0 4px rgba(57, 255, 20, 0.3);
+}
+
+.blueprint-section__bar-fill--mid {
+  background: var(--sw-status-amber);
+  box-shadow: 0 0 4px rgba(255, 200, 60, 0.3);
+}
+
+.blueprint-section__bar-fill--low {
+  background: var(--sw-status-red);
+  box-shadow: 0 0 4px rgba(255, 50, 50, 0.3);
+}
+
+.blueprint-section__pct {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  min-width: 36px;
+  text-align: right;
+}
+
+.blueprint-section__pct--high { color: var(--sw-status-green); }
+.blueprint-section__pct--mid  { color: var(--sw-status-amber); }
+.blueprint-section__pct--low  { color: var(--sw-status-red); }
+
+/* ── Objective Rows (children of sections) ────────────────── */
+.blueprint-objective {
+  transition: background var(--transition-fast);
+}
+
+.blueprint-objective:hover {
+  background: rgba(30, 25, 55, 0.6);
+}
+
+.blueprint-objective td {
+  font-size: var(--font-size-sm);
+  color: var(--sw-text-primary);
+}
+
+/* Collapsed state: hide child objectives */
+.blueprint-objective--hidden {
+  display: none;
+}
+
+/* Indent objective text under the section */
+.blueprint-objective__name {
+  padding-left: var(--space-xl);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+/* ── Checkbox indicator ───────────────────────────────────── */
+.blueprint-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--sw-border);
+  font-size: 11px;
+  color: transparent;
+  transition: all var(--transition-fast);
+}
+
+.blueprint-check--covered {
+  border-color: var(--sw-status-green);
+  color: var(--sw-status-green);
+  background: rgba(57, 255, 20, 0.08);
+}
+
+.blueprint-check--partial {
+  border-color: var(--sw-status-amber);
+  color: var(--sw-status-amber);
+  background: rgba(255, 200, 60, 0.08);
+}
+
+.blueprint-check--none {
+  border-color: var(--sw-border);
+  color: transparent;
+}
+
+/* ── Question Count Column ────────────────────────────────── */
+.blueprint-qcount {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--sw-text-dim);
+  text-align: center;
+}
+
+.blueprint-qcount--zero {
+  color: var(--sw-status-red);
+}
+
+/* ── Domain Badge (used in section header) ────────────────── */
+.blueprint-domain-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--space-sm);
+  border-radius: 10px;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  font-family: var(--font-mono);
+  background: rgba(180, 0, 255, 0.15);
+  color: var(--sw-neon-purple);
+  border: 1px solid rgba(180, 0, 255, 0.3);
+  margin-right: var(--space-sm);
+}
+
+/* ── Empty Blueprint State ────────────────────────────────── */
+.blueprint-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl);
+  gap: var(--space-md);
+  color: var(--sw-text-dim);
+  text-align: center;
+}
+
+.blueprint-empty__icon {
+  font-size: 40px;
+  opacity: 0.5;
+}
+
+.blueprint-empty__text {
+  font-size: var(--font-size-md);
+  color: var(--sw-text-dim);
+}
+
+/* ── Reduced motion ───────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .blueprint-section__bar-fill,
+  .blueprint-coverage-bar__fill,
+  .blueprint-section__toggle {
+    transition: none;
+  }
+}
+
+/* ── Color-scheme guard ───────────────────────────────────── */
+@media (prefers-color-scheme: light) {
+  /* Synthwave is the dark theme — no pure white or black used. */
+}

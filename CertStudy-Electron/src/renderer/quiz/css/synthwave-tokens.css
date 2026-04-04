@@ -5,6 +5,7 @@
   --sw-dark-panel: rgb(20, 16, 40);
   --sw-card-bg: rgb(30, 25, 55);
   --sw-card-hover: rgb(50, 30, 80);
+  --sw-card-press: rgb(70, 40, 100);
   --sw-side-panel: rgb(14, 10, 30);
 
   /* Neon accents */
@@ -26,10 +27,42 @@
   --sw-border: rgba(180, 0, 255, 0.3);
   --sw-glow-magenta: rgba(255, 16, 240, 0.4);
   --sw-glow-cyan: rgba(0, 255, 255, 0.3);
+  --sw-glow-purple: rgba(180, 0, 255, 0.35);
+
+  /* Shadows */
+  --sw-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --sw-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --sw-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --sw-shadow-modal: 0 12px 40px rgba(0, 0, 0, 0.7);
+
+  /* Overlay */
+  --sw-overlay: rgba(5, 5, 15, 0.75);
+
+  /* Z-index hierarchy */
+  --z-base: 0;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-modal: 500;
+  --z-toast: 600;
+  --z-tooltip: 700;
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow: 400ms ease;
 
   /* Typography */
   --font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Noto Sans', 'Liberation Sans', sans-serif;
   --font-mono: 'JetBrains Mono', 'Cascadia Code', 'Consolas', 'Fira Code', 'Ubuntu Mono', 'Liberation Mono', monospace;
+
+  /* Font sizes */
+  --font-size-xs: 11px;
+  --font-size-sm: 12px;
+  --font-size-base: 13px;
+  --font-size-md: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 20px;
+  --font-size-xxl: 24px;
 
   /* Spacing */
   --space-xs: 4px;
