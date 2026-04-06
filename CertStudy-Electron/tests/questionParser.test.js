@@ -16,11 +16,11 @@ let allQuestions;
 
 const EXPECTED_COUNTS = {
   'NCM-MCI': 350,
-  'NCP-AI': 325,
+  'NCP-AI': 644,
   'NCP-CI': 363,
   'NCP-US': 400,
 };
-const EXPECTED_TOTAL = 1438;
+const EXPECTED_TOTAL = 1757;
 
 before(() => {
   exams = loadAllExams(DATA_DIR);

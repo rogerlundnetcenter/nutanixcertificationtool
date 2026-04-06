@@ -80,6 +80,12 @@ const dom = {
   modalTitle: $('#modal-title'),
   modalBody: $('#modal-body'),
   modalClose: $('#modal-close'),
+
+  // Disclaimer modal
+  disclaimerModal: $('#disclaimer-modal'),
+  disclaimerCheckbox: $('#disclaimer-checkbox'),
+  disclaimerAccept: $('#disclaimer-accept'),
+  nutanixPortalLink: $('#nutanix-portal-link'),
 };
 
 // ─── Init ───────────────────────────────────────────────────────────────────
@@ -91,7 +97,42 @@ async function init() {
   } catch { /* not critical */ }
 
   wireEvents();
-  await loadExams();
+  await checkDisclaimer();
+}
+
+async function checkDisclaimer() {
+  // Check if user has already accepted the disclaimer
+  const accepted = await window.certStudy.store.get('disclaimerAccepted');
+  if (!accepted) {
+    showDisclaimer();
+  } else {
+    await loadExams();
+  }
+}
+
+function showDisclaimer() {
+  dom.disclaimerModal.style.display = 'flex';
+
+  // Link handler for portal.nutanix.com
+  dom.nutanixPortalLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.certStudy.fs.openExternal('https://portal.nutanix.com');
+  });
+
+  // Enable accept button when checkbox is checked
+  dom.disclaimerCheckbox.addEventListener('change', () => {
+    dom.disclaimerAccept.disabled = !dom.disclaimerCheckbox.checked;
+  });
+
+  // Accept button handler
+  dom.disclaimerAccept.addEventListener('click', async () => {
+    const dontShowAgain = dom.disclaimerCheckbox.checked;
+    if (dontShowAgain) {
+      await window.certStudy.store.set('disclaimerAccepted', true);
+    }
+    dom.disclaimerModal.style.display = 'none';
+    await loadExams();
+  });
 }
 
 async function loadExams() {

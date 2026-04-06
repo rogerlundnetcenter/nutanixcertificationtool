@@ -543,3 +543,59 @@
    * No overrides needed — the tokens already avoid #000 and #fff.
    */
 }
+
+/* ── Disclaimer Modal ─────────────────────────────────────── */
+.modal--disclaimer {
+  min-width: 520px;
+  max-width: 640px;
+}
+
+.modal--disclaimer .modal__title {
+  color: var(--sw-status-amber);
+  text-align: center;
+  margin-bottom: var(--space-md);
+}
+
+.disclaimer-content {
+  font-size: var(--font-size-md);
+  line-height: 1.7;
+}
+
+.disclaimer-content p {
+  margin-bottom: var(--space-md);
+}
+
+.disclaimer-content a {
+  color: var(--sw-neon-cyan);
+  text-decoration: none;
+}
+
+.disclaimer-content a:hover {
+  text-decoration: underline;
+}
+
+.disclaimer-content strong {
+  color: var(--sw-text-primary);
+}
+
+.disclaimer-content em {
+  color: var(--sw-text-dim);
+  font-size: var(--font-size-sm);
+}
+
+.disclaimer-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  color: var(--sw-text-dim);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+}
+
+.disclaimer-checkbox input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--sw-neon-cyan);
+}

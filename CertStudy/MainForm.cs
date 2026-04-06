@@ -1,5 +1,6 @@
 using System.Drawing.Drawing2D;
 using CertStudy.Controls;
+using CertStudy.Forms;
 using CertStudy.LabSimulator;
 using CertStudy.Models;
 using CertStudy.Services;
@@ -109,10 +110,37 @@ class MainForm : Form
         KeyPreview = true;
 
         BuildLayout();
-        LoadExams();
         WireEvents();
 
-        _progressBar.StartAnimation();
+        // Check disclaimer before loading exams
+        this.Shown += async (s, e) =>
+        {
+            var settings = UserSettingsService.Load();
+            if (!settings.DisclaimerAccepted)
+            {
+                using var disclaimer = new DisclaimerForm();
+                if (disclaimer.ShowDialog() == DialogResult.OK)
+                {
+                    if (disclaimer.DontShowAgain)
+                    {
+                        settings.DisclaimerAccepted = true;
+                        UserSettingsService.Save(settings);
+                    }
+                    LoadExams();
+                    _progressBar.StartAnimation();
+                }
+                else
+                {
+                    // User closed without accepting - close the app
+                    Close();
+                }
+            }
+            else
+            {
+                LoadExams();
+                _progressBar.StartAnimation();
+            }
+        };
     }
 
     // ═══════════════════════════════════════════════════════════════

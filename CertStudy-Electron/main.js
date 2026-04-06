@@ -178,12 +178,14 @@ function setupIPC() {
 
   ipcMain.handle('quiz:get-references', async (_event, examCode, text) => {
     const { getReferenceForQuestion } = require('./src/main/services/referenceService');
-    return getReferenceForQuestion(examCode, text);
+    // Function expects a question object with examCode and questionText
+    return getReferenceForQuestion({ examCode, questionText: text, options: [] });
   });
 
   ipcMain.handle('quiz:get-kb-links', async (_event, examCode, text) => {
     const { getKBLinksForQuestion } = require('./src/main/services/referenceService');
-    return getKBLinksForQuestion(examCode, text);
+    // Function expects a question object with examCode and questionText
+    return getKBLinksForQuestion({ examCode, questionText: text, options: [] });
   });
 
   ipcMain.handle('quiz:get-general-resources', async (_event, examCode) => {
@@ -256,7 +258,8 @@ function setupIPC() {
 let _store = null;
 function getStore() {
   if (!_store) {
-    const Store = require('electron-store');
+    // electron-store v10 is ESM, need .default for CommonJS
+    const Store = require('electron-store').default;
     _store = new Store({
       schema: {
         dataDirectory: { type: 'string' },
