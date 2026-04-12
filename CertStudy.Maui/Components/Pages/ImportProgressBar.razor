@@ -1,0 +1,17 @@
+<div class="progress-widget">
+    <div class="progress-header">
+        <span>@Message</span>
+        <span>@Current / @Total</span>
+    </div>
+    <div class="progress-track">
+        <div class="progress-fill" style="width: @Percent%"></div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public int Current { get; set; }
+    [Parameter] public int Total { get; set; }
+    [Parameter] public string Message { get; set; } = "";
+
+    private double Percent => Total > 0 ? (double)Current / Total * 100 : 0;
+}

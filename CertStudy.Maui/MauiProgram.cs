@@ -38,6 +38,9 @@ public static class MauiProgram
             new Fts5IndexService($"Data Source={dbPath}"));
         builder.Services.AddSingleton<SearchPageService>();
         builder.Services.AddSingleton<StressTestDataGenerator>();
+        builder.Services.AddSingleton<ConflictResolver>();
+        builder.Services.AddSingleton<BatchImportService>();
+        builder.Services.AddSingleton<ImportCommand>();
 
         builder.Services.AddMauiBlazorWebView();
 

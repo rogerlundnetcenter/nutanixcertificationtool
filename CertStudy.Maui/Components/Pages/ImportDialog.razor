@@ -1,0 +1,91 @@
+@inject ImportCommand ImportCmd
+@inject ConflictResolver Resolver
+
+@if (IsOpen)
+{
+    <div class="modal-overlay">
+        <div class="modal">
+            <h3>Import Questions</h3>
+            
+            @if (preview == null)
+            {
+                <ImportFileSelect OnFilesSelected="OnFilesSelected" />
+            }
+            else if (!preview.CanImport)
+            {
+                <ImportValidationSummary Validation="preview.Validation" />
+                <div class="modal-actions">
+                    <button class="btn" @onclick="Reset">Back</button>
+                </div>
+            }
+            else if (isImporting)
+            {
+                <ImportProgressBar Current="progressCurrent" Total="progressTotal" Message="progressMessage" />
+            }
+            else if (result != null)
+            {
+                <ImportResultAlert Result="result" />
+                <div class="modal-actions">
+                    <button class="btn" @onclick="Close">Close</button>
+                </div>
+            }
+            else
+            {
+                <ImportPreviewSummary Preview="preview" />
+                <div class="modal-actions">
+                    <button class="btn" @onclick="Reset">Back</button>
+                    <button class="btn btn-primary" @onclick="ExecuteImport">Import @preview.Questions.Count Questions</button>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public bool IsOpen { get; set; }
+    [Parameter] public EventCallback<bool> IsOpenChanged { get; set; }
+    [Parameter] public string CertificationId { get; set; } = "";
+
+    private ImportPreview? preview;
+    private ImportResult? result;
+    private bool isImporting;
+    private int progressCurrent;
+    private int progressTotal;
+    private string progressMessage = "";
+
+    private async Task OnFilesSelected(string[] files)
+    {
+        preview = await ImportCmd.PreviewAsync(files);
+    }
+
+    private async Task ExecuteImport()
+    {
+        if (preview == null) return;
+        
+        isImporting = true;
+        var progress = new Progress<ImportProgress>(p =>
+        {
+            progressCurrent = p.Current;
+            progressTotal = p.Total;
+            progressMessage = p.Message;
+            StateHasChanged();
+        });
+
+        result = await ImportCmd.ExecuteAsync(preview, CertificationId, progress);
+        isImporting = false;
+    }
+
+    private void Reset()
+    {
+        preview = null;
+        result = null;
+        Resolver.Clear();
+    }
+
+    private async Task Close()
+    {
+        Reset();
+        IsOpen = false;
+        await IsOpenChanged.InvokeAsync(false);
+    }
+}

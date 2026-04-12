@@ -1,0 +1,13 @@
+<div class="preview-summary">
+    <p>Ready to import <strong>@Preview.Questions.Count</strong> questions</p>
+    <ul>
+        @foreach (var type in Preview.Questions.GroupBy(q => q.Type).OrderByDescending(g => g.Count()))
+        {
+            <li>@type.Key: @type.Count()</li>
+        }
+    </ul>
+</div>
+
+@code {
+    [Parameter] public ImportPreview Preview { get; set; } = new();
+}

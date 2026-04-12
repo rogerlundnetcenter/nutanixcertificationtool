@@ -1,0 +1,13 @@
+<div class="alert alert-success">
+    <strong>Import Complete</strong>
+    <p>✅ @Result.Imported imported</p>
+    <p>⏭️ @Result.Skipped skipped</p>
+    @if (Result.Failed > 0)
+    {
+        <p>❌ @Result.Failed failed</p>
+    }
+</div>
+
+@code {
+    [Parameter] public ImportResult Result { get; set; } = new();
+}

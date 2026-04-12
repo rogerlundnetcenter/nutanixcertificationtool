@@ -1,0 +1,14 @@
+<div class="file-select">
+    <p>Drag and drop files here, or click to select</p>
+    <InputFile OnChange="OnChange" multiple accept=".md,.json" />
+</div>
+
+@code {
+    [Parameter] public EventCallback<string[]> OnFilesSelected { get; set; }
+
+    private async Task OnChange(InputFileChangeEventArgs e)
+    {
+        var files = e.GetMultipleFiles().Select(f => f.Name).ToArray();
+        await OnFilesSelected.InvokeAsync(files);
+    }
+}

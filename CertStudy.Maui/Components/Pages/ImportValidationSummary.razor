@@ -1,0 +1,21 @@
+@if (Validation.Errors.Any())
+{
+    <div class="alert alert-warning">
+        <strong>Validation Failed</strong>
+        <p>@Validation.ValidCount valid, @Validation.InvalidCount invalid</p>
+        <ul>
+            @foreach (var error in Validation.Errors.Take(5))
+            {
+                <li>@error</li>
+            }
+            @if (Validation.Errors.Count > 5)
+            {
+                <li>... and @(Validation.Errors.Count - 5) more</li>
+            }
+        </ul>
+    </div>
+}
+
+@code {
+    [Parameter] public ImportValidationSummary Validation { get; set; } = new();
+}
