@@ -1,0 +1,11 @@
+<div class="quiz-question">
+    <div class="question-header">
+        <span class="question-type">@Question.Type</span>
+        <span class="question-number">Q@(Question.Number)</span>
+    </div>
+    <div class="question-text">@Question.Text</div>
+</div>
+
+@code {
+    [Parameter] public Question Question { get; set; } = null!;
+}

@@ -1,0 +1,59 @@
+@inject QuestionService QuestionService
+
+<div class="quiz-config">
+    <h3>Configure Quiz</h3>
+
+    <div class="form-group">
+        <label>Number of Questions</label>
+        <input type="number" @bind="config.QuestionCount" min="5" max="100" />
+    </div>
+
+    <div class="form-group">
+        <label>Mode</label>
+        <select @bind="config.Mode">
+            <option value="@QuizMode.Random">Random</option>
+            <option value="@QuizMode.Sequential">Sequential</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Time Limit (minutes, optional)</label>
+        <input type="number" @bind="config.TimeLimitMinutes" min="10" max="180" placeholder="None" />
+    </div>
+
+    <div class="form-group">
+        <label>
+            <input type="checkbox" @bind="config.ShowExplanationImmediately" />
+            Show explanation after each answer
+        </label>
+    </div>
+
+    <div class="config-actions">
+        <button class="btn btn-primary" @onclick="Start" disabled="@(!CanStart)">
+            Start Quiz
+        </button>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string CertificationId { get; set; } = "";
+    [Parameter] public EventCallback<QuizConfig> OnStart { get; set; }
+
+    private QuizConfig config = new()
+    {
+        QuestionCount = 20,
+        Mode = QuizMode.Random
+    };
+
+    private bool CanStart => config.QuestionCount >= 5 && config.QuestionCount <= 100;
+
+    protected override void OnInitialized()
+    {
+        config.CertificationId = CertificationId;
+    }
+
+    private async Task Start()
+    {
+        await OnStart.InvokeAsync(config);
+    }
+}

@@ -1,0 +1,96 @@
+@inject QuizQuestionSelector QuestionSelector
+@inject QuizSessionManager SessionManager
+@inject NavigationManager Navigation
+
+@if (!SessionManager.CurrentSession?.IsCompleted == false && showConfig)
+{
+    <QuizConfig 
+        CertificationId="@CertificationId" 
+        OnStart="OnQuizStart" />
+}
+else if (SessionManager.CurrentSession?.IsCompleted == true)
+{
+    <QuizResults 
+        Session="@SessionManager.CurrentSession"
+        OnRetry="OnRetry"
+        OnExit="OnExit" />
+}
+else if (SessionManager.CurrentQuestion != null)
+{
+    <div class="quiz-container">
+        <QuizProgress 
+            Current="@SessionManager.CurrentIndex"
+            Total="@SessionManager.TotalQuestions"
+            Correct="@SessionManager.CurrentSession?.CorrectCount"
+            TimeSpent="@timeSpent" />
+
+        <QuizQuestionCard Question="@SessionManager.CurrentQuestion" />
+
+        <QuizAnswerOptions 
+            Question="@SessionManager.CurrentQuestion"
+            OnAnswer="OnAnswer" />
+
+        <div class="quiz-nav">
+            @if (SessionManager.HasPrevious)
+            {
+                <button class="btn" @onclick="Previous">← Previous</button>
+            }
+            @if (SessionManager.HasNext)
+            {
+                <button class="btn btn-primary" @onclick="Next">Next →</button>
+            }
+            else
+            {
+                <button class="btn btn-success" @onclick="Finish">Finish ✓</button>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public string CertificationId { get; set; } = "";
+    [Parameter] public bool IsOpen { get; set; }
+    [Parameter] public EventCallback<bool> IsOpenChanged { get; set; }
+
+    private bool showConfig = true;
+    private int timeSpent => SessionManager.CurrentSession?.TimeSpentSeconds ?? 0;
+
+    private async Task OnQuizStart(QuizConfig config)
+    {
+        var questions = await QuestionSelector.SelectAsync(config);
+        SessionManager.StartSession(config, questions);
+        showConfig = false;
+    }
+
+    private void OnAnswer(List<string> selected)
+    {
+        SessionManager.RecordAnswer(selected);
+    }
+
+    private void Next()
+    {
+        SessionManager.Next();
+    }
+
+    private void Previous()
+    {
+        SessionManager.Previous();
+    }
+
+    private void Finish()
+    {
+        SessionManager.Complete();
+    }
+
+    private void OnRetry()
+    {
+        SessionManager.Reset();
+        showConfig = true;
+    }
+
+    private async Task OnExit()
+    {
+        SessionManager.Reset();
+        await IsOpenChanged.InvokeAsync(false);
+    }
+}

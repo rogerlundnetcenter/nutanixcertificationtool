@@ -41,6 +41,9 @@ public static class MauiProgram
         builder.Services.AddSingleton<ConflictResolver>();
         builder.Services.AddSingleton<BatchImportService>();
         builder.Services.AddSingleton<ImportCommand>();
+        builder.Services.AddSingleton<QuizQuestionSelector>();
+        builder.Services.AddSingleton<QuizSessionManager>();
+        builder.Services.AddSingleton<ScoreCalculator>();
 
         builder.Services.AddMauiBlazorWebView();
 

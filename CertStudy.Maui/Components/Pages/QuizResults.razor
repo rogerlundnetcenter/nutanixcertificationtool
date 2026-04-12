@@ -1,0 +1,42 @@
+@inject ScoreCalculator Calculator
+
+<div class="quiz-results">
+    <h2>Quiz Complete!</h2>
+
+    <div class="score-display @(score?.IsPassing == true ? "pass" : "fail")">
+        <div class="score-percent">@(score?.Percentage.ToString("F1") ?? "0.0")%</div>
+        <div class="score-detail">
+            @score?.CorrectAnswers / @score?.TotalQuestions correct
+        </div>
+        <div class="pass-indicator">@(score?.IsPassing == true ? "✓ PASS" : "✗ FAIL")</div>
+    </div>
+
+    <div class="time-stats">
+        <p>Time: @(score?.TimeSpentMinutes.ToString("F1") ?? "0.0") minutes</p>
+        <p>Avg per question: @(score?.AverageTimePerQuestion.ToString("F0") ?? "0")s</p>
+    </div>
+
+    <div class="results-actions">
+        <button class="btn btn-secondary" @onclick="Review">Review Answers</button>
+        <button class="btn btn-primary" @onclick="OnRetry">Try Again</button>
+        <button class="btn" @onclick="OnExit">Exit</button>
+    </div>
+</div>
+
+@code {
+    [Parameter] public QuizSession Session { get; set; } = null!;
+    [Parameter] public EventCallback OnRetry { get; set; }
+    [Parameter] public EventCallback OnExit { get; set; }
+
+    private QuizScore? score;
+
+    protected override void OnInitialized()
+    {
+        score = Calculator.Calculate(Session);
+    }
+
+    private void Review()
+    {
+        // Navigate to review page or show modal
+    }
+}

@@ -1,0 +1,26 @@
+<div class="quiz-progress">
+    <div class="progress-stats">
+        <span>Question @Current of @Total</span>
+        <span>@Correct / @Current correct</span>
+        <span>⏱️ @FormatTime(TimeSpent)</span>
+    </div>
+    <div class="progress-bar">
+        <div class="progress-fill" style="width: @Percent%"></div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public int Current { get; set; }
+    [Parameter] public int Total { get; set; }
+    [Parameter] public int? Correct { get; set; }
+    [Parameter] public int TimeSpent { get; set; }
+
+    private double Percent => Total > 0 ? (double)Current / Total * 100 : 0;
+
+    private string FormatTime(int seconds)
+    {
+        var m = seconds / 60;
+        var s = seconds % 60;
+        return $"{m:D2}:{s:D2}";
+    }
+}

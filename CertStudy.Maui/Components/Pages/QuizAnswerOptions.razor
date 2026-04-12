@@ -1,0 +1,45 @@
+<div class="quiz-answers">
+    @foreach (var answer in Question.Answers.OrderBy(a => a.Letter))
+    {
+        <div class="answer-option @(IsSelected(answer.Letter) ? "selected" : "")"
+             @onclick="() => ToggleAnswer(answer.Letter)">
+            <span class="answer-letter">@answer.Letter</span>
+            <span class="answer-text">@answer.Text</span>
+        </div>
+    }
+</div>
+
+@if (selected.Any())
+{
+    <button class="btn btn-primary" @onclick="Submit">Submit Answer</button>
+}
+
+@code {
+    [Parameter] public Question Question { get; set; } = null!;
+    [Parameter] public EventCallback<List<string>> OnAnswer { get; set; }
+
+    private List<string> selected = new();
+
+    private bool IsSelected(string letter) => selected.Contains(letter);
+
+    private void ToggleAnswer(string letter)
+    {
+        if (Question.Type == QuestionType.Single)
+        {
+            selected = new List<string> { letter };
+        }
+        else
+        {
+            if (selected.Contains(letter))
+                selected.Remove(letter);
+            else
+                selected.Add(letter);
+        }
+    }
+
+    private async Task Submit()
+    {
+        await OnAnswer.InvokeAsync(selected.ToList());
+        selected.Clear();
+    }
+}
