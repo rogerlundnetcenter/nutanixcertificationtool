@@ -28,17 +28,16 @@ public static class MauiProgram
         builder.Services.AddSingleton<DatabaseInitializer>();
         builder.Services.AddSingleton<QuestionService>();
         builder.Services.AddSingleton<QuestionCommandService>();
-        builder.Services.AddSingleton<OllamaValidationService>();
         builder.Services.AddSingleton<MarkdownExportService>();
         builder.Services.AddSingleton<ExportSettingsService>();
         builder.Services.AddSingleton<ExportCommand>();
         builder.Services.AddSingleton<ExportPageService>();
         builder.Services.AddSingleton<DashboardDataService>();
         builder.Services.AddSingleton<ChartJsService>();
-        builder.Services.AddSingleton<SearchService>();
         builder.Services.AddSingleton<Fts5IndexService>(sp =>
             new Fts5IndexService($"Data Source={dbPath}"));
         builder.Services.AddSingleton<SearchPageService>();
+        builder.Services.AddSingleton<StressTestDataGenerator>();
 
         builder.Services.AddMauiBlazorWebView();
 

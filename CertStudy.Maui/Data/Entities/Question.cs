@@ -1,7 +1,7 @@
 namespace CertStudy.Maui.Data.Entities;
 
 public enum QuestionType { Single, Multi, Ordering }
-public enum QuestionStatus { Draft, Validated, Rejected }
+public enum QuestionStatus { Draft, Review, Approved, Archived }
 
 public class Question
 {
