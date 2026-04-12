@@ -4,6 +4,20 @@
 **Goal:** Cross-platform native editor (Windows .exe + Mac .app) for 8K questions  
 **Stack:** .NET 8 MAUI + Blazor Hybrid + SQLite
 
+## 🧩 Modular Coding Standards
+
+**Max 500 lines per file** — if a file grows larger, split it.
+
+| File Type | Max Lines | Split Strategy |
+|-----------|-----------|----------------|
+| `.cs` service | 500 | Split by feature area |
+| `.razor` component | 500 | Extract sub-components |
+| `.razor.cs` code-behind | 300 | Move logic to service |
+| `.css` | N/A | Organize by component |
+| `.cshtml` | 200 | Use partials |
+
+**Naming:** `<Feature><Purpose>.<ext>` — e.g., `QuestionEditForm.razor`, `ExportMarkdownCommand.cs`
+
 ---
 
 ## 📋 Project Structure
@@ -83,118 +97,119 @@ CertStudy.Maui/
 ---
 
 ### **Sprint 2: Core CRUD (Week 2)**
-**Goal:** Full question editing with validation
+**Goal:** Full question editing with validation — **modular components only**
 
-| Task | Owner | Est | Deliverable |
-|------|-------|-----|-------------|
-| 2.1 Dashboard component | Frontend | 4h | Certification cards with question counts |
-| 2.2 Question list view | Frontend | 6h | Sortable/filterable table |
-| 2.3 Question editor form | Frontend | 8h | Stem, answers, explanation fields |
-| 2.4 Answer management | Frontend | 4h | Add/remove answers, mark correct |
-| 2.5 QuestionService CRUD | Backend | 4h | Create, Read, Update, Delete |
-| 2.6 Auto-save debounce | Backend | 3h | 2-second auto-save to SQLite |
-| 2.7 Form validation | Frontend | 3h | Required fields, at least 1 correct answer |
-| 2.8 Integration test | QA | 4h | Full CRUD cycle works end-to-end |
+| Task | Owner | Est | Deliverable | Lines |
+|------|-------|-----|-------------|-------|
+| 2.1 Dashboard component | Frontend | 4h | `Dashboard.razor` | <100 |
+| 2.2 Question list view | Frontend | 6h | `QuestionList.razor` + `QuestionListItem.razor` | <150 each |
+| 2.3 Question editor shell | Frontend | 4h | `QuestionEdit.razor` (extract to partials) | <200 |
+| 2.4 Answer editor sub-component | Frontend | 4h | `AnswerEditor.razor` | <150 |
+| 2.5 Domain selector component | Frontend | 3h | `DomainSelector.razor` | <100 |
+| 2.6 QuestionService CRUD | Backend | 4h | `QuestionCommandService.cs` | <300 |
+| 2.7 Auto-save timer service | Backend | 3h | `AutoSaveTimer.cs` | <150 |
+| 2.8 Form validation service | Backend | 3h | `QuestionValidator.cs` | <200 |
+| 2.9 Integration test | QA | 4h | Full CRUD cycle works end-to-end | — |
 
-**Sprint 2 Exit Criteria:**
-- [ ] Create new question
-- [ ] Edit existing question
-- [ ] Delete question
-- [ ] Auto-save works (no data loss)
-- [ ] Form validation prevents bad data
+**Modular Deliverables:**
+- [ ] `AnswerEditor.razor` — isolated answer management
+- [ ] `ValidationDisplay.razor` — reusable validation UI
+- [ ] `QuestionValidator.cs` — validation rules separate from UI
+- [ ] No file exceeds 500 lines
 
 ---
 
 ### **Sprint 3: Search & Scale (Week 3)**
-**Goal:** Handle 8K questions with fast search
+**Goal:** Handle 8K questions with fast search — **split services by concern**
 
-| Task | Owner | Est | Deliverable |
-|------|-------|-----|-------------|
-| 3.1 SQLite FTS5 virtual table | Backend | 4h | Full-text search index |
-| 3.2 SearchService | Backend | 4h | Query parser, ranking |
-| 3.3 Search UI component | Frontend | 4h | Search bar with filters |
-| 3.4 Results highlighting | Frontend | 3h | Match highlighting in stems |
-| 3.5 Domain filtering | Frontend | 3h | Dropdown by certification domain |
-| 3.6 Pagination | Frontend | 4h | Virtual scrolling for 8K items |
-| 3.7 Performance test | QA | 4h | <100ms search on 5K questions |
-| 3.8 Stress test data | QA | 2h | Generate 1000 test questions |
+| Task | Owner | Est | Deliverable | Lines |
+|------|-------|-----|-------------|-------|
+| 3.1 FTS5 index setup | Backend | 4h | `Fts5IndexService.cs` | <200 |
+| 3.2 Query builder service | Backend | 4h | `SearchQueryBuilder.cs` | <200 |
+| 3.3 Search results component | Frontend | 4h | `SearchResults.razor` | <150 |
+| 3.4 Highlight component | Frontend | 3h | `HighlightMatch.razor` | <100 |
+| 3.5 Filter bar component | Frontend | 3h | `SearchFilters.razor` | <150 |
+| 3.6 Virtual scroller | Frontend | 4h | `VirtualQuestionList.razor` | <200 |
+| 3.7 Performance test | QA | 4h | <100ms search on 5K questions | — |
+| 3.8 Stress test data | QA | 2h | Generate 1000 test questions | — |
 
-**Sprint 3 Exit Criteria:**
-- [ ] Search 5,000 questions in <100ms
-- [ ] Filter by certification, domain, status
-- [ ] Pagination doesn't lag on large sets
-- [ ] Virtual scrolling smooth at 8K items
+**Modular Deliverables:**
+- [ ] `Fts5IndexService.cs` — database search only
+- [ ] `SearchQueryBuilder.cs` — query construction logic
+- [ ] `HighlightMatch.razor` — reusable text highlighting
+- [ ] `VirtualQuestionList.razor` — handles large lists
+- [ ] All search-related files under 300 lines
 
 ---
 
 ### **Sprint 4: WinForms Integration (Week 4)**
-**Goal:** Export to Markdown for existing app
+**Goal:** Export to Markdown for existing app — **separate format handlers**
 
-| Task | Owner | Est | Deliverable |
-|------|-------|-----|-------------|
-| 4.1 MarkdownExporter service | Backend | 6h | Convert Question → Markdown |
-| 4.2 Match WinForms format exactly | Backend | 4h | Same headers, structure, metadata |
-| 4.3 Bulk export UI | Frontend | 4h | "Export All" button per certification |
-| 4.4 Selective export UI | Frontend | 3h | Checkbox selection + export |
-| 4.5 Export settings | Frontend | 3h | Output path, naming convention |
-| 4.6 WinForms compatibility test | QA | 4h | Export → WinForms loads correctly |
-| 4.7 Bidirectional sync research | Backend | 3h | Can WinForms changes come back? |
-| 4.8 Migration guide | Docs | 2h | Document export workflow |
+| Task | Owner | Est | Deliverable | Lines |
+|------|-------|-----|-------------|-------|
+| 4.1 Markdown format handler | Backend | 4h | `MarkdownFormatter.cs` | <200 |
+| 4.2 Question serializer | Backend | 3h | `QuestionSerializer.cs` | <150 |
+| 4.3 Export command service | Backend | 3h | `ExportCommand.cs` | <200 |
+| 4.4 Bulk export dialog | Frontend | 4h | `BulkExportDialog.razor` | <150 |
+| 4.5 Selective export UI | Frontend | 3h | `SelectiveExport.razor` | <150 |
+| 4.6 Export settings service | Backend | 2h | `ExportSettingsService.cs` | <150 |
+| 4.7 WinForms compatibility test | QA | 4h | Export → WinForms loads correctly | — |
+| 4.8 Migration guide | Docs | 2h | Document export workflow | — |
 
-**Sprint 4 Exit Criteria:**
-- [ ] Export generates valid Markdown
-- [ ] WinForms app reads exported files
-- [ ] Format matches existing exam packs
-- [ ] No data loss in round-trip
+**Modular Deliverables:**
+- [ ] `MarkdownFormatter.cs` — only format logic
+- [ ] `QuestionSerializer.cs` — JSON ↔ Model only
+- [ ] `ExportCommand.cs` — orchestrates, no format logic
+- [ ] `ExportSettingsService.cs` — user preferences only
 
 ---
 
 ### **Sprint 5: AI Validation (Week 5)**
-**Goal:** Ollama integration for quality checks
+**Goal:** Ollama integration — **isolated client components**
 
-| Task | Owner | Est | Deliverable |
-|------|-------|-----|-------------|
-| 5.1 Ollama HTTP client | Backend | 3h | POST to localhost:11434 |
-| 5.2 Validation prompt template | Backend | 4h | System prompt for question review |
-| 5.3 Response parser | Backend | 3h | Parse JSON from LLM output |
-| 5.4 Validation results UI | Frontend | 4h | Display AI feedback inline |
-| 5.5 "Validate" button | Frontend | 2h | Trigger validation per question |
-| 5.6 Batch validation | Backend | 4h | Queue multiple questions |
-| 5.7 Validation history | Backend | 3h | Store results in SQLite |
-| 5.8 Model selection UI | Frontend | 2h | Choose llama3.1, mistral, etc. |
-| 5.9 Offline handling | Backend | 3h | Graceful when Ollama unavailable |
+| Task | Owner | Est | Deliverable | Lines |
+|------|-------|-----|-------------|-------|
+| 5.1 Ollama client | Backend | 3h | `OllamaClient.cs` (extract from existing) | <200 |
+| 5.2 Prompt builder service | Backend | 4h | `ValidationPromptBuilder.cs` | <200 |
+| 5.3 Response parser | Backend | 3h | `ValidationResponseParser.cs` | <150 |
+| 5.4 Validation results component | Frontend | 4h | `ValidationResultCard.razor` | <150 |
+| 5.5 Validate button component | Frontend | 2h | `ValidateButton.razor` | <100 |
+| 5.6 Batch validation queue | Backend | 4h | `BatchValidationQueue.cs` | <200 |
+| 5.7 Validation history store | Backend | 3h | `ValidationHistoryService.cs` | <200 |
+| 5.8 Model selector component | Frontend | 2h | `ModelSelector.razor` | <100 |
+| 5.9 Offline mode handler | Backend | 3h | `OfflineValidationHandler.cs` | <150 |
 
-**Sprint 5 Exit Criteria:**
-- [ ] Detects Ollama running
-- [ ] Validates single question
-- [ ] Shows reasoning/suggestions
-- [ ] Works offline (skips validation)
-- [ ] Batch validate 10 questions
+**Modular Deliverables:**
+- [ ] `OllamaClient.cs` — HTTP only, no prompt logic
+- [ ] `ValidationPromptBuilder.cs` — prompt templates only
+- [ ] `ValidationResponseParser.cs` — JSON parsing only
+- [ ] `ValidationResultCard.razor` — display only
 
 ---
 
 ### **Sprint 6: Polish & Deploy (Week 6)**
-**Goal:** Production-ready for both platforms
+**Goal:** Production-ready for both platforms — **platform-specific handlers**
 
-| Task | Owner | Est | Deliverable |
-|------|-------|-----|-------------|
-| 6.1 Synthwave UI polish | Frontend | 6h | Colors, animations, dark mode |
-| 6.2 Keyboard shortcuts | Frontend | 3h | Ctrl+S, Ctrl+N, etc. |
-| 6.3 Windows installer (.msi) | DevOps | 4h | WiX or MSIX package |
-| 6.4 Mac app bundle (.app) | DevOps | 4h | Signed .app with Info.plist |
-| 6.5 Auto-updater | Backend | 4h | Check GitHub releases |
-| 6.6 First-run wizard | Frontend | 3h | Welcome, import existing data |
-| 6.7 Settings persistence | Backend | 3h | User preferences in SQLite |
-| 6.8 Error logging | Backend | 3h | Structured logging to file |
-| 6.9 E2E test suite | QA | 6h | Automate critical paths |
-| 6.10 User documentation | Docs | 4h | Quick start guide |
+| Task | Owner | Est | Deliverable | Lines |
+|------|-------|-----|-------------|-------|
+| 6.1 Synthwave UI polish | Frontend | 6h | `ThemeManager.cs` | <200 |
+| 6.2 Keyboard shortcuts | Frontend | 3h | `KeyboardShortcutHandler.razor` | <150 |
+| 6.3 Windows installer (.msi) | DevOps | 4h | `WindowsPackageBuilder.cs` | <200 |
+| 6.4 Mac app bundle (.app) | DevOps | 4h | `MacBundleBuilder.cs` | <200 |
+| 6.5 Auto-updater | Backend | 4h | `UpdateCheckerService.cs` | <200 |
+| 6.6 First-run wizard | Frontend | 3h | `FirstRunWizard.razor` | <200 |
+| 6.7 Settings persistence | Backend | 3h | `SettingsService.cs` | <200 |
+| 6.8 Error logging | Backend | 3h | `ErrorLogger.cs` | <150 |
+| 6.9 E2E test suite | QA | 6h | Critical path automation | — |
+| 6.10 User documentation | Docs | 4h | Quick start guide | — |
 
-**Sprint 6 Exit Criteria:**
-- [ ] Windows: `CertStudy.Maui.exe` installs via .msi
-- [ ] Mac: `Cert Study Editor.app` opens normally
-- [ ] Auto-updater finds new versions
-- [ ] First-run wizard imports existing Markdown
-- [ ] All critical paths have automated tests
+**Modular Deliverables:**
+- [ ] `WindowsPackageBuilder.cs` — Windows-only packaging
+- [ ] `MacBundleBuilder.cs` — macOS-only bundling
+- [ ] `UpdateCheckerService.cs` — version check logic only
+- [ ] `SettingsService.cs` — preferences storage only
+- [ ] `ThemeManager.cs` — theme state management only
+- [ ] `ErrorLogger.cs` — logging abstraction only
 
 ---
 
