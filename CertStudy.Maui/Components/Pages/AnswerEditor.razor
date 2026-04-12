@@ -1,0 +1,95 @@
+<div class="form-group">
+    <label>
+        Answers
+        <button class="btn btn-sm" @onclick="AddAnswer" disabled="@(!CanAdd)">+ Add</button>
+    </label>
+
+    @foreach (var ans in Question.Answers.OrderBy(a => a.Letter))
+    {
+        <div class="answer-row">
+            <input type="checkbox"
+                   checked="@ans.IsCorrect"
+                   @onchange="e => ToggleCorrect(ans)"
+                   title="Mark correct" />
+            <span class="letter">@ans.Letter.</span>
+            <input type="text"
+                   @bind="ans.Text"
+                   @bind:event="oninput"
+                   @oninput="OnChanged"
+                   placeholder="Answer text..."
+                   class="answer-input" />
+            <button class="btn-icon btn-danger"
+                    @onclick="() => Remove(ans)"
+                    disabled="@(!CanRemove)">×</button>
+        </div>
+    }
+
+    <ValidationMessage Messages="@validationMessages" />
+</div>
+
+@code {
+    [Parameter] public Question Question { get; set; } = null!;
+    [Parameter] public EventCallback OnChange { get; set; }
+
+    private List<string> validationMessages = new();
+
+    private bool CanAdd => Question.Answers.Count < 6;
+    private bool CanRemove => Question.Answers.Count > 2;
+
+    private void AddAnswer()
+    {
+        if (!CanAdd) return;
+        var letters = new[] { "A", "B", "C", "D", "E", "F" };
+        Question.Answers.Add(new Answer
+        {
+            Letter = letters[Question.Answers.Count],
+            Text = ""
+        });
+        Validate();
+        OnChange.InvokeAsync();
+    }
+
+    private void Remove(Answer ans)
+    {
+        if (!CanRemove) return;
+        Question.Answers.Remove(ans);
+        ReorderLetters();
+        Validate();
+        OnChange.InvokeAsync();
+    }
+
+    private void ToggleCorrect(Answer ans)
+    {
+        if (Question.Type == QuestionType.Single)
+        {
+            foreach (var a in Question.Answers) a.IsCorrect = false;
+        }
+        ans.IsCorrect = !ans.IsCorrect;
+        Validate();
+        OnChange.InvokeAsync();
+    }
+
+    private void OnChanged() => OnChange.InvokeAsync();
+
+    private void ReorderLetters()
+    {
+        var letters = new[] { "A", "B", "C", "D", "E", "F" };
+        for (int i = 0; i < Question.Answers.Count; i++)
+            Question.Answers[i].Letter = letters[i];
+    }
+
+    private void Validate()
+    {
+        validationMessages.Clear();
+        var correctCount = Question.Answers.Count(a => a.IsCorrect);
+
+        if (correctCount == 0)
+            validationMessages.Add("At least one answer must be marked correct");
+
+        if (Question.Type == QuestionType.Single && correctCount > 1)
+            validationMessages.Add("Single answer questions can only have one correct answer");
+
+        if (Question.Answers.Any(a => string.IsNullOrWhiteSpace(a.Text)))
+            validationMessages.Add("All answers must have text");
+    }
+}

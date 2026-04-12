@@ -1,0 +1,13 @@
+@if (Messages.Any())
+{
+    <div class="validation-errors">
+        @foreach (var msg in Messages)
+        {
+            <div class="validation-error">⚠️ @msg</div>
+        }
+    </div>
+}
+
+@code {
+    [Parameter] public List<string> Messages { get; set; } = new();
+}

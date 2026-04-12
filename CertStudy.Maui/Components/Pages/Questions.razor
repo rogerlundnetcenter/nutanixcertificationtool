@@ -3,59 +3,15 @@
 
 @if (cert != null)
 {
-    <div class="toolbar">
-        <h2>@cert.Code - Questions</h2>
-        <div class="toolbar-actions">
-            <button class="btn btn-primary" @onclick="CreateQuestion">+ New Question</button>
-        </div>
-    </div>
-
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th>Q#</th>
-                <th>Stem</th>
-                <th>Type</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var q in questions)
-            {
-                <tr @onclick="() => EditQuestion(q.Id)">
-                    <td>Q@q.Number</td>
-                    <td>@q.Stem.Substring(0, Math.Min(60, q.Stem.Length))...</td>
-                    <td>@q.Type</td>
-                    <td>
-                        <span class="badge badge-@q.Status.ToString().ToLower()">@q.Status</span>
-                    </td>
-                    <td>
-                        <button class="btn btn-secondary" @onclick:stopPropagation @onclick="() => DeleteQuestion(q.Id)">🗑</button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <QuestionList CertId="@CertId" CertCode="@cert.Code" />
 }
 
 @code {
     [Parameter] public string CertId { get; set; } = "";
-    
     private Certification? cert;
-    private List<Question> questions = new();
 
     protected override async Task OnInitializedAsync()
     {
         cert = await QuestionService.GetCertificationAsync(CertId);
-        questions = await QuestionService.GetQuestionsAsync(CertId);
-    }
-
-    private void CreateQuestion() { }
-    private void EditQuestion(int id) { }
-    private async Task DeleteQuestion(int id)
-    {
-        await QuestionService.DeleteQuestionAsync(id);
-        questions = await QuestionService.GetQuestionsAsync(CertId);
     }
 }

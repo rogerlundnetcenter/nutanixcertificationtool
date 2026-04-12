@@ -25,11 +25,12 @@ public static class MauiProgram
             options.UseSqlite($"Data Source={dbPath}"));
 
         // Services
-        builder.Services.AddSingleton<QuestionService>();
-        builder.Services.AddSingleton<SearchService>();
-        builder.Services.AddSingleton<MarkdownExportService>();
-        builder.Services.AddSingleton<OllamaValidationService>();
         builder.Services.AddSingleton<DatabaseInitializer>();
+        builder.Services.AddSingleton<QuestionService>();
+        builder.Services.AddSingleton<QuestionCommandService>();
+        builder.Services.AddSingleton<OllamaValidationService>();
+        builder.Services.AddSingleton<MarkdownExportService>();
+        builder.Services.AddSingleton<SearchService>();
 
         builder.Services.AddMauiBlazorWebView();
 

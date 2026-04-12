@@ -1,0 +1,64 @@
+@inject QuestionService QuestionService
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<div class="toolbar">
+    <h2>@CertCode - Questions</h2>
+    <div class="toolbar-actions">
+        <button class="btn btn-primary" @onclick="Create">+ New Question</button>
+    </div>
+</div>
+
+@if (questions.Any())
+{
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Q#</th>
+                <th>Stem</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var q in questions)
+            {
+                <QuestionListItem Question="@q" OnDeleteRequest="ConfirmDelete" />
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="empty-state">
+        <p>No questions yet. Create your first question!</p>
+        <button class="btn btn-primary" @onclick="Create">+ New Question</button>
+    </div>
+}
+
+@code {
+    [Parameter] public string CertId { get; set; } = "";
+    [Parameter] public string CertCode { get; set; } = "";
+
+    private List<Question> questions = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadQuestions();
+    }
+
+    private async Task LoadQuestions() =>
+        questions = await QuestionService.GetQuestionsAsync(CertId);
+
+    private void Create() => Navigation.NavigateTo($"question/new/{CertId}");
+
+    private async Task ConfirmDelete(Question q)
+    {
+        if (await JS.InvokeAsync<bool>("confirm", $"Delete Q{q.Number}?"))
+        {
+            await QuestionService.DeleteQuestionAsync(q.Id);
+            await LoadQuestions();
+        }
+    }
+}

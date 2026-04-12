@@ -1,0 +1,18 @@
+<div class="form-group">
+    <label>Domain</label>
+    <select @bind="SelectedDomainId" @bind:after="OnSelectionChanged">
+        @foreach (var d in Domains.OrderBy(d => d.Number))
+        {
+            <option value="@d.Id">@d.Name</option>
+        }
+    </select>
+</div>
+
+@code {
+    [Parameter] public List<Domain> Domains { get; set; } = new();
+    [Parameter] public int SelectedDomainId { get; set; }
+    [Parameter] public EventCallback<int> SelectedDomainIdChanged { get; set; }
+
+    private async Task OnSelectionChanged() =>
+        await SelectedDomainIdChanged.InvokeAsync(SelectedDomainId);
+}

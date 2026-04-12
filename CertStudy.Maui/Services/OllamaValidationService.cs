@@ -27,7 +27,7 @@ public class OllamaValidationService
         }
     }
 
-    public async Task<ValidationResult?> ValidateAsync(Question question)
+    public async Task<OllamaValidationResult?> ValidateAsync(Question question)
     {
         if (!await IsAvailableAsync())
             return null;
@@ -47,7 +47,7 @@ public class OllamaValidationService
             var response = await _httpClient.PostAsJsonAsync($"{OllamaUrl}/api/generate", request);
             response.EnsureSuccessStatusCode();
             
-            var result = await response.Content.ReadFromJsonAsync<OllamaResponse>();
+            var result = await response.Content.ReadFromJsonAsync<OllamaGenerateResponse>();
             return ParseResponse(result?.Response ?? "");
         }
         catch
@@ -78,17 +78,16 @@ Respond with JSON:
 {{"status":"valid|invalid|needs_review","confidence":0.0-1.0,"reasoning":"explanation","suggestions":["improvement1"]}}""";
     }
 
-    private ValidationResult? ParseResponse(string response)
+    private OllamaValidationResult? ParseResponse(string response)
     {
         try
         {
-            // Extract JSON from response
             var jsonStart = response.IndexOf('{');
             var jsonEnd = response.LastIndexOf('}');
             if (jsonStart >= 0 && jsonEnd > jsonStart)
             {
                 var json = response[jsonStart..(jsonEnd + 1)];
-                return JsonSerializer.Deserialize<ValidationResult>(json);
+                return JsonSerializer.Deserialize<OllamaValidationResult>(json);
             }
         }
         catch { }
@@ -96,15 +95,7 @@ Respond with JSON:
     }
 }
 
-public class ValidationResult
-{
-    public string Status { get; set; } = "";
-    public float Confidence { get; set; }
-    public string Reasoning { get; set; } = "";
-    public List<string> Suggestions { get; set; } = new();
-}
-
-public class OllamaResponse
+public class OllamaGenerateResponse
 {
     public string Response { get; set; } = "";
 }

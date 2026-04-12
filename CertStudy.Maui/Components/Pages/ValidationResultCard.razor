@@ -1,0 +1,20 @@
+@if (Result != null)
+{
+    <div class="validation-box @Result.Status">
+        <strong>AI Validation (@Result.Status, @((Result.Confidence * 100).ToString("F0"))% confidence)</strong>
+        <p>@Result.Reasoning</p>
+        @if (Result.Suggestions.Any())
+        {
+            <ul>
+                @foreach (var s in Result.Suggestions)
+                {
+                    <li>@s</li>
+                }
+            </ul>
+        }
+    </div>
+}
+
+@code {
+    [Parameter] public OllamaValidationResult? Result { get; set; }
+}

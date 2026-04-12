@@ -1,7 +1,10 @@
 @page "/question/{QuestionId:int}"
 @page "/question/new/{CertId}"
 @inject QuestionService QuestionService
+@inject QuestionCommandService CommandService
+@inject NavigationManager Navigation
 @inject OllamaValidationService OllamaService
+@implements IDisposable
 
 @if (question != null)
 {
@@ -9,6 +12,7 @@
         <h2>@(isNew ? "New Question" : $"Edit Q{question.Number}")</h2>
         <div class="toolbar-actions">
             <button class="btn btn-primary" @onclick="Save">💾 Save</button>
+            <button class="btn btn-secondary" @onclick="Back">← Back</button>
             @if (!isNew)
             {
                 <button class="btn btn-secondary" @onclick="Validate" disabled="@isValidating">
@@ -18,15 +22,7 @@
         </div>
     </div>
 
-    <div class="form-group">
-        <label>Domain</label>
-        <select @bind="question.DomainId">
-            @foreach (var d in domains)
-            {
-                <option value="@d.Id">@d.Name</option>
-            }
-        </select>
-    </div>
+    <DomainSelector Domains="@domains" @bind-SelectedDomainId="question.DomainId" />
 
     <div class="form-group">
         <label>Type</label>
@@ -39,42 +35,24 @@
 
     <div class="form-group">
         <label>Question Stem</label>
-        <textarea @bind="question.Stem" rows="4" />
+        <textarea @bind="question.Stem" @bind:event="oninput" @oninput="OnChange" rows="4" />
     </div>
 
-    <div class="form-group">
-        <label>Answers <button class="btn btn-secondary" @onclick="AddAnswer">+ Add</button></label>
-        @foreach (var ans in question.Answers)
-        {
-            <div class="answer-row">
-                <input type="checkbox" checked="@ans.IsCorrect" @onchange="e => ToggleCorrect(ans)" />
-                <span class="letter">@ans.Letter.</span>
-                <input type="text" @bind="ans.Text" placeholder="Answer text..." />
-                <button class="btn btn-danger" @onclick="() => RemoveAnswer(ans)">×</button>
-            </div>
-        }
-    </div>
+    <AnswerEditor Question="@question" OnChange="OnChange" />
 
     <div class="form-group">
         <label>Explanation</label>
-        <textarea @bind="question.Explanation" rows="6" />
+        <textarea @bind="question.Explanation" @bind:event="oninput" @oninput="OnChange" rows="6" />
     </div>
+
+    @if (saveStatus != null)
+    {
+        <div class="save-status @saveStatusClass">@saveStatus</div>
+    }
 
     @if (validationResult != null)
     {
-        <div class="validation-box">
-            <strong>AI Validation (@validationResult.Status, @validationResult.Confidence:P0 confidence)</strong>
-            <p>@validationResult.Reasoning</p>
-            @if (validationResult.Suggestions.Any())
-            {
-                <ul>
-                    @foreach (var s in validationResult.Suggestions)
-                    {
-                        <li>@s</li>
-                    }
-                </ul>
-            }
-        </div>
+        <ValidationResultCard Result="@validationResult" />
     }
 }
 
@@ -87,64 +65,61 @@
     private bool isNew => QuestionId == null;
     private bool isValidating = false;
     private ValidationResult? validationResult;
+    private string? saveStatus;
+    private string? saveStatusClass;
+
+    private AutoSaveTimer? autoSave;
 
     protected override async Task OnInitializedAsync()
     {
+        autoSave = new AutoSaveTimer(2000);
+        autoSave.OnChangeAsync(AutoSaveAsync);
+
         if (QuestionId.HasValue)
         {
             question = await QuestionService.GetQuestionAsync(QuestionId.Value);
+            domains = new List<Domain> { question!.Domain };
         }
         else if (CertId != null)
         {
             var cert = await QuestionService.GetCertificationAsync(CertId);
             domains = cert?.Domains.ToList() ?? new();
-            question = new Question
-            {
-                CertificationId = CertId,
-                Type = QuestionType.Single,
-                Number = await QuestionService.GetNextQuestionNumberAsync(CertId),
-                Answers = new()
-                {
-                    new() { Letter = "A", Text = "" },
-                    new() { Letter = "B", Text = "" },
-                    new() { Letter = "C", Text = "" },
-                    new() { Letter = "D", Text = "" }
-                }
-            };
+            question = await CommandService.CreateAsync(CertId, domains.First().Id);
         }
     }
 
-    private void AddAnswer()
-    {
-        var letters = new[] { "A", "B", "C", "D", "E", "F" };
-        if (question?.Answers.Count < 6)
-        {
-            question.Answers.Add(new Answer { Letter = letters[question.Answers.Count] });
-        }
-    }
+    private void OnChange() => autoSave?.OnChangeAsync(AutoSaveAsync);
 
-    private void RemoveAnswer(Answer ans)
+    private async Task AutoSaveAsync()
     {
-        question?.Answers.Remove(ans);
-    }
-
-    private void ToggleCorrect(Answer ans)
-    {
-        if (question?.Type == QuestionType.Single)
-        {
-            foreach (var a in question.Answers) a.IsCorrect = false;
-        }
-        ans.IsCorrect = !ans.IsCorrect;
+        if (question == null) return;
+        await CommandService.SaveAsync(question);
+        saveStatus = "Auto-saved";
+        saveStatusClass = "auto";
+        StateHasChanged();
     }
 
     private async Task Save()
     {
-        if (question != null)
+        if (question == null) return;
+
+        var validation = QuestionValidator.Validate(question);
+        if (!validation.IsValid)
         {
-            await QuestionService.SaveQuestionAsync(question);
-            // Navigate back
+            saveStatus = string.Join(", ", validation.Errors);
+            saveStatusClass = "error";
+            return;
         }
+
+        autoSave?.ForceSave();
+        await CommandService.SaveAsync(question);
+        saveStatus = "Saved!";
+        saveStatusClass = "success";
+        await Task.Delay(1000);
+        Navigation.NavigateTo($"cert/{question.CertificationId}");
     }
+
+    private void Back() => Navigation.NavigateTo(question != null ? $"cert/{question.CertificationId}" : "/");
 
     private async Task Validate()
     {
@@ -153,4 +128,6 @@
         validationResult = await OllamaService.ValidateAsync(question);
         isValidating = false;
     }
+
+    public void Dispose() => autoSave?.Dispose();
 }

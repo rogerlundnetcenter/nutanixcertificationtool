@@ -1,5 +1,6 @@
 @inherits LayoutComponentBase
 @inject QuestionService QuestionService
+@inject NavigationManager Navigation
 
 <div class="page">
     <div class="sidebar">
@@ -10,11 +11,11 @@
         <div class="sidebar-content">
             <div class="nav-section">
                 <h3>Menu</h3>
-                <div class="nav-item @(IsActive(""))" @onclick="() => NavigateTo("")">
+                <div class="nav-item @(IsActive(""))" @onclick="() => Navigate("")">
                     <span class="icon">📊</span>
                     <span>Dashboard</span>
                 </div>
-                <div class="nav-item @(IsActive("search"))" @onclick="() => NavigateTo("search")">
+                <div class="nav-item @(IsActive("search"))" @onclick="() => Navigate("search")">
                     <span class="icon">🔍</span>
                     <span>Search</span>
                 </div>
@@ -25,7 +26,7 @@
                 @foreach (var cert in certifications)
                 {
                     <div class="nav-item @(IsActive($"cert/{cert.Id}"))" 
-                         @onclick="() => NavigateTo($"cert/{cert.Id}")">
+                         @onclick="() => Navigate($"cert/{cert.Id}")">
                         <span class="icon">📝</span>
                         <span>@cert.Code</span>
                     </div>
@@ -49,20 +50,15 @@
 
 @code {
     private List<Certification> certifications = new();
-    private string currentPath = "";
 
     protected override async Task OnInitializedAsync()
     {
         certifications = await QuestionService.GetCertificationsAsync();
+        Navigation.LocationChanged += (_, _) => StateHasChanged();
     }
 
-    private void NavigateTo(string path)
-    {
-        currentPath = path;
-        // Navigation logic would go here with NavigationManager
-    }
-
-    private string IsActive(string path) => currentPath == path ? "active" : "";
+    private void Navigate(string path) => Navigation.NavigateTo(path);
+    private bool IsActive(string path) => Navigation.ToBaseRelativePath(Navigation.Uri) == path;
 
     private async Task ExportAll()
     {

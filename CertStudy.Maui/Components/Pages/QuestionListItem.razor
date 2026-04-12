@@ -1,0 +1,26 @@
+@inject NavigationManager Navigation
+
+<tr class="question-row" @onclick="Edit">
+    <td class="q-number">Q@Question.Number</td>
+    <td class="q-stem">@Truncate(Question.Stem, 60)</td>
+    <td class="q-type">@Question.Type</td>
+    <td class="q-status">
+        <StatusBadge Status="@Question.Status" />
+    </td>
+    <td class="q-actions" @onclick:stopPropagation>
+        <button class="btn-icon" @onclick="Edit" title="Edit">✏️</button>
+        <button class="btn-icon btn-danger" @onclick="OnDelete" title="Delete">🗑️</button>
+    </td>
+</tr>
+
+@code {
+    [Parameter] public Question Question { get; set; } = null!;
+    [Parameter] public EventCallback<Question> OnDeleteRequest { get; set; }
+
+    private void Edit() => Navigation.NavigateTo($"question/{Question.Id}");
+
+    private async Task OnDelete() => await OnDeleteRequest.InvokeAsync(Question);
+
+    private static string Truncate(string text, int maxLen) =>
+        text.Length <= maxLen ? text : text[..(maxLen - 3)] + "...";
+}
