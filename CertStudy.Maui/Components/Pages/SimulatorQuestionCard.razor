@@ -1,0 +1,63 @@
+<div class="simulator-question">
+    <div class="question-meta">
+        <span class="question-number">Question @Question.Number</span>
+        <span class="question-type @(Question.Type == QuestionType.Multi ? "multi" : "single")">
+            @(Question.Type == QuestionType.Multi ? "Multiple Select" : "Single Select")
+        </span>
+    </div>
+
+    <div class="question-text">@Question.Text</div>
+
+    <div class="answer-options">
+        @foreach (var answer in Question.Answers.OrderBy(a => a.Letter))
+        {
+            <div class="answer-option @(IsSelected(answer.Letter) ? "selected" : "")"
+                 @onclick="() => ToggleAnswer(answer.Letter)">
+                <span class="answer-letter">@answer.Letter</span>
+                <span class="answer-text">@answer.Text</span>
+                @if (IsSelected(answer.Letter))
+                {
+                    <span class="check">✓</span>
+                }
+            </div>
+        }
+    </div>
+
+    @if (currentSelection.Any())
+    {
+        <button class="btn btn-primary confirm-btn" @onclick="ConfirmAnswer">
+            Confirm Answer
+        </button>
+    }
+</div>
+
+@code {
+    [Parameter] public Question Question { get; set; } = null!;
+    [Parameter] public ExamAttempt? Attempt { get; set; }
+    [Parameter] public EventCallback<List<string>> OnAnswer { get; set; }
+
+    private List<string> currentSelection = new();
+
+    private bool IsSelected(string letter) => currentSelection.Contains(letter);
+
+    private void ToggleAnswer(string letter)
+    {
+        if (Question.Type == QuestionType.Single)
+        {
+            currentSelection = new List<string> { letter };
+        }
+        else
+        {
+            if (currentSelection.Contains(letter))
+                currentSelection.Remove(letter);
+            else
+                currentSelection.Add(letter);
+        }
+    }
+
+    private async Task ConfirmAnswer()
+    {
+        await OnAnswer.InvokeAsync(currentSelection.ToList());
+        currentSelection.Clear();
+    }
+}

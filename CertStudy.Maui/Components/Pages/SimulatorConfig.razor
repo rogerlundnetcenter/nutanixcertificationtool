@@ -1,0 +1,78 @@
+@inject QuestionService QuestionService
+
+<div class="simulator-config">
+    <h3>🎓 Certification Exam Simulator</h3>
+
+    <div class="config-section">
+        <label>Exam Mode</label>
+        <div class="mode-selector">
+            <button class="btn @(config.Mode == SimulatorMode.FullExam ? "active" : "")"
+                    @onclick="() => config.Mode = SimulatorMode.FullExam">
+                Full Exam (75 questions, 120 min)
+            </button>
+            <button class="btn @(config.Mode == SimulatorMode.Custom ? "active" : "")"
+                    @onclick="() => config.Mode = SimulatorMode.Custom">
+                Custom
+            </button>
+        </div>
+    </div>
+
+    @if (config.Mode == SimulatorMode.Custom)
+    {
+        <div class="config-section">
+            <label>Questions: @config.QuestionCount</label>
+            <input type="range" min="10" max="100" @bind="config.QuestionCount" />
+        </div>
+
+        <div class="config-section">
+            <label>Time Limit: @config.TimeLimitMinutes minutes</label>
+            <input type="range" min="30" max="180" step="15" @bind="config.TimeLimitMinutes" />
+        </div>
+    }
+
+    <div class="config-info">
+        <p>📋 Passing score: <strong>75%</strong></p>
+        <p>⏱️ Time warning at: <strong>5 minutes remaining</strong></p>
+        <p>💡 Explanations shown after exam completion</p>
+    </div>
+
+    <div class="config-actions">
+        <button class="btn btn-primary" @onclick="Start" disabled="@(!CanStart)">
+            Start Exam
+        </button>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string CertificationId { get; set; } = "";
+    [Parameter] public EventCallback<SimulatorConfig> OnStart { get; set; }
+
+    private SimulatorConfig config = new() { Mode = SimulatorMode.FullExam };
+
+    private bool CanStart => !string.IsNullOrEmpty(CertificationId);
+
+    protected override void OnInitialized()
+    {
+        config.CertificationId = CertificationId;
+    }
+
+    private void SetMode(SimulatorMode mode)
+    {
+        config.Mode = mode;
+        if (mode == SimulatorMode.FullExam)
+        {
+            config.QuestionCount = 75;
+            config.TimeLimitMinutes = 120;
+        }
+    }
+
+    private async Task Start()
+    {
+        if (config.Mode == SimulatorMode.FullExam)
+        {
+            config.QuestionCount = 75;
+            config.TimeLimitMinutes = 120;
+        }
+        await OnStart.InvokeAsync(config);
+    }
+}

@@ -1,0 +1,138 @@
+@inject CertificationSimulator Simulator
+@inject QuestionService QuestionService
+@inject NavigationManager Navigation
+
+@if (showConfig)
+{
+    <SimulatorConfig 
+        CertificationId="@CertificationId"
+        OnStart="OnExamStart" />
+}
+else if (Simulator.CurrentAttempt?.IsCompleted == true)
+{
+    <SimulatorResults
+        Attempt="@Simulator.CurrentAttempt"
+        OnRetry="OnRetry"
+        OnExit="OnExit"
+        OnReview="OnReview" />
+}
+else if (Simulator.CurrentQuestion != null)
+{
+    <div class="simulator-container">
+        <SimulatorHeader
+            Timer="@Simulator.Timer"
+            Current="@Simulator.CurrentIndex"
+            Total="@Simulator.TotalQuestions"
+            Answered="@Simulator.CurrentAttempt?.AnsweredCount"
+            OnPause="OnPause"
+            OnSubmit="OnSubmitEarly" />
+
+        <SimulatorQuestionGrid
+            Questions="@Simulator.CurrentAttempt?.Answers"
+            CurrentIndex="@Simulator.CurrentIndex"
+            OnNavigate="OnNavigate" />
+
+        <SimulatorQuestionCard
+            Question="@Simulator.CurrentQuestion"
+            Attempt="@Simulator.CurrentAttempt"
+            OnAnswer="OnAnswer" />
+
+        <SimulatorNav
+            HasPrevious="@Simulator.HasPrevious"
+            HasNext="@Simulator.HasNext"
+            IsLast="@Simulator.IsLastQuestion"
+            OnPrevious="Previous"
+            OnNext="Next"
+            OnFinish="Finish" />
+    </div>
+}
+
+@code {
+    [Parameter] public string CertificationId { get; set; } = "";
+    [Parameter] public bool IsOpen { get; set; }
+    [Parameter] public EventCallback<bool> IsOpenChanged { get; set; }
+
+    private bool showConfig = true;
+
+    protected override void OnInitialized()
+    {
+        Simulator.OnTimeUp += OnTimeUp;
+    }
+
+    private async Task OnExamStart(SimulatorConfig config)
+    {
+        await Simulator.StartAsync(config);
+        showConfig = false;
+    }
+
+    private void OnAnswer(List<string> selected)
+    {
+        Simulator.RecordAnswer(selected);
+    }
+
+    private void Next()
+    {
+        Simulator.Next();
+    }
+
+    private void Previous()
+    {
+        Simulator.Previous();
+    }
+
+    private void OnNavigate(int index)
+    {
+        Simulator.GoToQuestion(index);
+    }
+
+    private void Finish()
+    {
+        Simulator.Complete();
+    }
+
+    private void OnTimeUp()
+    {
+        InvokeAsync(() =>
+        {
+            Simulator.Complete();
+            StateHasChanged();
+        });
+    }
+
+    private void OnPause()
+    {
+        // Pause not supported - exam must continue
+    }
+
+    private void OnSubmitEarly()
+    {
+        if (Simulator.CurrentAttempt?.AnsweredCount < Simulator.TotalQuestions)
+        {
+            // Show confirmation dialog
+        }
+        Simulator.Complete();
+    }
+
+    private void OnReview()
+    {
+        // Navigate to review mode
+    }
+
+    private void OnRetry()
+    {
+        Simulator.Reset();
+        showConfig = true;
+    }
+
+    private async Task OnExit()
+    {
+        Simulator.Reset();
+        await IsOpenChanged.InvokeAsync(false);
+    }
+
+    public void Dispose()
+    {
+        Simulator.OnTimeUp -= OnTimeUp;
+        Simulator.Reset();
+    }
+}

@@ -4,13 +4,20 @@
 
 <div class="toolbar">
     <h2>📊 Statistics Dashboard</h2>
-    <select @bind="selectedCertId" @bind:after="LoadData">
-        <option value="">All Certifications</option>
-        @foreach (var c in certifications)
+    <div class="toolbar-actions">
+        @if (!string.IsNullOrEmpty(selectedCertId))
         {
-            <option value="@c.Id">@c.Code</option>
+            <button class="btn btn-primary" @onclick="StartQuiz">📝 Study Mode</button>
+            <button class="btn btn-success" @onclick="StartExam">🎓 Start Exam</button>
         }
-    </select>
+        <select @bind="selectedCertId" @bind:after="LoadData">
+            <option value="">All Certifications</option>
+            @foreach (var c in certifications)
+            {
+                <option value="@c.Id">@c.Code</option>
+            }
+        </select>
+    </div>
 </div>
 
 @if (metrics != null)
@@ -62,6 +69,16 @@ else
         metrics = await DataService.GetMetricsAsync(selectedCertId);
         if (!string.IsNullOrEmpty(selectedCertId))
             domainStats = await DataService.GetDomainStatsAsync(selectedCertId);
+    }
+
+    private void StartQuiz()
+    {
+        Nav.NavigateTo($"/quiz/{selectedCertId}");
+    }
+
+    private void StartExam()
+    {
+        Nav.NavigateTo($"/exam/{selectedCertId}");
     }
 
     private Dictionary<string, int> GetTypeData() =>
