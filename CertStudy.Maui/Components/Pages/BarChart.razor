@@ -1,0 +1,33 @@
+@inject ChartJsService ChartService
+@implements IAsyncDisposable
+
+<div class="chart-widget">
+    <h4>@Title</h4>
+    <canvas id="@CanvasId" width="400" height="200"></canvas>
+</div>
+
+@code {
+    [Parameter] public string Title { get; set; } = "";
+    [Parameter] public string CanvasId { get; set; } = Guid.NewGuid().ToString("N")[..8];
+    [Parameter] public Dictionary<string, int> Data { get; set; } = new();
+    [Parameter] public string Color { get; set; } = "#36A2EB";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && Data.Any())
+        {
+            await ChartService.InitializeAsync();
+            await RenderChartAsync();
+        }
+    }
+
+    private async Task RenderChartAsync()
+    {
+        await ChartService.RenderBarAsync(CanvasId, Data.Keys.ToArray(), Data.Values.ToArray(), Color);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await ChartService.DisposeAsync();
+    }
+}

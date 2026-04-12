@@ -1,38 +1,79 @@
-@page "/"
-@inject QuestionService QuestionService
-@inject NavigationManager Navigation
+@page "/dashboard"
+@inject DashboardDataService DataService
+@inject NavigationManager Nav
 
 <div class="toolbar">
-    <h2>📊 Dashboard</h2>
+    <h2>📊 Statistics Dashboard</h2>
+    <select @bind="selectedCertId" @bind:after="LoadData">
+        <option value="">All Certifications</option>
+        @foreach (var c in certifications)
+        {
+            <option value="@c.Id">@c.Code</option>
+        }
+    </select>
 </div>
 
-<div class="card-grid">
-    @foreach (var cert in certifications)
+@if (metrics != null)
+{
+    <div class="stats-grid">
+        <StatsCard Icon="❓" Value="@metrics.TotalQuestions.ToString()" Label="Questions" />
+        <StatsCard Icon="✅" Value="@metrics.CompletionRate.ToString("F0")%" Label="Approved" Subtitle="@GetApprovedCount() complete" />
+        <StatsCard Icon="📝" Value="@metrics.AverageAnswersPerQuestion.ToString("F1")" Label="Avg Answers" Subtitle="@metrics.TotalAnswers total" />
+        <StatsCard Icon="📈" Value="@metrics.ByCertification.Count.ToString()" Label="Certifications" />
+    </div>
+
+    <div class="charts-grid">
+        <PieChart Title="By Type" Data="@GetTypeData()" />
+        <PieChart Title="By Status" Data="@GetStatusData()" />
+        <BarChart Title="By Domain" Data="@metrics.ByDomain" Color="#FF6384" />
+        <BarChart Title="By Certification" Data="@metrics.ByCertification" Color="#4BC0C0" />
+    </div>
+
+    @if (domainStats?.Any() == true)
     {
-        <div class="card" @onclick="() => NavigateToCert(cert.Id)">
-            <h3>@cert.Code</h3>
-            <p>@cert.Name</p>
-            <div class="stats">
-                <div class="stat">
-                    <div class="stat-value">@cert.Questions.Count</div>
-                    <div class="stat-label">Questions</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value">@cert.Domains.Count</div>
-                    <div class="stat-label">Domains</div>
-                </div>
-            </div>
+        <div class="progress-section">
+            <h3>Domain Completion</h3>
+            @foreach (var ds in domainStats.Take(5))
+            {
+                <ProgressBar Label="@ds.Name" Percent="@ds.CompletionPercent" />
+            }
         </div>
     }
-</div>
+}
+else
+{
+    <p>Loading...</p>
+}
 
 @code {
     private List<Certification> certifications = new();
+    private string selectedCertId = "";
+    private DashboardMetrics? metrics;
+    private List<DomainStat>? domainStats;
 
     protected override async Task OnInitializedAsync()
     {
-        certifications = await QuestionService.GetCertificationsAsync();
+        certifications = await DataService.GetMetricsAsync().ContinueWith(t => t.Result.ByCertification.Select(c => new Certification { Id = c.Key, Code = c.Key }).ToList());
+        await LoadData();
     }
 
-    private void NavigateToCert(string id) => Navigation.NavigateTo($"cert/{id}");
+    private async Task LoadData()
+    {
+        metrics = await DataService.GetMetricsAsync(selectedCertId);
+        if (!string.IsNullOrEmpty(selectedCertId))
+            domainStats = await DataService.GetDomainStatsAsync(selectedCertId);
+    }
+
+    private Dictionary<string, int> GetTypeData() =>
+        metrics?.ByType.ToDictionary(k => k.Key.ToString(), v => v.Value) ?? new();
+
+    private Dictionary<string, int> GetStatusData() =>
+        metrics?.ByStatus.ToDictionary(k => k.Key.ToString(), v => v.Value) ?? new();
+
+    private string GetApprovedCount()
+    {
+        if (metrics?.ByStatus.TryGetValue(QuestionStatus.Approved, out var count) == true)
+            return count.ToString();
+        return "0";
+    }
 }

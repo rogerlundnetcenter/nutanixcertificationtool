@@ -1,0 +1,17 @@
+<div class="stats-card @CssClass">
+    <div class="stats-icon">@Icon</div>
+    <div class="stats-value">@Value</div>
+    <div class="stats-label">@Label</div>
+    @if (!string.IsNullOrEmpty(Subtitle))
+    {
+        <div class="stats-subtitle">@Subtitle</div>
+    }
+</div>
+
+@code {
+    [Parameter] public string Icon { get; set; } = "📊";
+    [Parameter] public string Value { get; set; } = "0";
+    [Parameter] public string Label { get; set; } = "";
+    [Parameter] public string? Subtitle { get; set; }
+    [Parameter] public string CssClass { get; set; } = "";
+}

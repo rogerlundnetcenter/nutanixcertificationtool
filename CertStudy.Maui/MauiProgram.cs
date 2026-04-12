@@ -33,6 +33,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<ExportSettingsService>();
         builder.Services.AddSingleton<ExportCommand>();
         builder.Services.AddSingleton<ExportPageService>();
+        builder.Services.AddSingleton<DashboardDataService>();
+        builder.Services.AddSingleton<ChartJsService>();
         builder.Services.AddSingleton<SearchService>();
         builder.Services.AddSingleton<Fts5IndexService>(sp =>
             new Fts5IndexService($"Data Source={dbPath}"));

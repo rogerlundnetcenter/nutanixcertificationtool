@@ -1,0 +1,14 @@
+<div class="progress-widget">
+    <div class="progress-header">
+        <span>@Label</span>
+        <span>@Percent.ToString("F0")%</span>
+    </div>
+    <div class="progress-track">
+        <div class="progress-fill" style="width: @(Math.Min(Percent, 100))%"></div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Label { get; set; } = "";
+    [Parameter] public double Percent { get; set; }
+}
