@@ -1,0 +1,63 @@
+@page "/search"
+@inject SearchPageService PageService
+@implements IDisposable
+
+<div class="toolbar">
+    <h2>🔍 Search Questions</h2>
+</div>
+
+<div class="search-box">
+    <input type="text"
+           @bind="PageService.SearchTerm"
+           @bind:event="oninput"
+           @onkeyup="PageService.OnInput"
+           placeholder="Search questions..."
+           class="search-input" />
+    @if (PageService.IsSearching)
+    {
+        <span class="search-spinner">⏳</span>
+    }
+</div>
+
+<SearchFilters Certifications="@PageService.Certifications"
+               Domains="@PageService.Domains"
+               OnChangedCallback="PageService.OnFiltersChanged" />
+
+@if (PageService.Results.Any())
+{
+    <div class="search-results">
+        <div class="results-header">
+            <span>@PageService.TotalResults results</span>
+            <span class="search-time">@PageService.SearchTimeMs ms</span>
+        </div>
+
+        <Virtualize Items="@PageService.Results" Context="r" ItemSize="80">
+            <SearchResultItem Result="@r" />
+        </Virtualize>
+
+        <Pagination CurrentPage="@PageService.CurrentPage"
+                    PageSize="@PageService.PageSize"
+                    TotalItems="@PageService.TotalResults"
+                    OnPageChanged="PageService.OnPageChanged" />
+    </div>
+}
+else if (!string.IsNullOrEmpty(PageService.SearchTerm) && !PageService.IsSearching)
+{
+    <div class="empty-state">
+        <p>No questions found matching "@PageService.SearchTerm"</p>
+    </div>
+}
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        PageService.OnChange += StateHasChanged;
+        await PageService.InitializeAsync();
+    }
+
+    public void Dispose()
+    {
+        PageService.OnChange -= StateHasChanged;
+        PageService.Dispose();
+    }
+}

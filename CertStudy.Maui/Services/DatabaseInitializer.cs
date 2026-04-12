@@ -1,5 +1,7 @@
 using CertStudy.Maui.Data;
 using CertStudy.Maui.Data.Entities;
+using CertStudy.Maui.Data.Migrations;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
 namespace CertStudy.Maui.Services;
@@ -15,66 +17,70 @@ public class DatabaseInitializer
 
     public async Task InitializeAsync()
     {
-        await _context.Database.MigrateAsync();
-        await SeedCertificationsAsync();
+        await _context.Database.EnsureCreatedAsync();
+
+        // Run FTS5 migrations
+        var connectionString = _context.Database.GetDbConnection().ConnectionString;
+        await RunFts5MigrationAsync(connectionString);
+
+        if (!await _context.Certifications.AnyAsync())
+        {
+            await SeedAsync();
+        }
     }
 
-    private async Task SeedCertificationsAsync()
+    private static async Task RunFts5MigrationAsync(string connectionString)
     {
-        if (await _context.Certifications.AnyAsync())
-            return;
+        using var connection = new SqliteConnection(connectionString);
+        await connection.OpenAsync();
 
-        var certs = new List<Certification>
+        var sql = @"
+CREATE VIRTUAL TABLE IF NOT EXISTS QuestionSearch USING fts5(
+    Stem,
+    Explanation,
+    content='Questions',
+    content_rowid='Id'
+);
+
+CREATE TRIGGER IF NOT EXISTS QuestionSearch_ai AFTER INSERT ON Questions BEGIN
+    INSERT INTO QuestionSearch (rowid, Stem, Explanation)
+    VALUES (new.Id, new.Stem, new.Explanation);
+END;
+
+CREATE TRIGGER IF NOT EXISTS QuestionSearch_ad AFTER DELETE ON Questions BEGIN
+    INSERT INTO QuestionSearch (QuestionSearch, rowid, Stem, Explanation)
+    VALUES ('delete', old.Id, old.Stem, old.Explanation);
+END;
+
+CREATE TRIGGER IF NOT EXISTS QuestionSearch_au AFTER UPDATE ON Questions BEGIN
+    INSERT INTO QuestionSearch (QuestionSearch, rowid, Stem, Explanation)
+    VALUES ('delete', old.Id, old.Stem, old.Explanation);
+    INSERT INTO QuestionSearch (rowid, Stem, Explanation)
+    VALUES (new.Id, new.Stem, new.Explanation);
+END;";
+
+        using var command = new SqliteCommand(sql, connection);
+        await command.ExecuteNonQueryAsync();
+    }
+
+    private async Task SeedAsync()
+    {
+        var ncp = new Certification
         {
-            new()
+            Code = "NCP-DS",
+            Name = "Nutanix Certified Professional - Data Services",
+            Version = "6.5",
+            Domains = new()
             {
-                Id = "ncp-us-610",
-                Code = "NCP-US-6.10",
-                Name = "Nutanix Certified Professional - Unified Storage",
-                Version = "6.10"
-            },
-            new()
-            {
-                Id = "ncp-ci-610",
-                Code = "NCP-CI-6.10",
-                Name = "Nutanix Certified Professional - Cloud Integration",
-                Version = "6.10"
-            },
-            new()
-            {
-                Id = "ncp-ai-610",
-                Code = "NCP-AI-6.10",
-                Name = "Nutanix Certified Professional - AI Infrastructure",
-                Version = "6.10"
-            },
-            new()
-            {
-                Id = "ncm-mci-610",
-                Code = "NCM-MCI-6.10",
-                Name = "Nutanix Certified Master - Multicloud Infrastructure",
-                Version = "6.10"
+                new() { Number = 1, Name = "Data Services Architecture" },
+                new() { Number = 2, Name = "Volume Groups" },
+                new() { Number = 3, Name = "Data Protection" },
+                new() { Number = 4, Name = "Disaster Recovery" },
+                new() { Number = 5, Name = "Security and Compliance" }
             }
         };
 
-        foreach (var cert in certs)
-        {
-            _context.Certifications.Add(cert);
-            
-            // Seed default domains
-            var domains = new List<Domain>
-            {
-                new() { Name = "Domain 1", Number = 1, CertificationId = cert.Id },
-                new() { Name = "Domain 2", Number = 2, CertificationId = cert.Id },
-                new() { Name = "Domain 3", Number = 3, CertificationId = cert.Id },
-                new() { Name = "Domain 4", Number = 4, CertificationId = cert.Id }
-            };
-            
-            foreach (var domain in domains)
-            {
-                _context.Domains.Add(domain);
-            }
-        }
-
+        _context.Certifications.Add(ncp);
         await _context.SaveChangesAsync();
     }
 }

@@ -1,0 +1,95 @@
+<div class="search-filters">
+    @if (Certifications.Any())
+    {
+        <div class="filter-group">
+            <label>Cert</label>
+            <select @bind="SelectedCertId" @bind:after="OnChanged">
+                <option value="">All</option>
+                @foreach (var c in Certifications)
+                {
+                    <option value="@c.Id">@c.Code</option>
+                }
+            </select>
+        </div>
+    }
+
+    @if (Domains.Any())
+    {
+        <div class="filter-group">
+            <label>Domain</label>
+            <select @bind="SelectedDomainId" @bind:after="OnChanged">
+                <option value="">All</option>
+                @foreach (var d in Domains)
+                {
+                    <option value="@d.Id">@d.Name</option>
+                }
+            </select>
+        </div>
+    }
+
+    <div class="filter-group">
+        <label>Type</label>
+        <select @bind="SelectedType" @bind:after="OnChanged">
+            <option value="">All</option>
+            @foreach (var t in QuestionTypeValues)
+            {
+                <option value="@t">@t</option>
+            }
+        </select>
+    </div>
+
+    <div class="filter-group">
+        <label>Status</label>
+        <select @bind="SelectedStatus" @bind:after="OnChanged">
+            <option value="">All</option>
+            @foreach (var s in QuestionStatusValues)
+            {
+                <option value="@s">@s</option>
+            }
+        </select>
+    </div>
+
+    @if (HasFilters)
+    {
+        <button class="btn btn-sm" @onclick="Clear">Clear</button>
+    }
+</div>
+
+@code {
+    [Parameter] public List<Certification> Certifications { get; set; } = new();
+    [Parameter] public List<Domain> Domains { get; set; } = new();
+    [Parameter] public EventCallback<SearchFilterState> OnChangedCallback { get; set; }
+
+    private string SelectedCertId { get; set; } = "";
+    private string SelectedDomainId { get; set; } = "";
+    private string SelectedType { get; set; } = "";
+    private string SelectedStatus { get; set; } = "";
+
+    private static readonly QuestionType[] QuestionTypeValues = (QuestionType[])Enum.GetValues(typeof(QuestionType));
+    private static readonly QuestionStatus[] QuestionStatusValues = (QuestionStatus[])Enum.GetValues(typeof(QuestionStatus));
+
+    private bool HasFilters => SelectedCertId != "" || SelectedDomainId != "" || SelectedType != "" || SelectedStatus != "";
+
+    private async Task OnChanged() =>
+        await OnChangedCallback.InvokeAsync(new SearchFilterState
+        {
+            CertificationId = SelectedCertId,
+            DomainId = int.TryParse(SelectedDomainId, out var d) ? d : null,
+            Type = Enum.TryParse<QuestionType>(SelectedType, out var t) ? t : null,
+            Status = Enum.TryParse<QuestionStatus>(SelectedStatus, out var s) ? s : null
+        });
+
+    private async Task Clear()
+    {
+        SelectedCertId = SelectedDomainId = SelectedType = SelectedStatus = "";
+        await OnChanged();
+    }
+}
+
+public class SearchFilterState
+{
+    public string? CertificationId { get; set; }
+    public int? DomainId { get; set; }
+    public QuestionType? Type { get; set; }
+    public QuestionStatus? Status { get; set; }
+}

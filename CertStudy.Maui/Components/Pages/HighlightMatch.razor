@@ -1,0 +1,15 @@
+@if (!string.IsNullOrEmpty(HighlightedText))
+{
+    <span class="highlighted-text">
+        @((MarkupString)HighlightedText)
+    </span>
+}
+else
+{
+    <span>@PlainText</span>
+}
+
+@code {
+    [Parameter] public string? HighlightedText { get; set; }
+    [Parameter] public string? PlainText { get; set; }
+}

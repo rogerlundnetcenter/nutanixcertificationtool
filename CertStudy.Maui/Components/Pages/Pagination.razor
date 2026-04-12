@@ -1,0 +1,28 @@
+@if (TotalPages > 1)
+{
+    <div class="pagination">
+        <button class="btn btn-sm" @onclick="Prev" disabled="@(!CanPrev)">←</button>
+        <span>Page @CurrentPage of @TotalPages (@TotalItems items)</span>
+        <button class="btn btn-sm" @onclick="Next" disabled="@(!CanNext)">→</button>
+    </div>
+}
+
+@code {
+    [Parameter] public int CurrentPage { get; set; } = 1;
+    [Parameter] public int PageSize { get; set; } = 50;
+    [Parameter] public int TotalItems { get; set; }
+    [Parameter] public EventCallback<int> OnPageChanged { get; set; }
+
+    private int TotalPages => (TotalItems + PageSize - 1) / PageSize;
+    private bool CanPrev => CurrentPage > 1;
+    private bool CanNext => CurrentPage < TotalPages;
+
+    private async Task Prev() => await GoTo(CurrentPage - 1);
+    private async Task Next() => await GoTo(CurrentPage + 1);
+
+    private async Task GoTo(int page)
+    {
+        if (page >= 1 && page <= TotalPages)
+            await OnPageChanged.InvokeAsync(page);
+    }
+}

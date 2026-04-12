@@ -1,0 +1,26 @@
+@inject NavigationManager Navigation
+
+<div class="search-result" @onclick="Open">
+    <div class="result-header">
+        <span class="result-id">Q@Result.QuestionId</span>
+        <span class="result-rank">@(Result.Rank > 0 ? $"{Result.Rank:P0}" : "")</span>
+    </div>
+    <div class="result-stem">
+        <HighlightMatch HighlightedText="@Result.HighlightedStem" PlainText="@Result.Stem" />
+    </div>
+    @if (!string.IsNullOrEmpty(Result.Explanation))
+    {
+        <div class="result-excerpt">
+            @Truncate(Result.Explanation, 100)
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public SearchResult Result { get; set; } = null!;
+
+    private void Open() => Navigation.NavigateTo($"question/{Result.QuestionId}");
+
+    private static string Truncate(string text, int maxLen) =>
+        text.Length <= maxLen ? text : text[..(maxLen - 3)] + "...";
+}

@@ -31,6 +31,9 @@ public static class MauiProgram
         builder.Services.AddSingleton<OllamaValidationService>();
         builder.Services.AddSingleton<MarkdownExportService>();
         builder.Services.AddSingleton<SearchService>();
+        builder.Services.AddSingleton<Fts5IndexService>(sp =>
+            new Fts5IndexService($"Data Source={dbPath}"));
+        builder.Services.AddSingleton<SearchPageService>();
 
         builder.Services.AddMauiBlazorWebView();
 
