@@ -3,7 +3,6 @@
 @inject QuestionService QuestionService
 @inject QuestionCommandService CommandService
 @inject NavigationManager Navigation
-@inject OllamaValidationService OllamaService
 @implements IDisposable
 
 @if (question != null)
@@ -13,12 +12,6 @@
         <div class="toolbar-actions">
             <button class="btn btn-primary" @onclick="Save">💾 Save</button>
             <button class="btn btn-secondary" @onclick="Back">← Back</button>
-            @if (!isNew)
-            {
-                <button class="btn btn-secondary" @onclick="Validate" disabled="@isValidating">
-                    @(isValidating ? "⏳" : "✓") Validate
-                </button>
-            }
         </div>
     </div>
 
@@ -49,11 +42,6 @@
     {
         <div class="save-status @saveStatusClass">@saveStatus</div>
     }
-
-    @if (validationResult != null)
-    {
-        <ValidationResultCard Result="@validationResult" />
-    }
 }
 
 @code {
@@ -63,8 +51,6 @@
     private Question? question;
     private List<Domain> domains = new();
     private bool isNew => QuestionId == null;
-    private bool isValidating = false;
-    private ValidationResult? validationResult;
     private string? saveStatus;
     private string? saveStatusClass;
 
@@ -120,14 +106,6 @@
     }
 
     private void Back() => Navigation.NavigateTo(question != null ? $"cert/{question.CertificationId}" : "/");
-
-    private async Task Validate()
-    {
-        if (question == null) return;
-        isValidating = true;
-        validationResult = await OllamaService.ValidateAsync(question);
-        isValidating = false;
-    }
 
     public void Dispose() => autoSave?.Dispose();
 }
