@@ -1,0 +1,156 @@
+@page "/question/{QuestionId:int}"
+@page "/question/new/{CertId}"
+@inject QuestionService QuestionService
+@inject OllamaValidationService OllamaService
+
+@if (question != null)
+{
+    <div class="toolbar">
+        <h2>@(isNew ? "New Question" : $"Edit Q{question.Number}")</h2>
+        <div class="toolbar-actions">
+            <button class="btn btn-primary" @onclick="Save">💾 Save</button>
+            @if (!isNew)
+            {
+                <button class="btn btn-secondary" @onclick="Validate" disabled="@isValidating">
+                    @(isValidating ? "⏳" : "✓") Validate
+                </button>
+            }
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Domain</label>
+        <select @bind="question.DomainId">
+            @foreach (var d in domains)
+            {
+                <option value="@d.Id">@d.Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Type</label>
+        <select @bind="question.Type">
+            <option value="@QuestionType.Single">Single Answer</option>
+            <option value="@QuestionType.Multi">Multi-Select</option>
+            <option value="@QuestionType.Ordering">Ordering</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Question Stem</label>
+        <textarea @bind="question.Stem" rows="4" />
+    </div>
+
+    <div class="form-group">
+        <label>Answers <button class="btn btn-secondary" @onclick="AddAnswer">+ Add</button></label>
+        @foreach (var ans in question.Answers)
+        {
+            <div class="answer-row">
+                <input type="checkbox" checked="@ans.IsCorrect" @onchange="e => ToggleCorrect(ans)" />
+                <span class="letter">@ans.Letter.</span>
+                <input type="text" @bind="ans.Text" placeholder="Answer text..." />
+                <button class="btn btn-danger" @onclick="() => RemoveAnswer(ans)">×</button>
+            </div>
+        }
+    </div>
+
+    <div class="form-group">
+        <label>Explanation</label>
+        <textarea @bind="question.Explanation" rows="6" />
+    </div>
+
+    @if (validationResult != null)
+    {
+        <div class="validation-box">
+            <strong>AI Validation (@validationResult.Status, @validationResult.Confidence:P0 confidence)</strong>
+            <p>@validationResult.Reasoning</p>
+            @if (validationResult.Suggestions.Any())
+            {
+                <ul>
+                    @foreach (var s in validationResult.Suggestions)
+                    {
+                        <li>@s</li>
+                    }
+                </ul>
+            }
+        </div>
+    }
+}
+
+@code {
+    [Parameter] public int? QuestionId { get; set; }
+    [Parameter] public string? CertId { get; set; }
+
+    private Question? question;
+    private List<Domain> domains = new();
+    private bool isNew => QuestionId == null;
+    private bool isValidating = false;
+    private ValidationResult? validationResult;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (QuestionId.HasValue)
+        {
+            question = await QuestionService.GetQuestionAsync(QuestionId.Value);
+        }
+        else if (CertId != null)
+        {
+            var cert = await QuestionService.GetCertificationAsync(CertId);
+            domains = cert?.Domains.ToList() ?? new();
+            question = new Question
+            {
+                CertificationId = CertId,
+                Type = QuestionType.Single,
+                Number = await QuestionService.GetNextQuestionNumberAsync(CertId),
+                Answers = new()
+                {
+                    new() { Letter = "A", Text = "" },
+                    new() { Letter = "B", Text = "" },
+                    new() { Letter = "C", Text = "" },
+                    new() { Letter = "D", Text = "" }
+                }
+            };
+        }
+    }
+
+    private void AddAnswer()
+    {
+        var letters = new[] { "A", "B", "C", "D", "E", "F" };
+        if (question?.Answers.Count < 6)
+        {
+            question.Answers.Add(new Answer { Letter = letters[question.Answers.Count] });
+        }
+    }
+
+    private void RemoveAnswer(Answer ans)
+    {
+        question?.Answers.Remove(ans);
+    }
+
+    private void ToggleCorrect(Answer ans)
+    {
+        if (question?.Type == QuestionType.Single)
+        {
+            foreach (var a in question.Answers) a.IsCorrect = false;
+        }
+        ans.IsCorrect = !ans.IsCorrect;
+    }
+
+    private async Task Save()
+    {
+        if (question != null)
+        {
+            await QuestionService.SaveQuestionAsync(question);
+            // Navigate back
+        }
+    }
+
+    private async Task Validate()
+    {
+        if (question == null) return;
+        isValidating = true;
+        validationResult = await OllamaService.ValidateAsync(question);
+        isValidating = false;
+    }
+}

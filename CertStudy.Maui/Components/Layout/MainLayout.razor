@@ -1,0 +1,71 @@
+@inherits LayoutComponentBase
+@inject QuestionService QuestionService
+
+<div class="page">
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h1>🎯 Cert Study Editor</h1>
+        </div>
+        
+        <div class="sidebar-content">
+            <div class="nav-section">
+                <h3>Menu</h3>
+                <div class="nav-item @(IsActive(""))" @onclick="() => NavigateTo("")">
+                    <span class="icon">📊</span>
+                    <span>Dashboard</span>
+                </div>
+                <div class="nav-item @(IsActive("search"))" @onclick="() => NavigateTo("search")">
+                    <span class="icon">🔍</span>
+                    <span>Search</span>
+                </div>
+            </div>
+            
+            <div class="nav-section">
+                <h3>Certifications</h3>
+                @foreach (var cert in certifications)
+                {
+                    <div class="nav-item @(IsActive($"cert/{cert.Id}"))" 
+                         @onclick="() => NavigateTo($"cert/{cert.Id}")">
+                        <span class="icon">📝</span>
+                        <span>@cert.Code</span>
+                    </div>
+                }
+            </div>
+            
+            <div class="nav-section">
+                <h3>Actions</h3>
+                <div class="nav-item" @onclick="ExportAll">
+                    <span class="icon">📥</span>
+                    <span>Export All</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main class="main-content">
+        @Body
+    </main>
+</div>
+
+@code {
+    private List<Certification> certifications = new();
+    private string currentPath = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        certifications = await QuestionService.GetCertificationsAsync();
+    }
+
+    private void NavigateTo(string path)
+    {
+        currentPath = path;
+        // Navigation logic would go here with NavigationManager
+    }
+
+    private string IsActive(string path) => currentPath == path ? "active" : "";
+
+    private async Task ExportAll()
+    {
+        // Export logic
+    }
+}

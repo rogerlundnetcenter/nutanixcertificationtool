@@ -1,0 +1,40 @@
+@page "/"
+@inject QuestionService QuestionService
+
+<div class="toolbar">
+    <h2>📊 Dashboard</h2>
+</div>
+
+<div class="card-grid">
+    @foreach (var cert in certifications)
+    {
+        <div class="card" @onclick="() => NavigateToCert(cert.Id)">
+            <h3>@cert.Code</h3>
+            <p>@cert.Name</p>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value">@cert.Questions.Count</div>
+                    <div class="stat-label">Questions</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">@cert.Domains.Count</div>
+                    <div class="stat-label">Domains</div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private List<Certification> certifications = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        certifications = await QuestionService.GetCertificationsAsync();
+    }
+
+    private void NavigateToCert(string id)
+    {
+        // Navigation to cert page
+    }
+}
