@@ -1,0 +1,136 @@
+version: '3.8'
+
+services:
+  # PostgreSQL - Main database
+  postgres:
+    image: postgres:16-alpine
+    container_name: cert-db
+    environment:
+      POSTGRES_DB: certstudy
+      POSTGRES_USER: certuser
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-certpass123}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "5432:5432"
+    networks:
+      - cert-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U certuser -d certstudy"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # FastAPI - Question management API
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: cert-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://certuser:${DB_PASSWORD:-certpass123}@postgres:5432/certstudy
+      OLLAMA_HOST: ${OLLAMA_HOST:-http://host.docker.internal:11434}
+      DATA_DIR: /data
+    volumes:
+      - exam_packs:/data/exam-packs
+      - ./api:/app:ro
+    ports:
+      - "8000:8000"
+    networks:
+      - cert-net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  # Wiki - Simple markdown editor (BookStack is lighter than Wiki.js)
+  wiki:
+    image: lscr.io/linuxserver/bookstack:latest
+    container_name: cert-wiki
+    depends_on:
+      - postgres
+    environment:
+      PUID: 1000
+      PGID: 1000
+      APP_URL: http://localhost:3000
+      DB_HOST: postgres
+      DB_USER: certuser
+      DB_PASS: ${DB_PASSWORD:-certpass123}
+      DB_DATABASE: certstudy_wiki
+    volumes:
+      - wiki_data:/config
+    ports:
+      - "3000:80"
+    networks:
+      - cert-net
+    restart: unless-stopped
+
+  # Validation worker - Background processor using Ollama
+  validator:
+    build:
+      context: ./validator
+      dockerfile: Dockerfile
+    container_name: cert-validator
+    depends_on:
+      - api
+    environment:
+      DATABASE_URL: postgresql://certuser:${DB_PASSWORD:-certpass123}@postgres:5432/certstudy
+      OLLAMA_HOST: ${OLLAMA_HOST:-http://host.docker.internal:11434}
+      VALIDATION_MODEL: ${VALIDATION_MODEL:-llama3.1}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-nomic-embed-text}
+      BATCH_SIZE: "5"
+      POLL_INTERVAL: "30"
+    volumes:
+      - validator_logs:/app/logs
+    networks:
+      - cert-net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+  # Optional: Full-text search (lightweight alternative to MeiliSearch)
+  typesense:
+    image: typesense/typesense:0.25.1
+    container_name: cert-search
+    environment:
+      TYPESENSE_API_KEY: ${SEARCH_KEY:-searchKey123}
+      TYPESENSE_DATA_DIR: /data
+    volumes:
+      - search_data:/data
+    ports:
+      - "8108:8108"
+    networks:
+      - cert-net
+    restart: unless-stopped
+
+  # Backup service
+  backup:
+    image: offen/docker-volume-backup:v2
+    container_name: cert-backup
+    volumes:
+      - postgres_data:/backup/postgres:ro
+      - wiki_data:/backup/wiki:ro
+      - exam_packs:/backup/exam-packs:ro
+      - ./backups:/archive
+    environment:
+      BACKUP_CRON_EXPRESSION: "0 2 * * *"
+      BACKUP_RETENTION_DAYS: "30"
+      BACKUP_FILENAME: backup-%Y-%m-%dT%H-%M-%S.tar.gz
+      BACKUP_ARCHIVE: /archive
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  wiki_data:
+  search_data:
+  exam_packs:
+  validator_logs:
+
+networks:
+  cert-net:
+    driver: bridge
