@@ -30,6 +30,9 @@ public static class MauiProgram
         builder.Services.AddSingleton<QuestionCommandService>();
         builder.Services.AddSingleton<OllamaValidationService>();
         builder.Services.AddSingleton<MarkdownExportService>();
+        builder.Services.AddSingleton<ExportSettingsService>();
+        builder.Services.AddSingleton<ExportCommand>();
+        builder.Services.AddSingleton<ExportPageService>();
         builder.Services.AddSingleton<SearchService>();
         builder.Services.AddSingleton<Fts5IndexService>(sp =>
             new Fts5IndexService($"Data Source={dbPath}"));

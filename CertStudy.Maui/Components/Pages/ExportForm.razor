@@ -1,0 +1,45 @@
+<div class="form-group">
+    <label>Certification</label>
+    <select @bind="SelectedCertId">
+        <option value="">All Certifications</option>
+        @foreach (var c in Certifications)
+        {
+            <option value="@c.Id">@c.Code</option>
+        }
+    </select>
+</div>
+
+<div class="form-group">
+    <label>Output Folder</label>
+    <div class="input-group">
+        <input type="text" value="@Settings.OutputPath" readonly />
+        <button class="btn" @onclick="OnPickFolder">Browse...</button>
+    </div>
+</div>
+
+<div class="form-group">
+    <label>Format</label>
+    <select @bind="Settings.Format">
+        @foreach (var f in FormatValues)
+        {
+            <option value="@f">@f</option>
+        }
+    </select>
+</div>
+
+<div class="form-group">
+    <label>
+        <input type="checkbox" @bind="Settings.OverwriteExisting" />
+        Overwrite existing files
+    </label>
+</div>
+
+@code {
+    [Parameter] public List<Certification> Certifications { get; set; } = new();
+    [Parameter] public ExportSettings Settings { get; set; } = null!;
+    [Parameter] public EventCallback OnPickFolder { get; set; }
+    [Parameter] public EventCallback OnSubmit { get; set; }
+
+    private string SelectedCertId { get; set; } = "";
+    private static readonly ExportFormat[] FormatValues = (ExportFormat[])Enum.GetValues(typeof(ExportFormat));
+}

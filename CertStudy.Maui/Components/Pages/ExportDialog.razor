@@ -1,0 +1,55 @@
+@inject ExportPageService PageService
+@implements IDisposable
+
+@if (IsVisible)
+{
+    <div class="modal-overlay" @onclick="Close">
+        <div class="modal" @onclick:stopPropagation>
+            <h3>📥 Export Questions</h3>
+
+            <ExportForm Certifications="@PageService.Certifications"
+                       OnPickFolder="PageService.PickFolder"
+                       OnSubmit="Export" />
+
+            @if (PageService.IsExporting)
+            {
+                <ExportProgressBar Percent="@PageService.ProgressPercent"
+                                 CurrentItem="@PageService.CurrentItem" />
+            }
+
+            @if (PageService.Result != null)
+            {
+                <ExportResultAlert Result="@PageService.Result" />
+            }
+
+            <div class="modal-actions">
+                <button class="btn" @onclick="Close">Cancel</button>
+                <button class="btn btn-primary" @onclick="Export"
+                        disabled="@PageService.IsExporting">
+                    @(PageService.IsExporting ? "Exporting..." : "Export")
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public bool IsVisible { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        PageService.OnChange += StateHasChanged;
+        await PageService.InitAsync();
+    }
+
+    private async Task Export()
+    {
+        await PageService.ExportAsync();
+        if (PageService.Result?.Errors.Any() != true)
+            await Close();
+    }
+
+    private async Task Close() => await OnClose.InvokeAsync();
+    public void Dispose() => PageService.OnChange -= StateHasChanged;
+}

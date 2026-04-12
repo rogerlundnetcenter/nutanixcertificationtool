@@ -1,0 +1,19 @@
+<div class="alert @(Result.Errors.Any() ? "alert-warning" : "alert-success")">
+    Exported @Result.Exported.Count files to @Result.OutputPath
+    @if (Result.Errors.Any())
+    {
+        <details>
+            <summary>@Result.Errors.Count errors</summary>
+            <ul>
+                @foreach (var e in Result.Errors)
+                {
+                    <li>@e</li>
+                }
+            </ul>
+        </details>
+    }
+</div>
+
+@code {
+    [Parameter] public ExportResult Result { get; set; } = null!;
+}

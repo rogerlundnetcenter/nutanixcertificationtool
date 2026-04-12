@@ -1,0 +1,12 @@
+@if (Percent > 0)
+{
+    <div class="progress">
+        <div class="progress-bar" style="width: @(Percent)%">@(Percent)%</div>
+    </div>
+    <p>Exporting @CurrentItem...</p>
+}
+
+@code {
+    [Parameter] public int Percent { get; set; }
+    [Parameter] public string CurrentItem { get; set; } = "";
+}

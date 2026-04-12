@@ -94,4 +94,16 @@ public class QuestionService
             .MaxAsync(q => (int?)q.Number) ?? 0;
         return max + 1;
     }
+
+    public async Task<List<Question>> GetAllQuestionsAsync()
+    {
+        return await _context.Questions
+            .Include(q => q.Certification)
+            .Include(q => q.Domain)
+            .Include(q => q.Answers)
+            .OrderBy(q => q.CertificationId)
+            .ThenBy(q => q.Number)
+            .AsNoTracking()
+            .ToListAsync();
+    }
 }
