@@ -859,7 +859,7 @@ A) Virtio-net provides paravirtual performance (lower overhead than e1000 emulat
 
 ## SECTION 3: ORDERING/SEQUENCE QUESTIONS (10 Questions)
 
-### Q71 (Sequence)
+### Q71
 Arrange the steps for entering host maintenance mode and verifying readiness:
 1. vMotion all VMs off the host to other cluster nodes
 2. Initiate "Enter Maintenance Mode" via Prism > Infrastructure > Hosts > Actions
@@ -867,12 +867,17 @@ Arrange the steps for entering host maintenance mode and verifying readiness:
 4. Verify the host status changes to "Maintenance Mode" in Prism
 5. Monitor replication/rebuild completion on remaining nodes
 
-**Correct Sequence: 3 → 1 → 2 → 4 → 5**
+- A) 1 → 2 → 3 → 4 → 5
+- B) 3 → 1 → 2 → 4 → 5
+- C) 2 → 1 → 3 → 5 → 4
+- D) 1 → 3 → 2 → 5 → 4
+
+**Answer: B**
 Rationale: Step 3 (verify cluster health first) ensures cluster can handle the evacuation. Step 1 (vMotion) evacuates VMs. Step 2 initiates maintenance mode. Step 4 verifies mode is active. Step 5 monitors rebuild. Doing anything out of order risks data loss or incomplete evacuation.
 
 ---
 
-### Q72 (Sequence)
+### Q72
 Arrange the order of operations for planned failover using Leap:
 1. Shut down all source site VMs gracefully
 2. Monitor replication jobs to confirm all snapshots are replicated
@@ -881,12 +886,17 @@ Arrange the order of operations for planned failover using Leap:
 5. Verify all VMs boot successfully and services are healthy
 6. Configure reverse replication for failback
 
-**Correct Sequence: 3 → 2 → 1 → 4 → 5 → 6**
+- A) 1 → 2 → 3 → 4 → 5 → 6
+- B) 3 → 1 → 2 → 4 → 5 → 6
+- C) 3 → 2 → 1 → 4 → 5 → 6
+- D) 2 → 3 → 1 → 5 → 4 → 6
+
+**Answer: C**
 Rationale: Step 3 (plan) is prerequisite. Step 2 (confirm replication is current) ensures no data loss. Step 1 (graceful shutdown) ensures clean failover. Step 4 (activate) brings up DR VMs. Step 5 (verify) validates recovery. Step 6 (reverse replication) enables future failback.
 
 ---
 
-### Q73 (Sequence)
+### Q73
 Arrange the steps for configuring a protection domain and initial seeding:
 1. Define snapshot retention policy (daily/weekly/monthly counts)
 2. Select source VMs to protect
@@ -895,12 +905,17 @@ Arrange the steps for configuring a protection domain and initial seeding:
 5. Monitor initial seeding progress to completion
 6. Create protection domain object in Prism
 
-**Correct Sequence: 6 → 2 → 3 → 1 → 4 → 5**
+- A) 6 → 2 → 3 → 1 → 4 → 5
+- B) 2 → 6 → 3 → 4 → 1 → 5
+- C) 6 → 3 → 2 → 4 → 1 → 5
+- D) 2 → 3 → 6 → 1 → 4 → 5
+
+**Answer: A**
 Rationale: Step 6 (create PD) first. Step 2 (add VMs) specifies what to protect. Step 3 (remote site) specifies where. Step 1 (retention) defines lifecycle. Step 4 (schedule) triggers replication. Step 5 (monitor) tracks seeding.
 
 ---
 
-### Q74 (Sequence)
+### Q74
 Arrange the diagnostic steps for troubleshooting low VM IOPS performance:
 1. Check CPU ready time to rule out CPU contention
 2. Analyze per-vDisk I/O latency and queue depth via Prism
@@ -908,12 +923,17 @@ Arrange the diagnostic steps for troubleshooting low VM IOPS performance:
 4. Check if iSCSI/NFS network latency is the bottleneck
 5. Compare peak IOPS against disk/storage tier limits
 
-**Correct Sequence: 1 → 2 → 5 → 3 → 4**
+- A) 2 → 1 → 3 → 5 → 4
+- B) 1 → 2 → 5 → 3 → 4
+- C) 1 → 3 → 2 → 4 → 5
+- D) 2 → 5 → 1 → 3 → 4
+
+**Answer: B**
 Rationale: Step 1 (CPU) rules out CPU contention masking I/O issue. Step 2 (per-disk) identifies which disk is hot. Step 5 (compare to limits) determines if it's a capacity issue. Step 3 (CVM processing) checks data path latency. Step 4 (network) checks if it's remote storage issue. Logical progression from VM → storage → infrastructure.
 
 ---
 
-### Q75 (Sequence)
+### Q75
 Arrange the steps for right-sizing a VM based on 30-day performance analysis:
 1. Collect 30 days of CPU/memory/disk utilization data from Prism
 2. Calculate peak utilization and average utilization
@@ -922,12 +942,17 @@ Arrange the steps for right-sizing a VM based on 30-day performance analysis:
 5. Monitor for 7 days post-change to validate CPU ready time and performance
 6. Adjust again if CPU ready time >10% or new bottlenecks appear
 
-**Correct Sequence: 1 → 2 → 3 → 4 → 5 → 6**
+- A) 1 → 2 → 3 → 4 → 5 → 6
+- B) 2 → 1 → 3 → 5 → 4 → 6
+- C) 1 → 3 → 2 → 4 → 6 → 5
+- D) 3 → 1 → 2 → 5 → 4 → 6
+
+**Answer: A**
 Rationale: Logical progression from collection → analysis → calculation → implementation → validation → iteration. Each step depends on prior step's output.
 
 ---
 
-### Q76 (Sequence)
+### Q76
 Arrange the steps for enabling self-service file restore on a Windows file server VM:
 1. Create snapshot schedule in protection domain
 2. Install Nutanix Guest Tools (NGT) with VSS provider
@@ -935,12 +960,17 @@ Arrange the steps for enabling self-service file restore on a Windows file serve
 4. Configure registry settings for snapshot accessibility
 5. Create a test file and verify it appears in Previous Versions within 30 seconds
 
-**Correct Sequence: 2 → 3 → 4 → 1 → 5**
+- A) 1 → 2 → 3 → 4 → 5
+- B) 3 → 2 → 4 → 1 → 5
+- C) 2 → 3 → 4 → 1 → 5
+- D) 2 → 4 → 3 → 1 → 5
+
+**Answer: C**
 Rationale: Step 2 (NGT) installs VSS capability. Step 3 (Previous Versions) enables UI. Step 4 (registry) configures enablement. Step 1 (schedule) starts creating snapshots. Step 5 (test) validates end-to-end. Can't test until infrastructure is ready.
 
 ---
 
-### Q77 (Sequence)
+### Q77
 Arrange the steps for analyzing and optimizing NUMA memory performance on a VM:
 1. Run `numactl --hardware` on guest to see NUMA topology
 2. Use `numactl --preferred=node1` to check if process affinity improves latency
@@ -948,12 +978,17 @@ Arrange the steps for analyzing and optimizing NUMA memory performance on a VM:
 4. Allocate VM RAM to match socket topology
 5. Monitor memory latency metrics before and after optimization
 
-**Correct Sequence: 1 → 3 → 4 → 2 → 5**
+- A) 1 → 3 → 4 → 2 → 5
+- B) 1 → 2 → 3 → 4 → 5
+- C) 3 → 1 → 4 → 2 → 5
+- D) 1 → 4 → 3 → 2 → 5
+
+**Answer: A**
 Rationale: Step 1 (discover topology). Step 3 (pin vCPU) in hypervisor. Step 4 (allocate RAM) on same socket. Step 2 (test affinity) with `numactl`. Step 5 (measure improvement). Must understand topology first, then configure hypervisor, then validate in guest.
 
 ---
 
-### Q78 (Sequence)
+### Q78
 Arrange the steps for multi-site DR setup (A→B and A→C):
 1. Create first protection domain (A→B) with snapshot schedule
 2. Create second protection domain (A→C) with staggered schedule
@@ -962,12 +997,17 @@ Arrange the steps for multi-site DR setup (A→B and A→C):
 5. Test failover to B, verify recovery plan validates successfully
 6. Test failover to C, verify recovery plan validates successfully
 
-**Correct Sequence: 1 → 2 → 3 → 4 → 5 → 6**
+- A) 1 → 2 → 3 → 4 → 5 → 6
+- B) 1 → 3 → 2 → 4 → 6 → 5
+- C) 4 → 1 → 2 → 3 → 5 → 6
+- D) 1 → 2 → 4 → 3 → 5 → 6
+
+**Answer: A**
 Rationale: Steps 1-2 (create PDs with different schedules to avoid congestion). Step 3 (verify replication is ready). Steps 4-6 (create and test recovery plans independently). Testing must follow seeding completion.
 
 ---
 
-### Q79 (Sequence)
+### Q79
 Arrange the troubleshooting steps for a VM with CPU ready time = 15%:
 1. Check Prism > Dashboard > CPU utilization per host
 2. Confirm this VM's ready time is truly 15% (not measurement artifact)
@@ -976,12 +1016,17 @@ Arrange the troubleshooting steps for a VM with CPU ready time = 15%:
 5. vMotion this VM off the host or reduce vCPU
 6. Monitor CPU ready time post-vMotion to validate improvement
 
-**Correct Sequence: 2 → 1 → 3 → 4 → 5 → 6**
+- A) 1 → 2 → 3 → 4 → 5 → 6
+- B) 2 → 1 → 3 → 4 → 5 → 6
+- C) 1 → 3 → 2 → 4 → 5 → 6
+- D) 2 → 3 → 1 → 5 → 4 → 6
+
+**Answer: B**
 Rationale: Step 2 (confirm metric is real, not a spike). Step 1 (check cluster CPU health). Step 3 (identify hot host). Step 4 (confirm overcommit is the issue). Step 5 (remediate). Step 6 (verify fix). Must confirm problem before diagnosis.
 
 ---
 
-### Q80 (Sequence)
+### Q80
 Arrange the steps for implementing boot group priority in a Leap recovery plan:
 1. Identify VM dependencies (DB → App → Web)
 2. Create boot group 1: database VMs
@@ -991,7 +1036,12 @@ Arrange the steps for implementing boot group priority in a Leap recovery plan:
 6. Add post-boot scripts to Group 3 to validate end-to-end service health
 7. Test failover and verify boot sequence respects group ordering
 
-**Correct Sequence: 1 → 2 → 3 → 4 → 5 → 6 → 7**
+- A) 2 → 3 → 4 → 1 → 5 → 6 → 7
+- B) 1 → 2 → 3 → 4 → 5 → 6 → 7
+- C) 1 → 2 → 5 → 3 → 6 → 4 → 7
+- D) 2 → 1 → 3 → 4 → 6 → 5 → 7
+
+**Answer: B**
 Rationale: Step 1 (identify dependencies). Steps 2-4 (build boot groups in dependency order). Steps 5-6 (add validation scripts between groups). Step 7 (test to confirm). Linear progression from planning → configuration → validation.
 
 ---

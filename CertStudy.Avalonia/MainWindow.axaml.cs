@@ -45,6 +45,7 @@ public partial class MainWindow : Window
         _exams = parser.LoadAllExams();
 
         // Update sidebar buttons with counts
+        UpdateButtonCount(BtnNCA75, "NCA",  "NCA 7.5 ★");
         UpdateButtonCount(BtnNCA,  "NCA",  "NCA 6.5");
         UpdateButtonCount(BtnNCM,  "NCM-MCI", "NCM — MCI");
         UpdateButtonCount(BtnNCPCI, "NCP-CI",  "NCP — CI");
@@ -60,6 +61,7 @@ public partial class MainWindow : Window
 
     private void UpdateButtonCounts()
     {
+        TrySetCount(BtnNCA75, "NCA",      "NCA 7.5 ★");
         TrySetCount(BtnNCA,  "NCA",      "NCA 6.5");
         TrySetCount(BtnNCM,  "NCM-MCI",  "NCM — MCI");
         TrySetCount(BtnNCPCI, "NCP-CI",   "NCP — CI");
@@ -111,7 +113,7 @@ public partial class MainWindow : Window
     {
         return displayName switch
         {
-            "NCA" or "NCA 6.5" =>
+            "NCA" or "NCA 6.5" or "NCA 7.5" or "NCA 7.5 ★" =>
                 _exams.Keys.FirstOrDefault(k => k.StartsWith("NCA", StringComparison.OrdinalIgnoreCase)),
             "NCM-MCI" or "NCM — MCI" => "NCM-MCI",
             "NCP-CI"  or "NCP — CI"  => "NCP-CI",

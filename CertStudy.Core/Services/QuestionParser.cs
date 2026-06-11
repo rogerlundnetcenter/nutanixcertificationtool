@@ -29,7 +29,7 @@ public partial class QuestionParser
         _fileProvider = fileProvider;
     }
 
-    [GeneratedRegex(@"^###\s+Q(\d+)", RegexOptions.Compiled)]
+    [GeneratedRegex(@"^###\s+Q(\d+)[.\s]*(.*)", RegexOptions.Compiled)]
     private static partial Regex QuestionHeaderRegex();
 
     [GeneratedRegex(@"^##\s+(?:DOMAIN|Domain)\s*(\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase)]
@@ -43,9 +43,14 @@ public partial class QuestionParser
 
     public static string DeriveExamCode(string fileName)
     {
-        // NCP-US-Part1.md -> NCP-US, NCM-MCI-Part2.md -> NCM-MCI
+        // NCP-US-Part1.md -> NCP-US, NCM-MCI-Part2.md -> NCM-MCI, NCA-75-Part1.md -> NCA
         var name = Path.GetFileNameWithoutExtension(fileName);
         var parts = name.Split('-');
+
+        // If the second segment is a number (e.g. "75" in NCA-75), skip it — the exam code is the first segment alone
+        if (parts.Length >= 2 && int.TryParse(parts[1], out _))
+            return parts[0];
+
         if (parts.Length >= 2)
             return $"{parts[0]}-{parts[1]}";
         return name;
@@ -111,10 +116,13 @@ public partial class QuestionParser
                     SourceFile = Path.GetFileName(filePath)
                 };
 
-                i++;
-
-                // Collect stem lines
+                // Capture inline stem text (e.g. "### Q1. Which tool..." or "### Q1 Which tool...")
+                var inlineStem = qm.Groups[2].Value.Trim();
                 var stemLines = new List<string>();
+                if (!string.IsNullOrEmpty(inlineStem))
+                    stemLines.Add(inlineStem);
+
+                i++;
                 while (i < lines.Length)
                 {
                     line = lines[i].TrimEnd();

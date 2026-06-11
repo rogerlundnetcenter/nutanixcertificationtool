@@ -68,7 +68,10 @@ public partial class QuestionView : UserControl
         _viewModel.PropertyChanged += OnViewModelPropertyChanged;
 
         RefreshUI();
-        WireOptionCards();
+        // Defer wiring until ItemsControl has rendered its children.
+        // Calling synchronously here misses the cards because the visual
+        // tree is built on the next layout pass.
+        Dispatcher.UIThread.Post(WireOptionCards, DispatcherPriority.Render);
     }
 
     private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)

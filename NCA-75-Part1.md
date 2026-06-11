@@ -35,8 +35,8 @@ An administrator needs to upgrade a 5-node cluster. Which upgrade order is recom
 - C) AOS → Hypervisor → Firmware
 - D) Firmware → Hypervisor → AOS
 
-**Answer: D**
-The recommended LCM upgrade order is: 1) Firmware (BIOS, disk controller, NIC firmware) first; 2) Hypervisor (AHV or ESXi); 3) AOS last. This ensures lower-level components are updated before the storage/control plane.
+**Answer: C**
+The recommended Nutanix best-practice upgrade order is: 1) AOS first — CVMs must have updated storage management APIs to orchestrate host maintenance modes; 2) Hypervisor second — guest VMs can then be safely live-migrated during rolling host reboots; 3) Firmware (BIOS, BMC, drive firmware) last to minimize bare-metal reset conflicts on a stabilized stack.
 
 ---
 

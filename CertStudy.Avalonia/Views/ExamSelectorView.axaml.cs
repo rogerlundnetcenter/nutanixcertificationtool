@@ -23,6 +23,7 @@ public partial class ExamSelectorView : UserControl
         base.OnInitialized();
 
         // Wire start buttons after InitializeComponent has created the visual tree
+        WireStartButton("BtnStartNCA75", "NCA");
         WireStartButton("BtnStartNCA",   "NCA");
         WireStartButton("BtnStartNCM",   "NCM-MCI");
         WireStartButton("BtnStartNCPCI", "NCP-CI");

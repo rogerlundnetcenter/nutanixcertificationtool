@@ -204,7 +204,7 @@
                   Margin="16,0"
                   VerticalScrollBarVisibility="Auto"
                   HorizontalScrollBarVisibility="Disabled">
-      <Grid RowDefinitions="Auto,Auto,Auto,*,Auto,Auto">
+      <Grid RowDefinitions="Auto,Auto,Auto,*,Auto,Auto,Auto">
         <TextBlock Grid.Row="0"
                    x:Name="MultiSelectHint"
                    Classes="multiSelectHint"

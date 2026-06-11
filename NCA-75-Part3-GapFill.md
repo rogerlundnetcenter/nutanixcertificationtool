@@ -35,8 +35,8 @@ In AOS 7.5, what is the default SSH access state for CVMs on fresh installations
 - C) SSH disabled by default
 - D) SSH requires Prism Central approval
 
-**Answer: C**
-Starting with AOS 7.5, CVM SSH is disabled by default on fresh installations as a security hardening measure. Administrators must explicitly enable SSH if needed. On upgrades from earlier versions, existing SSH settings are preserved.
+**Answer: A (Platform key: C — INCORRECT)**
+Per GA documentation for AOS 7.5, SSH/Bash shell access remains **enabled by default** on fresh installations. The platform's key is incorrect — the engineering plan to disable SSH by default was deferred to a subsequent Nutanix Cloud Infrastructure (NCI) feature release after 7.5. Administrators can still restrict CVM SSH access as a hardening measure after deployment.
 
 ---
 
@@ -255,121 +255,181 @@ The correct order is enable compression first, then deduplication. This is becau
 ---
 
 ### Q21
-The ________ service on each CVM handles ALL storage I/O including reads, writes, caching, and replication.
+Which service on each CVM handles ALL storage I/O including reads, writes, caching, and replication?
+- A) Curator
+- B) Stargate
+- C) Medusa
+- D) Zeus
 
-**Answer: Stargate**
-Stargate is the data I/O engine on every CVM. It receives I/O from the hypervisor, writes to the OpLog or Extent Store, manages the Unified Cache, and replicates data to remote CVMs for redundancy.
+**Answer: B**
+Stargate is the data I/O engine on every CVM. It receives I/O from the hypervisor, writes to the OpLog or Extent Store, manages the Unified Cache, and replicates data to remote CVMs for redundancy. Curator handles background analytics, Medusa is the Cassandra layer, and Zeus handles ZooKeeper configuration.
 
 ---
 
 ### Q22
-The ________ service is the access layer for Apache Cassandra, which stores the cluster's global metadata in a distributed ring.
+Which service is the access layer for Apache Cassandra, which stores the cluster's global metadata in a distributed ring?
+- A) Stargate
+- B) Curator
+- C) Medusa
+- D) Zeus
 
-**Answer: Medusa**
-Medusa provides the access/abstraction layer for Cassandra, the distributed key-value store that holds vDisk block maps, extent-to-node mappings, time-series stats, and configuration metadata.
+**Answer: C**
+Medusa provides the access/abstraction layer for Cassandra, the distributed key-value store that holds vDisk block maps, extent-to-node mappings, time-series stats, and configuration metadata. Stargate handles I/O, Curator runs analytics, and Zeus is the ZooKeeper layer.
 
 ---
 
 ### Q23
-The formula for calculating Unified Cache size is: ________
+What is the formula for calculating Unified Cache size?
+- A) (CVM RAM − 4 GB) × 0.25
+- B) (Total RAM × 0.50)
+- C) ((CVM RAM − 12 GB) × 0.45)
+- D) (CVM RAM − 8 GB) × 0.30
 
-**Answer: ((CVM RAM − 12 GB) × 0.45)**
+**Answer: C**
 Unified Cache uses CVM memory above the 12 GB baseline. The formula is ((CVM RAM − 12 GB) × 0.45). For example, a CVM with 32 GB RAM has ((32 − 12) × 0.45) = 9 GB of Unified Cache.
 
 ---
 
 ### Q24
-The cluster-level fault tolerance setting that must be greater than or equal to the container-level Replication Factor is called the ________.
+The cluster-level fault tolerance setting that must be greater than or equal to the container-level Replication Factor is called the:
+- A) Redundancy Factor
+- B) Quorum Factor
+- C) Availability Factor
+- D) Consistency Factor
 
-**Answer: Redundancy Factor (or FT — Fault Tolerance)**
+**Answer: A**
 Redundancy Factor is the cluster-level setting (FT1 or FT2) that defines how many failures the cluster can tolerate. Container Replication Factor (RF1, RF2, RF3) cannot exceed the cluster's Redundancy Factor.
 
 ---
 
-### Q25
-In AHV networking, the default factory bond mode for host uplinks is ________, while the recommended production mode is ________.
+### Q25 (Select TWO)
+In AHV networking, which two statements about bond modes are correct?
+- A) The default factory bond mode for host uplinks is active-backup
+- B) The default factory bond mode is balance-slb
+- C) The recommended production mode is balance-slb
+- D) The recommended production mode is active-backup
 
-**Answer: active-backup, balance-slb**
+**Answer: A, C**
 Factory default is active-backup (one link active, others standby). The recommended production mode is balance-slb (source MAC hash-based load balancing across all active links without requiring switch configuration). LACP (balance-tcp) requires upstream switch support.
 
 ---
 
 ### Q26
-The Nutanix service that runs map-reduce jobs for analytics, ILM tiering, disk balancing, erasure coding, and garbage collection is ________.
+Which Nutanix service runs map-reduce jobs for analytics, ILM tiering, disk balancing, erasure coding, and garbage collection?
+- A) Stargate
+- B) Curator
+- C) Medusa
+- D) Genesis
 
-**Answer: Curator**
-Curator is the map-reduce framework running on every CVM with an elected Curator Master. It coordinates background tasks that optimize and maintain the storage fabric, including tiering, compression, deduplication, EC-X, and cleanup.
+**Answer: B**
+Curator is the map-reduce framework running on every CVM with an elected Curator Master. It coordinates background tasks that optimize and maintain the storage fabric, including tiering, compression, deduplication, EC-X, and cleanup. Stargate handles I/O, Medusa is the Cassandra layer, and Genesis starts services.
 
 ---
 
 ### Q27
-The authoritative source for cluster configuration and leader election, running on 3 or 5 nodes with quorum-based writes, is ________.
+Which component is the authoritative source for cluster configuration and leader election, running on 3 or 5 nodes with quorum-based writes?
+- A) Medusa (Cassandra)
+- B) Curator
+- C) Stargate
+- D) Zeus (ZooKeeper)
 
-**Answer: ZooKeeper (via Zeus)**
-ZooKeeper, accessed through the Zeus abstraction layer, is the权威 configuration store and leader election service. It runs on 3 or 5 CVMs and uses Paxos-based consensus. A majority of nodes must be available for writes.
+**Answer: D**
+ZooKeeper, accessed through the Zeus abstraction layer, is the authoritative configuration store and leader election service. It runs on 3 or 5 CVMs and uses Paxos-based consensus. A majority of nodes must be available for writes.
 
 ---
 
 ### Q28
-Application-consistent snapshots on Windows require NGT plus the ________ agent to coordinate with application writers before taking the snapshot.
+Application-consistent snapshots on Windows require NGT plus which agent to coordinate with application writers before taking the snapshot?
+- A) VHD
+- B) VSS (Volume Shadow Copy Service)
+- C) VHDX
+- D) Hyper-V Replica
 
-**Answer: VSS (Volume Shadow Copy Service)**
-VSS is required for application-consistent snapshots on Windows. The NGT VSS agent and hardware provider coordinate with VSS writers in applications (SQL Server, Exchange, etc.) to quiesce I/O before the snapshot is taken.
+**Answer: B**
+VSS is required for application-consistent snapshots on Windows. The NGT VSS agent and hardware provider coordinate with VSS writers in applications (SQL Server, Exchange, etc.) to quiesce I/O before the snapshot is taken. Without VSS, only crash-consistent snapshots are possible.
 
 ---
 
 ### Q29
-The write coalescing buffer on SSD that absorbs random writes before asynchronously draining to the Extent Store is called the ________.
+The write coalescing buffer on SSD that absorbs random writes before asynchronously draining to the Extent Store is called the:
+- A) Unified Cache
+- B) Extent Store
+- C) OpLog
+- D) Curator Buffer
 
-**Answer: OpLog**
+**Answer: C**
 The OpLog is a persistent write buffer on SSD (approximately 6 GB per Stargate) that absorbs bursty random writes. Writes are synchronously replicated to remote OpLogs before ACK. Curator drains OpLog data to the Extent Store asynchronously.
 
 ---
 
 ### Q30
-The threshold at which ILM triggers down-migration of cold data from SSD to HDD is ________ tier utilization.
+At what tier utilization threshold does ILM trigger down-migration of cold data from SSD to HDD?
+- A) 50%
+- B) 60%
+- C) 75%
+- D) 90%
 
-**Answer: 75%**
+**Answer: C**
 ILM down-migration triggers when overall tier utilization exceeds 75% (configurable). The system attempts to free at least 15% of data or bring utilization to the threshold, whichever is greater. Up-migration occurs based on access patterns.
 
 ---
 
 ### Q31
-The Nutanix tool that collects comprehensive diagnostic logs for support cases using the command `logbay collect` is called ________.
+Which Nutanix tool collects comprehensive diagnostic logs for support cases using the command `logbay collect`?
+- A) Pulse
+- B) NCC
+- C) Logbay
+- D) Genesis
 
-**Answer: Logbay**
-Logbay collects logs from CVMs, hypervisors, and other cluster components into a support bundle. It is the primary diagnostic collection tool for Nutanix support cases, supplementing the telemetry data sent by Pulse.
+**Answer: C**
+Logbay collects logs from CVMs, hypervisors, and other cluster components into a support bundle. It is the primary diagnostic collection tool for Nutanix support cases, supplementing the telemetry data sent by Pulse. NCC runs health checks, and Genesis starts services.
 
 ---
 
 ### Q32
-The maximum all-flash storage capacity per node supported in AOS 7.5 is ________ TB.
+What is the maximum all-flash storage capacity per node supported in AOS 7.5?
+- A) 100 TB
+- B) 140 TB
+- C) 185 TB
+- D) 256 TB
 
-**Answer: 185**
+**Answer: C**
 AOS 7.5 supports up to 185 TB of raw all-flash storage capacity per node. This is a 2× increase over previous limits and is a key number for the NCA 7.5 exam.
 
 ---
 
 ### Q33
-The Nutanix management service that runs on every CVM and provides the UI, REST API, and CLI is called ________.
+Which Nutanix management service runs on every CVM and provides the UI, REST API, and CLI?
+- A) Acropolis
+- B) Prism
+- C) Curator
+- D) Genesis
 
-**Answer: Prism**
-Prism is the management service running on every CVM. One CVM is elected Prism Leader and handles all HTTP requests. If the leader fails, a new one is elected and assumes the cluster VIP via gratuitous ARP.
+**Answer: B**
+Prism is the management service running on every CVM. One CVM is elected Prism Leader and handles all HTTP requests. If the leader fails, a new one is elected and assumes the cluster VIP via gratuitous ARP. Acropolis manages the hypervisor, Curator runs analytics, and Genesis starts services.
 
 ---
 
 ### Q34
-The Nutanix feature that automatically creates read-only local copies of heavily-read vDisks across nodes for VDI boot storm optimization is called ________.
+Which Nutanix feature automatically creates read-only local copies of heavily-read vDisks across nodes for VDI boot storm optimization?
+- A) Erasure Coding (EC-X)
+- B) Shadow Clones
+- C) NearSync
+- D) Compression
 
-**Answer: Shadow Clones**
-Shadow Clones automatically cache read-only data locally on each node for heavily-read vDisks. This is specifically designed for VDI environments where many VMs read the same base image during boot storms.
+**Answer: B**
+Shadow Clones automatically cache read-only data locally on each node for heavily-read vDisks. This is specifically designed for VDI environments where many VMs read the same base image during boot storms. EC-X provides space efficiency, NearSync provides low-RPO DR, and Compression reduces data size.
 
 ---
 
 ### Q35
-In NGT architecture, the service that runs on the Prism Leader CVM and listens on port ________ handles requests from the NGT proxy running on every CVM at port ________.
+In NGT architecture, which ports are used by the NGT Master and NGT Proxy respectively?
+- A) Port 9440 and Port 80
+- B) Port 2073 and Port 2074
+- C) Port 443 and Port 8080
+- D) Port 2074 and Port 2073
 
-**Answer: 2073, 2074**
+**Answer: B**
 NGT Master runs on the Prism Leader CVM and listens on port 2073. NGT Proxy runs on every CVM and listens on port 2074. The guest agent communicates with the proxy on port 2074 via SSL/TCP or through the IP-less serial port method.
 
 ---

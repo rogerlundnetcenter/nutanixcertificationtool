@@ -936,7 +936,7 @@ CSI volume backups preserve models, data, and state. etcd backup preserves Kuber
 ## ORDERING/SEQUENCE QUESTIONS (Questions 71-80)
 
 ### Q71
-You are deploying a new model version on NAI with zero-downtime requirements. Place these steps in correct order:
+You are deploying a new model version on NAI with zero-downtime requirements. What is the correct order of these steps?
 
 1. Create new Deployment with updated image tag
 2. Verify old pods are receiving no traffic
@@ -944,15 +944,18 @@ You are deploying a new model version on NAI with zero-downtime requirements. Pl
 4. Wait for readiness probes to pass on new pods
 5. Update Ingress/Service to route to new deployment
 
-**Correct Order: 1 → 4 → 5 → 3 → 2**
+- A) 1 → 3 → 5 → 4 → 2
+- B) 1 → 4 → 5 → 3 → 2
+- C) 5 → 1 → 4 → 3 → 2
+- D) 1 → 4 → 3 → 5 → 2
 
-**Explanation:**
+**Answer: B**
 First, create new deployment (1), wait for new pods to be ready (4), then route traffic via Ingress/Service (5). Once new pods are healthy and receiving traffic, scale down old deployment (3) and verify they're offline (2). Rolling updates with readiness probes simplify this, but the manual sequence is: new → healthy → route → retire → verify.
 
 ---
 
 ### Q72
-A customer is setting up LoRA fine-tuning on NAI. Arrange these phases in order:
+A customer is setting up LoRA fine-tuning on NAI. What is the correct order of these phases?
 
 1. Save merged model (base + LoRA adapter) to PersistentVolume
 2. Load base model from Nutanix CSI volume
@@ -961,9 +964,12 @@ A customer is setting up LoRA fine-tuning on NAI. Arrange these phases in order:
 5. Run training loop; update adapter weights via optimizer
 6. Save LoRA adapter weights separately
 
-**Correct Order: 2 → 3 → 4 → 5 → 6 → 1**
+- A) 2 → 3 → 4 → 5 → 6 → 1
+- B) 3 → 2 → 4 → 5 → 6 → 1
+- C) 2 → 4 → 3 → 5 → 6 → 1
+- D) 2 → 3 → 4 → 5 → 1 → 6
 
-**Explanation:**
+**Answer: A**
 Load base model (2), prepare training environment (3), inject trainable adapters (4), optimize during training (5), save lightweight adapter to storage (6), and merge with base for inference deployment (1).
 
 ---
@@ -977,9 +983,12 @@ When troubleshooting GPU passthrough issues, what is the correct diagnostic sequ
 4. Run nvidia-smi in a debug pod to detect GPU
 5. Check node labels for nvidia.com/gpu=true
 
-**Correct Order: 5 → 2 → 3 → 4 → 1**
+- A) 1 → 2 → 3 → 4 → 5
+- B) 5 → 2 → 3 → 4 → 1
+- C) 2 → 5 → 3 → 4 → 1
+- D) 5 → 3 → 2 → 4 → 1
 
-**Explanation:**
+**Answer: B**
 First, verify node is labeled GPU-capable (5). Then ensure drivers are installed (2). Check pod spec for GPU requests (3), run nvidia-smi to confirm detection (4), then examine logs for application errors (1).
 
 ---
@@ -993,9 +1002,12 @@ A NAI cluster certificate is expiring soon. What is the correct renewal sequence
 4. Update cert-manager or manual renewal request
 5. Verify TLS handshake succeeds with new cert
 
-**Correct Order: 4 → 2 → 3 → 5 → 1**
+- A) 1 → 4 → 2 → 3 → 5
+- B) 4 → 2 → 3 → 5 → 1
+- C) 4 → 2 → 1 → 3 → 5
+- D) 4 → 3 → 2 → 5 → 1
 
-**Explanation:**
+**Answer: B**
 Request/generate new certificate (4), store in Kubernetes Secret (2), restart pods to use new cert (3), verify TLS works (5), then retire old cert (1). Revoke first would cause outage.
 
 ---
@@ -1009,15 +1021,18 @@ Optimizing a slow inference pipeline on NAI. What is the logical troubleshooting
 4. Measure improvement against baseline
 5. Identify bottleneck (GPU compute vs memory vs I/O)
 
-**Correct Order: 2 → 5 → 1 → 3 → 4**
+- A) 1 → 2 → 5 → 3 → 4
+- B) 2 → 5 → 1 → 3 → 4
+- C) 2 → 1 → 5 → 3 → 4
+- D) 5 → 2 → 1 → 3 → 4
 
-**Explanation:**
+**Answer: B**
 Establish baseline (2), identify bottleneck type (5), dig deeper with profiling (1), implement optimization (3), measure results (4). This is a standard optimization cycle.
 
 ---
 
 ### Q76
-Setting up multi-tenant NAI with isolation. Arrange these configuration steps:
+Setting up multi-tenant NAI with isolation. What is the correct order of these configuration steps?
 
 1. Create Role/RoleBinding for tenant, scoped to namespace
 2. Create Kubernetes Namespace per tenant
@@ -1026,15 +1041,18 @@ Setting up multi-tenant NAI with isolation. Arrange these configuration steps:
 5. Configure CSI PersistentVolume claim in tenant namespace
 6. Deploy model serving pod in tenant namespace
 
-**Correct Order: 2 → 3 → 1 → 4 → 5 → 6**
+- A) 1 → 2 → 3 → 4 → 5 → 6
+- B) 2 → 1 → 3 → 4 → 5 → 6
+- C) 2 → 3 → 1 → 4 → 5 → 6
+- D) 2 → 3 → 4 → 1 → 5 → 6
 
-**Explanation:**
+**Answer: C**
 Create namespace first (2), enforce network isolation (3), define RBAC roles (1), provision API keys (4), setup storage (5), deploy workload (6). Storage and pods depend on namespace/RBAC existing.
 
 ---
 
 ### Q77
-A model fails to load into vLLM, reporting memory error. Correct diagnostic order:
+A model fails to load into vLLM, reporting memory error. What is the correct diagnostic order?
 
 1. Reduce batch size and test
 2. Calculate required VRAM: model size + KV cache estimate + batch overhead
@@ -1043,15 +1061,18 @@ A model fails to load into vLLM, reporting memory error. Correct diagnostic orde
 5. Examine vLLM logs for allocation failures
 6. Increase GPU per pod or add more GPU nodes
 
-**Correct Order: 5 → 4 → 2 → 3 → 1 → 6**
+- A) 4 → 5 → 2 → 3 → 1 → 6
+- B) 2 → 4 → 5 → 3 → 1 → 6
+- C) 5 → 4 → 2 → 3 → 1 → 6
+- D) 5 → 2 → 4 → 3 → 1 → 6
 
-**Explanation:**
+**Answer: C**
 Review logs first (5), determine model format (4), calculate required memory (2), check pod/node limits (3), reduce batch size as quick fix (1), scale infrastructure if needed (6).
 
 ---
 
 ### Q78
-Rolling out a new vLLM version with feature improvements. Correct deployment sequence:
+Rolling out a new vLLM version with feature improvements. What is the correct deployment sequence?
 
 1. Build and tag new vLLM image: v0.4-custom
 2. Push image to container registry
@@ -1061,9 +1082,12 @@ Rolling out a new vLLM version with feature improvements. Correct deployment seq
 6. Update documentation with new features
 7. Keep old image available for quick rollback
 
-**Correct Order: 1 → 2 → 3 → 4 → 5 → 6, with 7 (keep old image).**
+- A) 3 → 1 → 2 → 4 → 5 → 6 (with 7 throughout)
+- B) 1 → 2 → 3 → 5 → 4 → 6 (with 7 throughout)
+- C) 1 → 2 → 3 → 4 → 5 → 6 (with 7 throughout)
+- D) 1 → 3 → 2 → 4 → 5 → 6 (with 7 throughout)
 
-**Explanation:**
+**Answer: C**
 Build image (1), push to registry (2), trigger Kubernetes update (3), monitor progress (4), validate with tests (5), document changes (6). Always retain old image for rollback (7). Never delete old images immediately.
 
 ---
@@ -1079,15 +1103,18 @@ Implementing disaster recovery for NAI. What is the correct preparation sequence
 6. Document and automate restore procedures
 7. Schedule monthly backup/restore validation
 
-**Correct Order: 1 → 2 → 3 → 4 → 5 → 6 → 7**
+- A) 2 → 3 → 1 → 4 → 5 → 6 → 7
+- B) 1 → 2 → 3 → 4 → 5 → 6 → 7
+- C) 1 → 2 → 3 → 4 → 6 → 5 → 7
+- D) 1 → 4 → 2 → 3 → 5 → 6 → 7
 
-**Explanation:**
+**Answer: B**
 Document everything first (1), implement automated backups (2-3), setup isolated test environment (4), execute restore test (5), refine procedures (6), establish recurring validation cadence (7).
 
 ---
 
 ### Q80
-A customer wants to add a second model (Mistral 7B) to an existing NAI deployment serving Llama 13B. Sequence the steps:
+A customer wants to add a second model (Mistral 7B) to an existing NAI deployment serving Llama 13B. What is the correct sequence of steps?
 
 1. Allocate GPU resources (ensure sufficient VRAM on cluster)
 2. Upload Mistral 7B model to Nutanix CSI volume
@@ -1097,9 +1124,12 @@ A customer wants to add a second model (Mistral 7B) to an existing NAI deploymen
 6. Verify API backward compatibility for existing Llama clients
 7. Update documentation with new model availability
 
-**Correct Order: 1 → 2 → 3 → 4 → 5 → 6 → 7**
+- A) 2 → 1 → 3 → 4 → 5 → 6 → 7
+- B) 1 → 2 → 3 → 4 → 5 → 6 → 7
+- C) 1 → 2 → 3 → 5 → 4 → 6 → 7
+- D) 1 → 3 → 2 → 4 → 5 → 6 → 7
 
-**Explanation:**
+**Answer: B**
 Verify capacity (1), stage model artifacts (2), deploy infrastructure (3), validate workload (4), integrate routing (5), ensure existing clients still work (6), communicate changes (7).
 
 ---
