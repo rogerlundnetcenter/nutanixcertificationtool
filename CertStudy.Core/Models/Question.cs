@@ -1,6 +1,6 @@
-namespace CertStudy.Models;
+namespace CertStudy.Core.Models;
 
-class Question
+public class Question
 {
     public int Id { get; set; }
     public string ExamCode { get; set; } = "";
@@ -11,10 +11,4 @@ class Question
     public string Explanation { get; set; } = "";
     public bool IsMultiSelect => CorrectAnswers.Count > 1;
     public string SourceFile { get; set; } = "";
-}
-
-class AnswerOption
-{
-    public string Letter { get; set; } = "";
-    public string Text { get; set; } = "";
 }

@@ -1,6 +1,6 @@
-using CertStudy.Models;
+using CertStudy.Core.Models;
 
-namespace CertStudy.Services;
+namespace CertStudy.Core;
 
 /// <summary>
 /// Provides exam blueprint data, question-to-objective mapping, and Nutanix Bible references.
@@ -16,6 +16,7 @@ public static class BlueprintService
         InitNcpUs();
         InitNcpCi();
         InitNcmMci();
+        InitNca75();
     }
 
     public static ExamBlueprint? GetBlueprint(string examCode)
@@ -26,6 +27,8 @@ public static class BlueprintService
         if (key.Contains("US")) return _blueprints.GetValueOrDefault("NCP-US");
         if (key.Contains("CI")) return _blueprints.GetValueOrDefault("NCP-CI");
         if (key.Contains("MCI") || key.Contains("MCM") || key.Contains("NCM")) return _blueprints.GetValueOrDefault("NCM-MCI");
+        if ((key.Contains("NCA") || key.StartsWith("NCA")) && key.Contains("75")) return _blueprints.GetValueOrDefault("NCA-75");
+        if (key == "NCA" || key.Contains("NCA75") || key.Contains("NCA-75")) return _blueprints.GetValueOrDefault("NCA-75");
         return _blueprints.GetValueOrDefault(examCode);
     }
 
@@ -114,6 +117,17 @@ public static class BlueprintService
             ("APIs", "v3 REST API, CRUD operations, automation"),
             ("Storage", "Containers, RF, compression, dedup, erasure coding"),
             ("CLI Commands", "ncli, acli, nuclei, logbay, NCC"),
+        };
+
+        if ((key.Contains("NCA") || key == "NCA") && (key.Contains("75") || key.Length <= 3)) return new()
+        {
+            ("Lifecycle Management (LCM)", "LCM components, upgrade workflow, dark site mode"),
+            ("Prism Element & Prism Central", "Cluster management, user roles, authentication"),
+            ("AHV Networking", "VLANs, bonds, IPAM, bridge configuration"),
+            ("Storage Containers & Policies", "Containers, RF, compression, dedup, EC-X"),
+            ("NCC & Health Monitoring", "NCC checks, alerts, events, Pulse, log collection"),
+            ("AOS 7.5 New Features", "AES, VM Startup Policies, vTPM, Elastic VM Storage"),
+            ("CLI Tools", "nCLI, aCLI, command reference"),
         };
 
         return new();
@@ -510,5 +524,109 @@ public static class BlueprintService
             }
         };
         _blueprints["NCM-MCI"] = bp;
+    }
+
+    // ========== NCA 7.5 ==========
+    private static void InitNca75()
+    {
+        var bp = new ExamBlueprint
+        {
+            ExamCode = "NCA-75",
+            ExamTitle = "Nutanix Certified Associate 7.5",
+            QuestionCount = 75,
+            TimeLimitMinutes = 120,
+            PassingScore = "3000/6000",
+            Sections = new()
+            {
+                new BlueprintSection
+                {
+                    ExamCode = "NCA-75", SectionNumber = 1,
+                    SectionTitle = "Describe Lifecycle Management",
+                    WeightPercent = 20,
+                    Objectives = new()
+                    {
+                        new() { Id = "1.1", Title = "Explain LCM components and upgrade workflow",
+                            Knowledge = new() { "LCM catalog", "Upgrade workflow", "Prerequisites", "Component dependencies" },
+                            Keywords = new() { "LCM", "Lifecycle Manager", "catalog", "upgrade", "workflow", "prerequisite", "dependency", "component", "bundle", "inventory" } },
+                        new() { Id = "1.2", Title = "Perform LCM upgrades",
+                            Knowledge = new() { "Software upgrade", "Firmware upgrade", "Pre-upgrade checks", "Rollback" },
+                            Keywords = new() { "upgrade", "LCM", "perform", "software", "firmware", "pre-upgrade", "check", "rollback", "one-click" } },
+                        new() { Id = "1.3", Title = "Configure LCM settings including dark site mode",
+                            Knowledge = new() { "LCM settings", "Dark site", "Proxy", "Air-gapped" },
+                            Keywords = new() { "LCM", "settings", "dark site", "air-gap", "proxy", "offline", "catalog URL", "LCM bundle" } },
+                    }
+                },
+                new BlueprintSection
+                {
+                    ExamCode = "NCA-75", SectionNumber = 2,
+                    SectionTitle = "Describe Nutanix Basic Administration",
+                    WeightPercent = 30,
+                    Objectives = new()
+                    {
+                        new() { Id = "2.1", Title = "Manage VMs (create/modify/delete/migrate)",
+                            Knowledge = new() { "VM creation", "VM settings", "Live migration", "Delete/clone" },
+                            Keywords = new() { "VM", "create", "modify", "delete", "migrate", "clone", "vCPU", "memory", "vDisk", "NIC", "live migration" } },
+                        new() { Id = "2.2", Title = "Configure storage containers and policies",
+                            Knowledge = new() { "Container creation", "Storage policies", "Replication factor", "Data efficiency" },
+                            Keywords = new() { "storage container", "policy", "RF2", "RF3", "replication factor", "compression", "dedup", "EC-X", "erasure coding", "ILM", "container" } },
+                        new() { Id = "2.3", Title = "Configure networking (VLANs, bonds, IPAM)",
+                            Knowledge = new() { "VLAN creation", "Bond modes", "IPAM pool", "Subnet" },
+                            Keywords = new() { "VLAN", "bond", "LACP", "active-backup", "balance-slb", "IPAM", "subnet", "network", "OVS", "bridge", "managed" } },
+                        new() { Id = "2.4", Title = "Manage Prism Element and Prism Central",
+                            Knowledge = new() { "Prism UI navigation", "Cluster operations", "Multi-cluster" },
+                            Keywords = new() { "Prism", "Prism Element", "Prism Central", "PE", "PC", "dashboard", "cluster", "manage", "register", "analysis" } },
+                        new() { Id = "2.5", Title = "Use CLI tools (nCLI, aCLI)",
+                            Knowledge = new() { "nCLI commands", "aCLI commands", "VM management", "Network management" },
+                            Keywords = new() { "ncli", "acli", "CLI", "command", "vm.", "net.", "host.", "cluster.", "container" } },
+                        new() { Id = "2.6", Title = "Manage users, roles, and authentication",
+                            Knowledge = new() { "RBAC", "Local/AD/LDAP", "Roles", "Permissions" },
+                            Keywords = new() { "RBAC", "role", "user", "authentication", "AD", "LDAP", "SAML", "SSO", "permission", "cluster admin", "super admin", "viewer" } },
+                    }
+                },
+                new BlueprintSection
+                {
+                    ExamCode = "NCA-75", SectionNumber = 3,
+                    SectionTitle = "Maintain Environmental Health",
+                    WeightPercent = 25,
+                    Objectives = new()
+                    {
+                        new() { Id = "3.1", Title = "Use NCC health checks",
+                            Knowledge = new() { "NCC categories", "Running checks", "Interpreting results" },
+                            Keywords = new() { "NCC", "health check", "Nutanix Cluster Check", "diagnostic", "category", "run", "result", "critical", "warning" } },
+                        new() { Id = "3.2", Title = "Monitor alerts and events",
+                            Knowledge = new() { "Alert policies", "Severity levels", "Event log" },
+                            Keywords = new() { "alert", "event", "monitor", "severity", "critical", "warning", "info", "acknowledge", "resolve", "notification", "email" } },
+                        new() { Id = "3.3", Title = "Use Pulse and log collection",
+                            Knowledge = new() { "Pulse", "Log collection", "Support portal" },
+                            Keywords = new() { "Pulse", "heartbeat", "log collection", "logbay", "support", "diagnostic", "telemetry", "upload" } },
+                        new() { Id = "3.4", Title = "Analyze cluster resiliency and rebuild status",
+                            Knowledge = new() { "Resiliency factor", "Data rebuild", "Disk failure" },
+                            Keywords = new() { "resiliency", "rebuild", "cluster resiliency", "data rebuild", "disk failure", "node failure", "absence", "metadata resiliency" } },
+                    }
+                },
+                new BlueprintSection
+                {
+                    ExamCode = "NCA-75", SectionNumber = 4,
+                    SectionTitle = "Describe Cluster Configuration Options",
+                    WeightPercent = 25,
+                    Objectives = new()
+                    {
+                        new() { Id = "4.1", Title = "Configure redundancy factor and replication policies",
+                            Knowledge = new() { "RF2", "RF3", "Container RF", "Replication" },
+                            Keywords = new() { "RF2", "RF3", "redundancy factor", "replication", "container", "fault tolerance", "metadata resiliency", "data resiliency" } },
+                        new() { Id = "4.2", Title = "Configure data efficiency features (compression, dedup, EC-X)",
+                            Knowledge = new() { "Inline compression", "Post-process compression", "Deduplication", "Erasure Coding" },
+                            Keywords = new() { "compression", "dedup", "deduplication", "EC-X", "erasure coding", "inline", "post-process", "data efficiency", "savings", "fingerprint" } },
+                        new() { Id = "4.3", Title = "Describe AOS 7.5 new features (AES, VM Startup Policies, vTPM, Elastic VM Storage)",
+                            Knowledge = new() { "AES", "VM Startup Policy", "vTPM", "Elastic Storage" },
+                            Keywords = new() { "AES", "VM Startup Policy", "vTPM", "Elastic VM Storage", "AOS 7.5", "new feature", "startup order", "boot policy", "TPM", "elastic storage", "ADSF" } },
+                        new() { Id = "4.4", Title = "Configure licensing tiers",
+                            Knowledge = new() { "Starter", "Pro", "Ultimate", "License management" },
+                            Keywords = new() { "license", "licensing", "Starter", "Pro", "Ultimate", "tier", "add license", "Prism", "subscription", "capacity" } },
+                    }
+                },
+            }
+        };
+        _blueprints["NCA-75"] = bp;
     }
 }

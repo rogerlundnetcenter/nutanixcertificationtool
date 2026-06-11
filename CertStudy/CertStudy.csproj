@@ -15,6 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="../CertStudy.Core/CertStudy.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="LabSimulator\Web\**\*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 

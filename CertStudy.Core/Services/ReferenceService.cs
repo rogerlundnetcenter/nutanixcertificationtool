@@ -1,12 +1,12 @@
-using CertStudy.Models;
+using CertStudy.Core.Models;
 
-namespace CertStudy.Services;
+namespace CertStudy.Core;
 
 static class ReferenceService
 {
     private static readonly Dictionary<string, List<(string[] Keywords, string Reference)>> _data = BuildData();
 
-    private static Dictionary<string, List<(string[] Keywords, string Reference)>> BuildData()
+    private static Dictionary<string, List<(string[], string)>> BuildData()
     {
         var d = new Dictionary<string, List<(string[], string)>>();
 
@@ -98,6 +98,31 @@ static class ReferenceService
 
             (new[] { "capacity", "planning", "GPU count", "concurrent", "throughput", "scaling", "provisioning", "sizing" },
              "📊 Capacity Planning & GPU Sizing\n• GPU count = (concurrent_users × avg_tokens) / GPU_throughput\n• Throughput varies by model size, quantization, batch size\n• vLLM continuous batching improves GPU utilization\n• Concurrent user limits depend on context window\n• Over-provision for peak load and failover\n• Monitor GPU memory and utilization for scaling"),
+        };
+
+        // ──── NCA-75 ────
+        d["NCA-75"] = new()
+        {
+            (new[] { "LCM", "Lifecycle Manager", "upgrade", "catalog", "bundle", "dark site", "air-gap", "firmware", "software", "component", "inventory", "prerequisite" },
+             "⬆️ Lifecycle Management (LCM)\n• LCM (Lifecycle Manager): one-click upgrades for AOS, AHV, firmware\n• Upgrade workflow: Inventory -> Download -> Prechecks -> Upgrade\n• Pre-upgrade health checks run automatically\n• Dark site mode: air-gapped environments, manual bundle upload\n• Rolling upgrades minimize cluster downtime\n• Component dependencies verified before upgrade\n• Proxy configuration for internet-restricted sites\n• LCM bundle: packaged set of compatible upgrades\n• Rollback support for failed upgrades\n• Scheduled upgrades for maintenance windows"),
+
+            (new[] { "AES", "ADSF", "AOS 7.5", "elastic storage", "distributed storage", "ADSF" },
+             "💾 Adaptive Elastic Storage (AES) / Elastic VM Storage\n• AES (Adaptive Elastic Storage): dynamic VM storage allocation\n• Elastic VM Storage: expand/shrink VM storage on demand\n• No pre-allocation of full vDisk size\n• Thin provisioning with real-time growth\n• Available in AOS 7.5+\n• Reduces wasted storage from over-provisioned VMs\n• Works with existing containers and storage policies"),
+
+            (new[] { "VM Startup Policy", "startup order", "boot policy", "VM boot", "boot sequence", "dependency" },
+             "🖥️ VM Startup Policies\n• Define VM boot order and dependencies\n• Categories: Startup policy groups VMs by priority\n• Boot delay between VM groups\n• Sequential vs parallel startup modes\n• Used for planned cluster shutdown and restart\n• Ensures critical VMs start before dependent VMs\n• Configured via Prism Central"),
+
+            (new[] { "vTPM", "TPM", "trusted platform", "virtual TPM", "security", "encryption" },
+             "🔐 Virtual TPM (vTPM)\n• vTPM: Virtual Trusted Platform Module for VMs\n• Required for Windows 11 and certain security features\n• Provides hardware-backed security to guest VMs\n• Supports BitLocker and measured boot\n• vTPM state is stored encrypted on cluster storage\n• Available on AHV in AOS 7.5+\n• Per-VM enablement in VM settings"),
+
+            (new[] { "NearSync", "Near Sync", "RPO", "journal", "replication", "1 minute", "15 minute" },
+             "🔄 NearSync Replication\n• NearSync: RPO of 1–15 minutes\n• Journal-based replication (not snapshot-based)\n• Lower RPO than async, less overhead than sync\n• Requires journal on source and target\n• Protects against data loss with minimal lag\n• Leap integration for orchestrated failover\n• Bandwidth efficient for WAN replication"),
+
+            (new[] { "Metro Availability", "Metro", "active-active", "stretch cluster", "zero RPO", "witness", "split brain" },
+             "🌐 Metro Availability\n• Metro Availability: synchronous replication for zero RPO\n• Active-active stretch cluster across two sites\n• VMs can run at either site\n• Witness VM required for split-brain protection\n• Automatic failover with zero data loss\n• Network latency <5ms recommended\n• Third site witness prevents split-brain scenarios\n• Supported on AHV with AOS"),
+
+            (new[] { "EC-X", "erasure coding", "EC", "erasure", "coding", "space efficient", "1.3:1" },
+             "💾 EC-X Erasure Coding\n• EC-X: space-efficient data protection vs RF\n• RF2 = 2x space overhead; EC-X = ~1.3x overhead\n• Same fault tolerance as RF2 with less capacity used\n• Post-process: cold data converted to EC after threshold\n• Inline EC: available in newer AOS versions\n• Requires minimum cluster size\n• Best for cold/archive data on SSD/HDD tiers\n• Curator service manages EC background jobs"),
         };
 
         // ──── NCM-MCI ────

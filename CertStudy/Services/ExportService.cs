@@ -1,6 +1,6 @@
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
-using CertStudy.Models;
+using CertStudy.Core.Models;
 using System.Text.RegularExpressions;
 
 namespace CertStudy.Services;

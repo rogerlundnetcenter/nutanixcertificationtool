@@ -1,8 +1,8 @@
 using System.Drawing.Drawing2D;
 using CertStudy.Controls;
 using CertStudy.LabSimulator;
-using CertStudy.Models;
-using CertStudy.Services;
+using CertStudy.Core.Models;
+using CertStudy.Core;
 
 namespace CertStudy;
 

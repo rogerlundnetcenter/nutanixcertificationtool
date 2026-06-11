@@ -1,14 +1,33 @@
 using System.Text.RegularExpressions;
-using CertStudy.Models;
+using CertStudy.Core.Models;
+using System.Linq;
 
-namespace CertStudy.Services;
+namespace CertStudy.Core;
 
-static partial class QuestionParser
+public partial class QuestionParser
 {
     private static readonly Regex QuestionHeaderRx = QuestionHeaderRegex();
-    private static readonly Regex DomainHeaderRx   = DomainHeaderRegex();
-    private static readonly Regex OptionRx         = OptionRegex();
-    private static readonly Regex AnswerRx         = AnswerRegex();
+    private static readonly Regex DomainHeaderRx = DomainHeaderRegex();
+    private static readonly Regex OptionRx = OptionRegex();
+    private static readonly Regex AnswerRx = AnswerRegex();
+
+    private readonly IExamRepository _examRepository;
+    private readonly IFileProvider _fileProvider;
+
+    private static readonly string[] ExamPatterns = new[]
+    {
+        "NCP-US-*.md",
+        "NCP-CI-*.md",
+        "NCP-AI-*.md",
+        "NCM-MCI-*.md",
+        "NCA-*.md"
+    };
+
+    public QuestionParser(IExamRepository examRepository, IFileProvider fileProvider)
+    {
+        _examRepository = examRepository;
+        _fileProvider = fileProvider;
+    }
 
     [GeneratedRegex(@"^###\s+Q(\d+)", RegexOptions.Compiled)]
     private static partial Regex QuestionHeaderRegex();
@@ -32,9 +51,10 @@ static partial class QuestionParser
         return name;
     }
 
-    public static List<Question> ParseFile(string filePath)
+    public List<Question> ParseFile(string filePath)
     {
-        var lines = File.ReadAllLines(filePath);
+        var content = _examRepository.ReadExamFile(filePath);
+        var lines = content.Split(['\r', '\n'], StringSplitOptions.None);
         var examCode = DeriveExamCode(Path.GetFileName(filePath));
         var questions = new List<Question>();
         var currentDomain = "";
@@ -181,23 +201,35 @@ static partial class QuestionParser
         return questions;
     }
 
-    public static Dictionary<string, List<Question>> LoadAllExams(string directory)
+    public Dictionary<string, List<Question>> LoadAllExams()
     {
-        var exams = new Dictionary<string, List<Question>>();
-        var patterns = new[] { "NCP-US*.md", "NCP-CI*.md", "NCP-AI*.md", "NCM-MCI*.md" };
+        var exams = new Dictionary<string, List<Question>>(StringComparer.OrdinalIgnoreCase);
 
-        foreach (var pattern in patterns)
+        foreach (var file in _examRepository.FindExamFiles())
         {
-            foreach (var file in Directory.GetFiles(directory, pattern))
-            {
-                var questions = ParseFile(file);
-                var code = DeriveExamCode(Path.GetFileName(file));
-                if (!exams.ContainsKey(code))
-                    exams[code] = new List<Question>();
-                exams[code].AddRange(questions);
-            }
+            var fileName = Path.GetFileName(file);
+            if (!ExamPatterns.Any(p => MatchesPattern(fileName, p)))
+                continue;
+
+            var questions = ParseFile(file);
+            var code = DeriveExamCode(fileName);
+            if (!exams.ContainsKey(code))
+                exams[code] = new List<Question>();
+            exams[code].AddRange(questions);
         }
 
         return exams;
+    }
+
+    private static bool MatchesPattern(string fileName, string pattern)
+    {
+        // Simple glob matching for patterns like NCP-US-*.md and NCA-*.md
+        if (pattern.EndsWith("*.md"))
+        {
+            var prefix = pattern[..^4]; // Remove "*.md"
+            return fileName.EndsWith(".md", StringComparison.OrdinalIgnoreCase)
+                   && fileName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase);
+        }
+        return false;
     }
 }

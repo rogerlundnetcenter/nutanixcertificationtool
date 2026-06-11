@@ -1,10 +1,11 @@
-namespace CertStudy.Models;
+namespace CertStudy.Core.Models;
 
 public class BlueprintSection
 {
     public string ExamCode { get; set; } = "";
     public int SectionNumber { get; set; }
     public string SectionTitle { get; set; } = "";
+    public int WeightPercent { get; set; }
     public List<BlueprintObjective> Objectives { get; set; } = new();
 }
 
